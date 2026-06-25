@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "smartfarmassistant",
+          "appId": "1:764909508771:android:7d85d1d9a2194b35d88716",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "smartfarmassistant",
+          "configurations": {
+            "android": "1:764909508771:android:7d85d1d9a2194b35d88716",
+            "ios": "1:764909508771:ios:56b9f5e3337a1bfad88716",
+            "macos": "1:764909508771:ios:56b9f5e3337a1bfad88716",
+            "web": "1:764909508771:web:e9b89e7165a244b5d88716",
+            "windows": "1:764909508771:web:673d50e2a72520b0d88716"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

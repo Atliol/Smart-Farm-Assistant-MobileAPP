@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764909508771",
+    "project_id": "smartfarmassistant",
+    "storage_bucket": "smartfarmassistant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764909508771:android:7d85d1d9a2194b35d88716",
+        "android_client_info": {
+          "package_name": "com.dev.kl.uni_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlOMSC2dO-P7PilPQwdoRgjAmwfcrcIkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
