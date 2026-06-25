@@ -1,4 +1,4 @@
-# 🌾 UniProject - AI-Powered Smart Agriculture Assistant
+# 🌾 UniProject - Smart Agriculture Assistant
 
 Flutter ဖြင့် တည်ဆောက်ထားပြီး တောင်သူလယ်သမားများအတွက် စိုက်ပျိုးရေးဆိုင်ရာ အကြံပေးချက်များကို ချက်ချင်း ပံ့ပိုးပေးနိုင်မည့် မိုဘိုင်းအပလီကေးရှင်း ဖြစ်ပါသည်။ ဤ App တွင် Google Gemini AI ကို အသုံးပြု၍ အမေးအဖြေပြုလုပ်နိုင်ခြင်းနှင့် Firebase Backend ကို အသုံးပြု၍ ဒေတာများကို စီမံခန့်ခွဲနိုင်ခြင်းတို့ ပါဝင်ပါသည်။
 
