@@ -1,18 +1,16 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
-  // TODO: သင်ရလာတဲ့ API Key ကို ဒီနေရာမှာ ထည့်ပါ
+  // ⚠️ လုံခြုံရေးအရ ဤ API Key အား GitHub ပေါ်မတင်မီ အလွတ်ပြန်ပြောင်းရန် သတိပြုပါ
   static const String _apiKey = "AQ.Ab8RN6ImBD_FJnCbXn_9eYfXPT4FQddcPhpahA0ISvE_zH3M0w";
 
-  late final GenerativeModel _model;
+  // late final နေရာတွင် တစ်ခါတည်း Initialize လုပ်ရန် final ဟုပဲ ပြောင်းလဲလိုက်သည်
+  final GenerativeModel _model;
 
-  GeminiService() {
-    // Gemini Model ကို ချိန်ညှိခြင်း (စာသားအမေးအဖြေအတွက် gemini-1.5-flash က အမြန်ဆုံးနဲ့ အသင့်တော်ဆုံးပါ)
-    _model = GenerativeModel(
-      model: 'gemini-1.5-flash',
-      apiKey: _apiKey,
-    );
-  }
+  GeminiService() : _model = GenerativeModel(
+    model: 'gemini-1.5-flash',
+    apiKey: _apiKey,
+  );
 
   Future<String> askQuestion(String message) async {
     try {
@@ -25,7 +23,7 @@ class GeminiService {
         return "တောင်းပန်ပါတယ်၊ အဖြေမရှာဖွေနိုင်ပါဘူး။";
       }
     } catch (e) {
-      return "Error ဖြစ်သွားပွားတယ်: $e";
+      return "Error ဖြစ်သွားပါတယ်: $e";
     }
   }
 }

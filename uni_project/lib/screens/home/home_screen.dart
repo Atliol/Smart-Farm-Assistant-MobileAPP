@@ -113,25 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.all(20),
-                      child:
-                      CircularProgressIndicator(),
+                      child: CircularProgressIndicator(),
                     ),
                   )
-                else if (errorMessage != null)
-                  Container(
-                    padding:
-                    const EdgeInsets.all(16),
-                    child: Text(
-                      errorMessage!,
-                      style: const TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  )
-                else if (weatherData != null)
-                    WeatherCard(
-                      weatherData: weatherData!,
-                    ),
+                else
+                  WeatherCard(
+                    weatherData: weatherData,
+                  ),
 
                 const SizedBox(height: 20),
 

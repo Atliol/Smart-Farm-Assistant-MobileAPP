@@ -1,34 +1,52 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../service/weather_service.dart';
 
 class WeatherCard extends StatelessWidget {
-  final Map<String, dynamic> weatherData;
+  final Map<String, dynamic>? weatherData;
 
   const WeatherCard({
     super.key,
-    required this.weatherData,
+    this.weatherData,
   });
 
   @override
   Widget build(BuildContext context) {
-    final city = weatherData['name'] ?? 'Unknown';
+
+    // Offline Demo Data
+    final data = weatherData ??
+        {
+          "name": "internetမရှိပါ",
+          "main": {
+            "temp": 0,
+            "humidity": 0,
+          },
+          "weather": [
+            {
+              "main": "locationဖွင့်ပါ",
+              "icon": "03d",
+            }
+          ],
+          "wind": {
+            "speed": 0,
+          }
+        };
+
+    final city = data['name'] ?? 'internetမရှိပါ';
 
     final temp =
-    ((weatherData['main']?['temp'] ?? 0) as num)
-        .round();
+    ((data['main']?['temp'] ?? 0) as num).round();
 
     final condition =
-        weatherData['weather'][0]['main'] ?? 'Clear';
+        data['weather'][0]['main'] ?? 'locationဖွင့်ပါ';
 
     final iconCode =
-        weatherData['weather'][0]['icon'] ?? '01d';
+        data['weather'][0]['icon'] ?? '03d';
 
     final humidity =
-    weatherData['main']['humidity'].toString();
+    data['main']['humidity'].toString();
 
     final wind =
-    weatherData['wind']['speed'].toString();
+    data['wind']['speed'].toString();
 
     return Container(
       width: double.infinity,
@@ -59,7 +77,8 @@ class WeatherCard extends StatelessWidget {
         mainAxisAlignment:
         MainAxisAlignment.spaceBetween,
         children: [
-          /// LEFT
+
+          /// LEFT SIDE
           Column(
             crossAxisAlignment:
             CrossAxisAlignment.start,
@@ -104,7 +123,7 @@ class WeatherCard extends StatelessWidget {
             ],
           ),
 
-          /// RIGHT
+          /// RIGHT SIDE
           Column(
             crossAxisAlignment:
             CrossAxisAlignment.end,
@@ -115,6 +134,14 @@ class WeatherCard extends StatelessWidget {
                 ),
                 width: 70,
                 height: 70,
+                errorBuilder:
+                    (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.cloud,
+                    size: 70,
+                    color: Colors.white,
+                  );
+                },
               ),
 
               const SizedBox(height: 10),
