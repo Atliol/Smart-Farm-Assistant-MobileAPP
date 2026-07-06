@@ -55,8 +55,10 @@ class WeatherCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         image: DecorationImage(
           image: NetworkImage(
+            // အဓိက ပြင်လိုက်တဲ့နေရာက ဒီနားလေးပါ ဗျာ 👇
             WeatherService.getBackgroundUrl(
               condition,
+              iconCode: iconCode, // ဒီနေရာမှာ iconCode လေး လှမ်းထည့်ပေးလိုက်တာပါ
             ),
           ),
           fit: BoxFit.cover,
