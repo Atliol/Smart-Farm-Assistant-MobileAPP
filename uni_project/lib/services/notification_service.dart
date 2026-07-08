@@ -1,67 +1,35 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NotificationService {
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static Future<void> initNotification() async {
-    // Android Initialization Setting
-    const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // iOS Initialization Setting
-    const DarwinInitializationSettings initializationSettingsIOS =
-    DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-
-    await _notificationsPlugin.initialize(initializationSettings);
-  }
-
-  // 💡 အပေါ်ကနေ Banner ပုံစံ ကျလာစေမည့် Notification ပြသခြင်း Function
-  static Future<void> showTopNotification({
-    required int id,
-    required String title,
-    required String body,
+  // 💡 Notification ပို့ရန် အဓိကဖန်ရှင်
+  static Future<void> sendNotification({
+    required String receiverId, // ဘယ်သူ့ဆီ ပို့မှာလဲ (ပို့စ်ပိုင်ရှင် ID)
+    required String type,       // 'post_like', 'image_like', 'post_comment', 'image_comment'
+    required String postId,
+    String? additionalText,     // ကွန်မန့်စာသား စသည်ဖြင့်
   }) async {
-    // 🔥 အဓိကအကျဆုံးအပိုင်း - Android မှာ အပေါ်ကနေ ကျလာစေရန် Channel ဆက်တင် ပြင်ဆင်ခြင်း
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
-      'high_importance_channel', // Channel ID
-      'High Importance Notifications', // Channel Name
-      channelDescription: 'This channel is used for important notifications.',
-      importance: Importance.max,   // 💡 အမြင့်ဆုံးအဆင့် သတ်မှတ်ချက် (အပေါ်ကကျလာစေရန်)
-      priority: Priority.high,       // 💡 အရေးကြီးအဆင့် သတ်မှတ်ချက် (အပေါ်ကကျလာစေရန်)
-      showWhen: true,
-      playSound: true,
-    );
+    // 💡 Local variable အဖြစ် ပြောင်းယူလိုက်ခြင်းဖြင့် Null Safety Promotion ရသွားပါမည်
+    final User? currentUser = FirebaseAuth.instance.currentUser;
 
-    // iOS အတွက် အပေါ်ကကျလာစေရန် ဆက်တင်
-    const DarwinNotificationDetails iosNotificationDetails =
-    DarwinNotificationDetails(
-      presentAlert: true,  // 💡 Banner ပြသမည်
-      presentBadge: true,  // 💡 Badge ပြသမည်
-      presentSound: true,  // 💡 အသံမြည်မည်
-    );
+    // မိမိကိုယ်တိုင် လုပ်ဆောင်ချက်ဆိုလျှင် သို့မဟုတ် User Login မဝင်ထားလျှင် Noti မပို့ပါ
+    if (currentUser == null || currentUser.uid == receiverId) return;
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: iosNotificationDetails,
-    );
-
-    // Notification ကို စတင်ပြသခြင်း
-    await _notificationsPlugin.show(
-      id,
-      title,
-      body,
-      notificationDetails,
-    );
+    try {
+      await _db.collection('notifications').add({
+        'senderId': currentUser.uid,
+        'senderName': currentUser.displayName ?? "အသုံးပြုသူ",
+        'receiverId': receiverId,
+        'type': type,
+        'postId': postId,
+        'additionalText': additionalText,
+        'isRead': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      print("Notification Send Error: $e");
+    }
   }
 }

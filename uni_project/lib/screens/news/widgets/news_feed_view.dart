@@ -6,6 +6,7 @@ import '../models/post_model.dart';
 import 'post_card.dart';
 import '../profile_screen.dart';
 import 'package:uni_project/screens/news/create_post_screen.dart';
+import 'package:uni_project/screens/news/noti_screen.dart'; // 💡 NotiScreen ကို Import လုပ်လိုက်ပါသည်
 
 class NewsFeedView extends StatefulWidget {
   const NewsFeedView({super.key});
@@ -16,7 +17,7 @@ class NewsFeedView extends StatefulWidget {
 
 class _NewsFeedViewState extends State<NewsFeedView> {
 
-  // 💡 <b>အကူ Logic: Base64 String သန့်စင်ပြီး စိတ်ချရသော MemoryImage ထုတ်ပေးရန်</b>
+  // 💡 အကူ Logic: Base64 String သန့်စင်ပြီး စိတ်ချရသော MemoryImage ထုတ်ပေးရန်
   ImageProvider? _getAvatarImage(String? base64Str) {
     if (base64Str == null || base64Str.isEmpty || base64Str.startsWith('blob:')) return null;
     try {
@@ -37,6 +38,58 @@ class _NewsFeedViewState extends State<NewsFeedView> {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
+          // 💡 🔔 Facebook စတိုင် မဖတ်ရသေးသော Noti အရေအတွက်ပြပေးမည့် Badge ပါဝင်သော Noti Icon
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('notifications')
+                .where('receiverId', isEqualTo: currentUserId)
+                .where('isRead', isEqualTo: false)
+                .snapshots(),
+            builder: (context, snapshot) {
+              int unreadCount = snapshot.hasData ? snapshot.data!.docs.length : 0;
+
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_rounded, size: 26, color: Colors.black87),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotiScreen()),
+                      );
+                    },
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 6,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          "$unreadCount",
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                ],
+              );
+            },
+          ),
+
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -85,7 +138,7 @@ class _NewsFeedViewState extends State<NewsFeedView> {
                       MaterialPageRoute(builder: (context) => ProfileScreen(userId: currentUserId)),
                     );
                   },
-                  // 💡 <b>ပြင်ဆင်လိုက်သည့်နေရာ: "ဘာတွေတွေးနေလဲ" ဘေးက မိမိကိုယ်ပိုင် ပရိုဖိုင်ပုံလေး</b> ✨
+                  // 💡 ပြင်ဆင်လိုက်သည့်နေရာ: "ဘာတွေတွေးနေလဲ" ဘေးက မိမိကိုယ်ပိုင် ပရိုဖိုင်ပုံလေး ✨
                   child: StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance.collection('users').doc(currentUserId).snapshots(),
                     builder: (context, userSnapshot) {

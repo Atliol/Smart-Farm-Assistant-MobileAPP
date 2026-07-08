@@ -9,6 +9,7 @@ import '../profile_screen.dart';
 import 'comment_sheet.dart';
 import '../image_viewer_screen.dart'; // 💡 ImageViewerScreen ထို့ကြောင့် Import ရှိပြီးသားဖြစ်ရမည်
 import '../create_post_screen.dart';
+import '../../../../services/notification_service.dart'; // 💡 Notification Service ကို Import လုပ်ပါ
 
 class PostCard extends StatefulWidget {
   final PostModel post;
@@ -37,7 +38,7 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  // 💡 Grid ထဲက ပုံတစ်ပုံချင်းစီကို နှိပ်လျှင် ImageViewerScreen သို့ Index အမှန်အတိုင်း သွားရန် ပြင်ဆင်ခြင်း
+  // 💡 Grid ထဲက ပုံတစ်ပုံချင်းစီကို နှိပ်လျှင် ImageViewerScreen သို့ Post ID နှင့် Index အမှန်အတိုင်း သွားရန် ပြင်ဆင်ခြင်း
   Widget _buildGridImageItem(List<String> allImages, int index, double height) {
     final byteImg = _getByteImage(allImages[index]);
     if (byteImg == null) return const SizedBox();
@@ -47,6 +48,7 @@ class _PostCardState extends State<PostCard> {
           context,
           MaterialPageRoute(
             builder: (context) => ImageViewerScreen(
+              postId: widget.post.id, // 💡 Image Action Bar အတွက် Post ID ထည့်သွင်းပေးထားပါသည်
               images: allImages,
               initialIndex: index,
             ),
@@ -91,7 +93,11 @@ class _PostCardState extends State<PostCard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ImageViewerScreen(images: images, initialIndex: 0),
+                  builder: (context) => ImageViewerScreen(
+                    postId: widget.post.id, // 💡 Image Action Bar အတွက် Post ID ထည့်သွင်းပေးထားပါသည်
+                    images: images,
+                    initialIndex: 0,
+                  ),
                 ),
               );
             },
@@ -177,7 +183,11 @@ class _PostCardState extends State<PostCard> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ImageViewerScreen(images: images, initialIndex: 3),
+                                          builder: (context) => ImageViewerScreen(
+                                            postId: widget.post.id, // 💡 Image Action Bar အတွက် Post ID ထည့်သွင်းပေးထားပါသည်
+                                            images: images,
+                                            initialIndex: 3,
+                                          ),
                                         ),
                                       );
                                     },
@@ -323,6 +333,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
+  // 💡 Like ပေးလျှင် Noti ကျစေရန် ပြင်ဆင်ထားသည့် ဖန်ရှင်
   Future<void> _toggleLike() async {
     if (_currentUser == null) return;
     String uid = _currentUser!.uid;
@@ -333,6 +344,7 @@ class _PostCardState extends State<PostCard> {
       DocumentSnapshot postDoc = await postRef.get();
       if (!postDoc.exists) return;
       List<dynamic> likedBy = postDoc.get('likedBy') is List ? postDoc.get('likedBy') : [];
+      String postOwnerId = postDoc.get('userId') ?? ""; // ပို့စ်ပိုင်ရှင် ID ကို ရယူခြင်း
 
       bool isAlreadyLiked = false;
       dynamic itemToRemove;
@@ -345,6 +357,13 @@ class _PostCardState extends State<PostCard> {
         await postRef.update({'likedBy': FieldValue.arrayRemove([itemToRemove])});
       } else {
         await postRef.update({'likedBy': FieldValue.arrayUnion([{'uid': uid, 'name': displayName}])});
+
+        // 💡 👍 ပို့စ်ကို Like လုပ်လိုက်လျှင် ပို့စ်ပိုင်ရှင်ဆီသို့ Notification ပို့ပေးခြင်း
+        await NotificationService.sendNotification(
+          receiverId: postOwnerId,
+          type: 'post_like',
+          postId: widget.post.id,
+        );
       }
     } catch (e) { print(e); }
   }
