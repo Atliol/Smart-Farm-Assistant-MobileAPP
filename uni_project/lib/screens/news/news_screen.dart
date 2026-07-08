@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'auth_prompt_screen.dart';
+import '../auth/login_screen.dart';
 import 'widgets/news_feed_view.dart';
+import 'create_post_screen.dart';
+import 'image_viewer_screen.dart';
+import 'auth_prompt_screen.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -10,15 +13,14 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  // 💡 BACKEND STATE CONNECTION:
-  // အကောင့်ဝင်ထားပြီးသားလားဆိုတာကို Shared Preferences သို့မဟုတ် Auth Provider မှတစ်ဆင့် ဤနေရာတွင် စစ်ဆေးပါမည်။
-  // လက်ရှိစမ်းသပ်ရန်အတွက် true (အကောင့်ဝင်ပြီး) ပေးထားပါသည်။ false ပြောင်းပါက Login UI သို့ ရောက်ပါမည်။
-  bool _isLoggedIn = true;
+  bool _isLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Background Gradient ပေါ်လွင်စေရန်
+      backgroundColor: const Color(0xFFF5F7FB),
+
+
       body: _isLoggedIn
           ? const NewsFeedView()
           : AuthPromptScreen(

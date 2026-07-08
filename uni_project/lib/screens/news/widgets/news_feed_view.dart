@@ -1,118 +1,166 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../create_post_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/post_model.dart';
 import 'post_card.dart';
-import '../../../widgets/app_background.dart';
+import '../profile_screen.dart';
+import 'package:uni_project/screens/news/create_post_screen.dart';
 
-class NewsFeedView extends StatelessWidget {
+class NewsFeedView extends StatefulWidget {
   const NewsFeedView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // 💡 BACKEND API DUMMY DATA:
-    // API မှ ကျလာမည့် Post Data Lists (နောက်ပိုင်း Model Class ဖြင့် အစားထိုးရန်)
-    final List<Map<String, dynamic>> posts = [
-      {
-        'author': 'U Aung Kyaw',
-        'location': 'Hpa-an, Kayin State',
-        'timeAgo': '2h ago',
-        'content': 'Just applied organic compost to my rice field. Soil looks better already!',
-        'images': [
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png',
-          'https://images.fotmob.com/image_resources/logo/teamlogo/8634_small.png'
-        ],
-        'likes': 128,
-        'comments': 12,
-      },
-      {
-        'author': 'Daw Ei Ei Tun',
-        'location': 'Mandalay, Mandalay Region',
-        'timeAgo': '5h ago',
-        'content': 'Tomato harvest is 🥳 this season. Good yield with proper care!',
-        'images': [
-          'https://images.unsplash.com/photo-1592924357228-91a4daadcfea',
-          'https://images.unsplash.com/photo-1582284540020-8acdf03844e4',
-          'https://images.unsplash.com/photo-1592924357228-91a4daadcfea',
-          'https://images.unsplash.com/photo-1582284540020-8acdf03844e4'
-        ],
-        'likes': 96,
-        'comments': 8,
-      }
-    ];
+  State<NewsFeedView> createState() => _NewsFeedViewState();
+}
 
-    void navigateToCreatePost() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CreatePostScreen()),
-      );
+class _NewsFeedViewState extends State<NewsFeedView> {
+
+  // 💡 <b>အကူ Logic: Base64 String သန့်စင်ပြီး စိတ်ချရသော MemoryImage ထုတ်ပေးရန်</b>
+  ImageProvider? _getAvatarImage(String? base64Str) {
+    if (base64Str == null || base64Str.isEmpty || base64Str.startsWith('blob:')) return null;
+    try {
+      return MemoryImage(base64Decode(base64Str));
+    } catch (e) {
+      return null;
     }
+  }
 
-    return AppBackground(
-      child: SafeArea(
-        child: Column(
-            children: [
-        // Top Action Bar (Search Input + Post Button)
-        Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        child: Row(
-          children: [
-            // Search Bar (နှိပ်ပါက Create Post သို့ သွားမည်)
-            Expanded(
-              child: GestureDetector(
-                onTap: navigateToCreatePost,
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: const [
-                      SizedBox(width: 10),
-                      Text(
-                        "What's on your mind?",
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
+  @override
+  Widget build(BuildContext context) {
+    final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: const Text("Newsfeed", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen(userId: currentUserId)),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance.collection('users').doc(currentUserId).snapshots(),
+                builder: (context, userSnapshot) {
+                  String? userBase64;
+                  if (userSnapshot.hasData && userSnapshot.data!.exists) {
+                    var userData = userSnapshot.data!.data() as Map<String, dynamic>?;
+                    userBase64 = userData?['photoUrl'];
+                  }
+
+                  final imgProvider = _getAvatarImage(userBase64);
+                  return CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.grey.shade200,
+                    backgroundImage: imgProvider,
+                    child: imgProvider == null
+                        ? const Icon(Icons.person, size: 18, color: Colors.grey)
+                        : null,
+                  );
+                },
               ),
             ),
-            const SizedBox(width: 12),
-
-            // Post Button
-            ElevatedButton.icon(
-              onPressed: navigateToCreatePost,
-              icon: const Icon(Icons.add_circle_outline, size: 18, color: Colors.white),
-              label: const Text("Post", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00796B), // App Primary Theme Color
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-
-    // News Feed Posts List
-              Expanded(
-                child: ListView.builder(
-                  itemCount: posts.length,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemBuilder: (context, index) {
-                    return PostCard(postData: posts[index]);
+      body: Column(
+        children: [
+          // Facebook စတိုင် အပေါ်ဆုံးက ပို့စ်တင်ရန်နေရာ Box
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen(userId: currentUserId)),
+                    );
                   },
+                  // 💡 <b>ပြင်ဆင်လိုက်သည့်နေရာ: "ဘာတွေတွေးနေလဲ" ဘေးက မိမိကိုယ်ပိုင် ပရိုဖိုင်ပုံလေး</b> ✨
+                  child: StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance.collection('users').doc(currentUserId).snapshots(),
+                    builder: (context, userSnapshot) {
+                      String? userBase64;
+                      if (userSnapshot.hasData && userSnapshot.data!.exists) {
+                        var userData = userSnapshot.data!.data() as Map<String, dynamic>?;
+                        userBase64 = userData?['photoUrl'];
+                      }
+
+                      final imgProvider = _getAvatarImage(userBase64);
+                      return CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage: imgProvider,
+                        child: imgProvider == null
+                            ? const Icon(Icons.person, color: Colors.grey, size: 22)
+                            : null,
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-        ),
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CreatePostScreen()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey.shade50,
+                      ),
+                      child: Text(
+                        " ဘာတွေတွေးနေလဲ။",
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ပို့စ်များအားလုံးကို StreamBuilder ဖြင့် Real-time ဆွဲပြမည့်နေရာ
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .orderBy('createdAt', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text("ပို့စ်များ မရှိသေးပါ၊၊"));
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var post = PostModel.fromFirestore(snapshot.data!.docs[index]);
+                    return PostCard(post: post);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

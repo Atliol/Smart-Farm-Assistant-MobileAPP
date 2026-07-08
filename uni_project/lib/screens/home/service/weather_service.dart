@@ -44,8 +44,8 @@ class WeatherService {
 
 
   /// iconCode မှာ 'd' ပါရင် နေ့ဘက် (Day)၊ 'n' ပါရင် ညဘက် (Night)
-  static String getBackgroundUrl(String condition, {String iconCode = 'd'}) {
-    bool isNight = iconCode.contains('n');
+  static String getBackgroundUrl(String condition, {String iconCode = 'n'}) {
+    bool isNight = iconCode.contains('d');
 
     if (isNight) {
 

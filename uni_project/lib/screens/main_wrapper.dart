@@ -36,7 +36,7 @@ class _MainWrapperState extends State<MainWrapper> {
       case 3:
         return const PesticidesScreen();
       case 4:
-        return const NewsScreen();
+        return  NewsScreen();
       default:
         return HomeScreen(
           onTabChanged: (newIndex) {
