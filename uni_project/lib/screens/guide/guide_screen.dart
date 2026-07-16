@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uni_project/widgets/app_background.dart';
+import '../../models/aquaculture_model.dart';
 import '../../models/knowledge_model.dart';
 import '../../services/database_service.dart';
 import '../../models/crop_model.dart';
 import '../../models/livestock_model.dart';   // 🆕 LivestockModel Import
+import 'aquaculture_list_screen.dart';
 import 'crop_list_screen.dart';
 import 'knowledge_list_screen.dart';
 import 'livestock_list_screen.dart';          // 🆕 LivestockListScreen Import
@@ -22,21 +24,25 @@ class GuideScreen extends StatelessWidget {
             DatabaseService().getCropsData(),
             DatabaseService().getLivestockData(),
             DatabaseService().getKnowledgeData(),
+            DatabaseService().getAquacultureData(),
           ]),
           builder: (context, snapshot) {
             // ဒေတာအရေအတွက်ကို dynamic ယူမည် (ဒေတာမကျသေးပါက 0 ပြထားမည်)
             int cropCount = 0;
             int livestockCount = 0;
             int knowledgeCount = 0;
+            int aquaCount = 0;
 
             if (snapshot.hasData) {
               final List<CropModel> crops = List<CropModel>.from(snapshot.data![0]);
               final List<LivestockModel> livestock = List<LivestockModel>.from(snapshot.data![1]);
               final List<KnowledgeModel> knowledge = List<KnowledgeModel>.from(snapshot.data![2]);
+              final List<AquacultureModel> aqua = List<AquacultureModel>.from(snapshot.data![3]);
 
               cropCount = crops.length;
               livestockCount = livestock.length;
               knowledgeCount = knowledge.length;
+              aquaCount = aqua.length;
             }
 
             // 💡 ဒေတာရရှိမှုအပေါ် မူတည်ပြီး ကဏ္ဍစာရင်းကို ညှိယူခြင်း
@@ -57,7 +63,7 @@ class GuideScreen extends StatelessWidget {
               },
               {
                 'title': 'ရေလုပ်ငန်းနည်းပညာ',
-                'subtitle': '42 Guides',
+                'subtitle': '$aquaCount Guides',
                 'icon': Icons.water_rounded,
                 'color': const Color(0xFFE1F5FE),
                 'iconColor': Colors.blue.shade700,
@@ -137,6 +143,15 @@ class GuideScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => KnowledgeListScreen(),
+                                  ),
+                                );
+                              }
+
+                              else if (item['title'] == 'ရေလုပ်ငန်းနည်းပညာ') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AquacultureListScreen(),
                                   ),
                                 );
                               }

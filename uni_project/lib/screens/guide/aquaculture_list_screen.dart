@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
 import '../../services/database_service.dart';
-import '../../models/livestock_model.dart';
+import '../../models/aquaculture_model.dart';
 import '../../widgets/app_background.dart';
-import 'livestock_detail_screen.dart';
+import 'aquaculture_detail_screen.dart';
 
-class LivestockListScreen extends StatelessWidget {
+class AquacultureListScreen extends StatelessWidget {
   final DatabaseService _dbService = DatabaseService();
 
-  LivestockListScreen({super.key});
+  AquacultureListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("မွေးမြူရေးနည်းပညာများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: AppColors.primaryColor,
+        title: const Text("ရေလုပ်ငန်းနည်းပညာများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        backgroundColor: Colors.teal.shade700, // ရေလုပ်ငန်းအလှသုံး သစ်လွင်သော Teal ရောင်
         foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: AppBackground(
-        child: FutureBuilder<List<LivestockModel>>(
-          future: _dbService.getLivestockData(),
+        child: FutureBuilder<List<AquacultureModel>>(
+          future: _dbService.getAquacultureData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -41,12 +40,13 @@ class LivestockListScreen extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
+                final isFreshWater = item.waterType.contains("ရေချို");
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: Colors.amber.shade200, width: 1),
+                    side: BorderSide(color: isFreshWater ? Colors.cyan.shade100 : Colors.teal.shade100, width: 1.5),
                   ),
                   elevation: 1,
                   child: InkWell(
@@ -55,7 +55,7 @@ class LivestockListScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LivestockDetailScreen(livestock: item),
+                          builder: (context) => AquacultureDetailScreen(item: item),
                         ),
                       );
                     },
@@ -63,11 +63,11 @@ class LivestockListScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          // 📷 Circular Image with Livestock Border
+                          // 📷 Circular Image with Teal Border
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.amber.shade700, width: 2),
+                              border: Border.all(color: Colors.teal.shade600, width: 2),
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(35),
@@ -77,29 +77,29 @@ class LivestockListScreen extends StatelessWidget {
                                 height: 70,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) => Container(
-                                  width: 70, height: 70, color: Colors.orange.shade50,
-                                  child: const Icon(Icons.pets, color: Colors.amber),
+                                  width: 70, height: 70, color: Colors.blue.shade50,
+                                  child: const Icon(Icons.water, color: Colors.teal),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // 📝 Info Text
+                          // 📝 Metadata Text
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // 🏷️ Type Badge
+                                // 🏷️ Water Type Badge
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.amber.shade50,
+                                    color: isFreshWater ? Colors.cyan.shade50 : Colors.teal.shade50,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    item.type,
+                                    item.waterType,
                                     style: TextStyle(
-                                      color: Colors.amber.shade900,
+                                      color: isFreshWater ? Colors.cyan.shade800 : Colors.teal.shade800,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -113,18 +113,14 @@ class LivestockListScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 6),
-                                // 🕒 Feed System
+                                // 🕒 Duration Icon/Text
                                 Row(
                                   children: [
-                                    Icon(Icons.restaurant, size: 12, color: Colors.amber.shade600),
+                                    Icon(Icons.calendar_month, size: 12, color: Colors.teal.shade400),
                                     const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        "အစာ: ${item.feedType}",
-                                        style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                    Text(
+                                      "မွေးမြူချိန်: ${item.duration}",
+                                      style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
                                     ),
                                   ],
                                 ),

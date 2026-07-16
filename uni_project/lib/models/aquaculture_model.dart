@@ -1,56 +1,56 @@
-class LivestockModel {
+class AquacultureModel {
   final String id;
   final String title;
   final String image;
-  final String type;       // 🆕 မွေးမြူမှုအမျိုးအစား
-  final String duration;   // 🆕 ကြီးထွားချိန်ကာလ
-  final String feedType;   // 🆕 အစာစနစ်
+  final String waterType;
+  final String duration;
+  final String phLevel;
   final String description;
-  final List<LiveSubStepModel> subSteps;
+  final List<AquaSubStepModel> subSteps;
 
-  LivestockModel({
+  AquacultureModel({
     required this.id,
     required this.title,
     required this.image,
-    required this.type,
+    required this.waterType,
     required this.duration,
-    required this.feedType,
+    required this.phLevel,
     required this.description,
     required this.subSteps,
   });
 
-  factory LivestockModel.fromJson(Map<String, dynamic> json) {
+  factory AquacultureModel.fromJson(Map<String, dynamic> json) {
     var list = json['sub_steps'] as List?;
-    List<LiveSubStepModel> stepsList = list != null
-        ? list.map((i) => LiveSubStepModel.fromJson(i)).toList()
+    List<AquaSubStepModel> stepsList = list != null
+        ? list.map((i) => AquaSubStepModel.fromJson(i)).toList()
         : [];
 
-    return LivestockModel(
+    return AquacultureModel(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      type: json['type'] as String? ?? '',       // 🆕
-      duration: json['duration'] as String? ?? '', // 🆕
-      feedType: json['feed_type'] as String? ?? '', // 🆕
+      waterType: json['water_type'] as String? ?? '',
+      duration: json['duration'] as String? ?? '',
+      phLevel: json['ph_level'] as String? ?? '',
       description: json['description'] as String? ?? '',
       subSteps: stepsList,
     );
   }
 }
 
-class LiveSubStepModel {
+class AquaSubStepModel {
   final String subTitle;
   final String subImage;
   final String subDescription;
 
-  LiveSubStepModel({
+  AquaSubStepModel({
     required this.subTitle,
     required this.subImage,
     required this.subDescription,
   });
 
-  factory LiveSubStepModel.fromJson(Map<String, dynamic> json) {
-    return LiveSubStepModel(
+  factory AquaSubStepModel.fromJson(Map<String, dynamic> json) {
+    return AquaSubStepModel(
       subTitle: json['sub_title'] as String? ?? '',
       subImage: json['sub_image'] as String? ?? '',
       subDescription: json['sub_description'] as String? ?? '',

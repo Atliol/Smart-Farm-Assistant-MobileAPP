@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
-import '../../models/livestock_model.dart';
+import '../../models/aquaculture_model.dart';
 import '../../widgets/app_background.dart';
 
-class LivestockDetailScreen extends StatelessWidget {
-  final LivestockModel livestock;
+class AquacultureDetailScreen extends StatelessWidget {
+  final AquacultureModel item;
 
-  const LivestockDetailScreen({super.key, required this.livestock});
+  const AquacultureDetailScreen({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
+    final isFreshWater = item.waterType.contains("ရေချို");
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(livestock.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: AppColors.primaryColor,
+        title: Text(item.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        backgroundColor: Colors.teal.shade700,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -24,47 +25,47 @@ class LivestockDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📷 Banner Image
+              // 📷 Banner Image with Soft Corners
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  livestock.image,
+                  item.image,
                   width: double.infinity,
                   height: 220,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    width: double.infinity, height: 220, color: Colors.amber.shade50,
-                    child: const Icon(Icons.pets, size: 50, color: Colors.amber),
+                    width: double.infinity, height: 220, color: Colors.blue.shade50,
+                    child: const Icon(Icons.water, size: 50, color: Colors.teal),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
 
-              // 🌟 🚜 မွေးမြူရေးဆိုင်ရာ အချက်အလက်ကတ်ပြားများ (Farm Metric Grid)
+              // 🌟 🌊 ရေလုပ်ငန်းဆိုင်ရာ သော့ချက်လိုအပ်ချက်များ (Param Grid)
               Row(
                 children: [
-                  _buildFarmMetricCard(
+                  _buildAquaMetricCard(
                     context,
-                    label: "မွေးမြူမှုပုံစံ",
-                    value: livestock.type,
-                    icon: Icons.assignment_ind,
-                    color: Colors.amber.shade800,
+                    label: "ရေအမျိုးအစား",
+                    value: item.waterType,
+                    icon: Icons.waves,
+                    color: isFreshWater ? Colors.cyan : Colors.teal,
                   ),
                   const SizedBox(width: 10),
-                  _buildFarmMetricCard(
+                  _buildAquaMetricCard(
                     context,
-                    label: "အစာစနစ်",
-                    value: livestock.feedType,
-                    icon: Icons.restaurant,
-                    color: Colors.orange.shade800,
+                    label: "pH တန်ဖိုး",
+                    value: item.phLevel,
+                    icon: Icons.science,
+                    color: Colors.blueAccent,
                   ),
                   const SizedBox(width: 10),
-                  _buildFarmMetricCard(
+                  _buildAquaMetricCard(
                     context,
-                    label: "မွေးမြူချိန်",
-                    value: livestock.duration,
-                    icon: Icons.hourglass_bottom_rounded,
-                    color: Colors.brown.shade700,
+                    label: "မွေးမြူရက်",
+                    value: item.duration,
+                    icon: Icons.timer,
+                    color: Colors.orange,
                   ),
                 ],
               ),
@@ -72,14 +73,14 @@ class LivestockDetailScreen extends StatelessWidget {
 
               // 📝 Main Title
               Text(
-                livestock.title,
+                item.title,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
               ),
               const SizedBox(height: 10),
 
               // 📖 Description
               Text(
-                livestock.description,
+                item.description,
                 style: const TextStyle(fontSize: 15, height: 1.6, color: Colors.black87),
                 textAlign: TextAlign.justify,
               ),
@@ -88,14 +89,14 @@ class LivestockDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // 💡 Sub steps မွေးမြူနည်းအဆင့်ဆင့်
-              if (livestock.subSteps.isNotEmpty) ...[
+              if (item.subSteps.isNotEmpty) ...[
                 Text(
                   "စနစ်တကျ မွေးမြူနည်း အဆင့်ဆင့်",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.amber.shade800),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.teal.shade700),
                 ),
                 const SizedBox(height: 16),
                 Column(
-                  children: livestock.subSteps.map((step) {
+                  children: item.subSteps.map((step) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 24.0),
                       child: Column(
@@ -131,8 +132,8 @@ class LivestockDetailScreen extends StatelessWidget {
     );
   }
 
-  // 💡 မွေးမြူရေး အချက်အလက်ပြ ကတ်ပြားငယ်
-  Widget _buildFarmMetricCard(BuildContext context, {required String label, required String value, required IconData icon, required Color color}) {
+  // 💡 ရေလုပ်ငန်း parameter ပြသမည့် ကတ်ပြား widget အလှ
+  Widget _buildAquaMetricCard(BuildContext context, {required String label, required String value, required IconData icon, required Color color}) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
