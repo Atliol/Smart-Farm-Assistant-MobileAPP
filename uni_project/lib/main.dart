@@ -5,16 +5,25 @@ import 'package:uni_project/services/database_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  // 💡 Flutter Framework ရဲ့ Engine ကို အရင်ဆုံး အဆင်သင့်ဖြစ်အောင် လုပ်ခြင်း
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    // 💡 ၁။ အမြန်ဆုံး အလုပ်လုပ်သည့် Offline Database (Hive) ကို အရင်နှိုးပါမည်
+    await DatabaseService.initHive();
 
-  await DatabaseService.initHive();
+    // 💡 ၂။ ထို့နောက်မှ Online Firebase Database ကို နှိုးပါမည်
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Database နှိုးစဉ် တစုံတရာ မှားယွင်းခဲ့ပါက Debug Console ၌ မြင်နိုင်ရန်
+    print("Initialization Error: $e");
+  }
 
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

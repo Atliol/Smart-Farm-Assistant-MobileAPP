@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uni_project/widgets/app_background.dart';
+import '../../models/knowledge_model.dart';
 import '../../services/database_service.dart';
 import '../../models/crop_model.dart';
 import '../../models/livestock_model.dart';   // 🆕 LivestockModel Import
 import 'crop_list_screen.dart';
+import 'knowledge_list_screen.dart';
 import 'livestock_list_screen.dart';          // 🆕 LivestockListScreen Import
 
 class GuideScreen extends StatelessWidget {
@@ -18,19 +20,23 @@ class GuideScreen extends StatelessWidget {
         child: FutureBuilder<List<dynamic>>(
           future: Future.wait([
             DatabaseService().getCropsData(),
-            DatabaseService().getLivestockData(), // 🆕 မွေးမြူရေးဒေတာ လှမ်းယူခြင်း
+            DatabaseService().getLivestockData(),
+            DatabaseService().getKnowledgeData(),
           ]),
           builder: (context, snapshot) {
             // ဒေတာအရေအတွက်ကို dynamic ယူမည် (ဒေတာမကျသေးပါက 0 ပြထားမည်)
             int cropCount = 0;
             int livestockCount = 0;
+            int knowledgeCount = 0;
 
             if (snapshot.hasData) {
               final List<CropModel> crops = List<CropModel>.from(snapshot.data![0]);
               final List<LivestockModel> livestock = List<LivestockModel>.from(snapshot.data![1]);
+              final List<KnowledgeModel> knowledge = List<KnowledgeModel>.from(snapshot.data![2]);
 
               cropCount = crops.length;
-              livestockCount = livestock.length; // 🆕 မွေးမြူရေးအရေအတွက် သတ်မှတ်ခြင်း
+              livestockCount = livestock.length;
+              knowledgeCount = knowledge.length;
             }
 
             // 💡 ဒေတာရရှိမှုအပေါ် မူတည်ပြီး ကဏ္ဍစာရင်းကို ညှိယူခြင်း
@@ -58,7 +64,7 @@ class GuideScreen extends StatelessWidget {
               },
               {
                 'title': 'အထွေထွေဗဟုသုတ',
-                'subtitle': '96 Guides',
+                'subtitle': '$knowledgeCount Guides',
                 'icon': Icons.lightbulb_rounded,
                 'color': const Color(0xFFF3E5F5),
                 'iconColor': Colors.purple.shade700,
@@ -122,6 +128,15 @@ class GuideScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => LivestockListScreen(),
+                                  ),
+                                );
+                              }
+
+                              else if (item['title'] == 'အထွေထွေဗဟုသုတ') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => KnowledgeListScreen(),
                                   ),
                                 );
                               }

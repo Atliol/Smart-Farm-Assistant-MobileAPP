@@ -2,31 +2,62 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/crop_model.dart';
+import '../models/knowledge_model.dart';
 import '../models/livestock_model.dart';
 
 class DatabaseService {
-  static const String boxName = "crops_box";
+  // 💡 Box နာမည်များကို သီးသန့်စီ သတ်မှတ်ပေးထားပါသည်
+  static const String cropBoxName = "crops_box";
   static const String liveBoxName = "livestock_box";
+  static const String knowBoxName = "knowledge_box";
 
-  // 💡 StatelessWidget ဖြစ်နေသော UI ဘက်မှ ခဏခဏ လှမ်းခေါ်လျှင် Loop မပတ်စေရန် Future ကို Cache လုပ်ထားမည့် variable
+  // 💡 Stateless UI များမှ ခဏခဏ ခေါ်ယူလျှင် Loop မပတ်စေရန် Future Cache များ ထားရှိခြင်း
   Future<List<CropModel>>? _cropsFuture;
+  Future<List<LivestockModel>>? _livestockFuture;
+  Future<List<KnowledgeModel>>? _knowledgeFuture;
 
-  // 💡 main.dart မှ လှမ်းခေါ်ရမည့် Function
+  // 💡 main.dart မှ နှိုးရန်
   static Future<void> initHive() async {
     await Hive.initFlutter();
   }
 
+  // ==================== ၁။ သီးနှံစိုက်ပျိုးရေးအပိုင်း ====================
   Future<List<CropModel>> getCropsData() {
-    // အကယ်၍ _cropsFuture ထဲမှာ ဒေတာ ရှိပြီးသားဖြစ်ပါက အသစ်ထပ်မလုပ်တော့ဘဲ လက်ရှိရှိတာကိုပဲ တန်းပြန်ပေးမည်
     _cropsFuture ??= _fetchAndLoadCrops();
     return _cropsFuture!;
   }
 
-  Future<List<LivestockModel>> getLivestockData() async {
-    var box = await Hive.openBox(liveBoxName);
+  Future<List<CropModel>> _fetchAndLoadCrops() async {
+    var box = await Hive.openBox(cropBoxName); // 💡 cropBoxName ကို သုံးပါသည်
 
-    // ဒေတာ အသစ်ဝင်အောင် စမ်းသပ်စဉ်မှာ clear() ခဏသုံးနိုင်ပြီး အဆင်ပြေရင် ပိတ်လိုက်ပါ
-    // await box.clear();
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/crops_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final crop = CropModel.fromJson(item as Map<String, dynamic>);
+          await box.put(crop.id, Map<String, dynamic>.from(item as Map));
+        }
+        await box.flush();
+      } catch (e) {
+        print("====== HIVE JSON ERROR ====== $e");
+      }
+    }
+
+    return box.values.map((item) {
+      return CropModel.fromJson(Map<String, dynamic>.from(item as Map));
+    }).toList();
+  }
+
+  // ==================== ၂။ မွေးမြူရေးနည်းပညာအပိုင်း ====================
+  Future<List<LivestockModel>> getLivestockData() {
+    _livestockFuture ??= _fetchAndLoadLivestock();
+    return _livestockFuture!;
+  }
+
+  Future<List<LivestockModel>> _fetchAndLoadLivestock() async {
+    var box = await Hive.openBox(liveBoxName); // 💡 liveBoxName ကို သုံးပါသည်
 
     if (box.isEmpty) {
       try {
@@ -35,7 +66,7 @@ class DatabaseService {
 
         for (var item in data) {
           final String liveId = item['id'] as String? ?? DateTime.now().toString();
-          await box.put(liveId, item);
+          await box.put(liveId, Map<String, dynamic>.from(item as Map));
         }
         await box.flush();
       } catch (e) {
@@ -44,43 +75,36 @@ class DatabaseService {
     }
 
     return box.values.map((item) {
-      return LivestockModel.fromJson(Map<String, dynamic>.from(item));
+      return LivestockModel.fromJson(Map<String, dynamic>.from(item as Map));
     }).toList();
   }
 
+  // ==================== ၃။ အထွေထွေဗဟုသုတအပိုင်း ====================
+  Future<List<KnowledgeModel>> getKnowledgeData() {
+    _knowledgeFuture ??= _fetchAndLoadKnowledge();
+    return _knowledgeFuture!;
+  }
 
-  // 💡 JSON မှ ဖတ်ပြီး Hive ထဲထည့်ကာ ဒေတာထုတ်ပေးမည့် သီးသန့် အဓိကဖန်ရှင်
-  Future<List<CropModel>> _fetchAndLoadCrops() async {
-    // Box မပွင့်သေးလျှင် ဖွင့်မည်
-    var box = await Hive.openBox(boxName);
-
-    // အဟောင်းတွေ ရှုပ်မနေအောင် ရှင်းထုတ်မည်
-    //await box.clear();
+  Future<List<KnowledgeModel>> _fetchAndLoadKnowledge() async {
+    var box = await Hive.openBox(knowBoxName); // 💡 knowBoxName ကို သုံးပါသည်
 
     if (box.isEmpty) {
       try {
-        // ၁။ JSON ဖိုင်ကို လှမ်းဖတ်ခြင်း
-        final String response = await rootBundle.loadString('assets/data/crops_data.json');
-
-        // ၂။ JSON Data ကို Decode လုပ်ခြင်း
+        final String response = await rootBundle.loadString('assets/data/knowledge_data.json');
         final List<dynamic> data = json.decode(response);
 
-        // ၃။ ဒေတာများကို ပိုမိုစိတ်ချရသော Cast ဖြင့် Hive ထဲ ထည့်ခြင်း
         for (var item in data) {
-          final crop = CropModel.fromJson(item as Map<String, dynamic>);
-          await box.put(crop.id, Map<String, dynamic>.from(item as Map));
+          final String knowId = item['id'] as String? ?? DateTime.now().toString();
+          await box.put(knowId, Map<String, dynamic>.from(item as Map)); // 💡 Map အဖြစ် စနစ်တကျ ပြောင်းသိမ်းပါသည်
         }
-
-        // ၄။ Memory ထဲမှ ဒေတာများကို Device Storage (Disk) ပေါ်သို့ အသေသိမ်းခြင်း
         await box.flush();
       } catch (e) {
-        print("====== HIVE JSON ERROR ====== $e");
+        print("====== HIVE KNOWLEDGE ERROR ====== $e");
       }
     }
 
-    // ၅။ Hive ထဲမှ ဒေတာများကို Type casting မှန်ကန်စွာဖြင့် List ပြန်ထုတ်ခြင်း
     return box.values.map((item) {
-      return CropModel.fromJson(Map<String, dynamic>.from(item as Map));
+      return KnowledgeModel.fromJson(Map<String, dynamic>.from(item as Map));
     }).toList();
   }
 }
