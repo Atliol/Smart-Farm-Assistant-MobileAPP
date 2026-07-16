@@ -4,24 +4,29 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/crop_model.dart';
 import '../models/knowledge_model.dart';
 import '../models/livestock_model.dart';
-import '../models/aquaculture_model.dart'; // 🆕 ၁။ ရေလုပ်ငန်း Model ကို Import လုပ်ပါသည်
+import '../models/aquaculture_model.dart';
 
 class DatabaseService {
-  // 💡 Box နာမည်များကို သီးသန့်စီ သတ်မှတ်ပေးထားပါသည်
   static const String cropBoxName = "crops_box";
   static const String liveBoxName = "livestock_box";
   static const String knowBoxName = "knowledge_box";
-  static const String aquaBoxName = "aquaculture_box"; // 🆕 ၂။ ရေလုပ်ငန်း Box Name သတ်မှတ်ခြင်း
+  static const String aquaBoxName = "aquaculture_box";
 
-  // 💡 Stateless UI များမှ ခဏခဏ ခေါ်ယူလျှင် Loop မပတ်စေရန် Future Cache များ ထားရှိခြင်း
   Future<List<CropModel>>? _cropsFuture;
   Future<List<LivestockModel>>? _livestockFuture;
   Future<List<KnowledgeModel>>? _knowledgeFuture;
-  Future<List<AquacultureModel>>? _aquacultureFuture; // 🆕 ၃။ ရေလုပ်ငန်းအတွက် Future Cache Variable
+  Future<List<AquacultureModel>>? _aquacultureFuture;
 
-  // 💡 main.dart မှ နှိုးရန်
   static Future<void> initHive() async {
     await Hive.initFlutter();
+  }
+
+  // Helper function to safely cast Hive map to Map<String, dynamic>
+  Map<String, dynamic> _safeCast(dynamic item) {
+    if (item is Map) {
+      return item.map((key, value) => MapEntry(key.toString(), value));
+    }
+    return <String, dynamic>{};
   }
 
   // ==================== ၁။ သီးနှံစိုက်ပျိုးရေးအပိုင်း ====================
@@ -39,8 +44,9 @@ class DatabaseService {
         final List<dynamic> data = json.decode(response);
 
         for (var item in data) {
-          final crop = CropModel.fromJson(item as Map<String, dynamic>);
-          await box.put(crop.id, Map<String, dynamic>.from(item as Map));
+          final castedItem = _safeCast(item);
+          final crop = CropModel.fromJson(castedItem);
+          await box.put(crop.id, castedItem);
         }
         await box.flush();
       } catch (e) {
@@ -49,7 +55,7 @@ class DatabaseService {
     }
 
     return box.values.map((item) {
-      return CropModel.fromJson(Map<String, dynamic>.from(item as Map));
+      return CropModel.fromJson(_safeCast(item));
     }).toList();
   }
 
@@ -68,8 +74,9 @@ class DatabaseService {
         final List<dynamic> data = json.decode(response);
 
         for (var item in data) {
-          final String liveId = item['id'] as String? ?? DateTime.now().toString();
-          await box.put(liveId, Map<String, dynamic>.from(item as Map));
+          final castedItem = _safeCast(item);
+          final String liveId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(liveId, castedItem);
         }
         await box.flush();
       } catch (e) {
@@ -78,7 +85,7 @@ class DatabaseService {
     }
 
     return box.values.map((item) {
-      return LivestockModel.fromJson(Map<String, dynamic>.from(item as Map));
+      return LivestockModel.fromJson(_safeCast(item));
     }).toList();
   }
 
@@ -97,8 +104,9 @@ class DatabaseService {
         final List<dynamic> data = json.decode(response);
 
         for (var item in data) {
-          final String knowId = item['id'] as String? ?? DateTime.now().toString();
-          await box.put(knowId, Map<String, dynamic>.from(item as Map));
+          final castedItem = _safeCast(item);
+          final String knowId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(knowId, castedItem);
         }
         await box.flush();
       } catch (e) {
@@ -107,13 +115,12 @@ class DatabaseService {
     }
 
     return box.values.map((item) {
-      return KnowledgeModel.fromJson(Map<String, dynamic>.from(item as Map));
+      return KnowledgeModel.fromJson(_safeCast(item));
     }).toList();
   }
 
-  // ==================== ၄။ ရေလုပ်ငန်းနည်းပညာအပိုင်း (🆕 အသစ်ပေါင်းစပ်မှု) ====================
+  // ==================== ၄။ ရေလုပ်ငန်းနည်းပညာအပိုင်း ====================
   Future<List<AquacultureModel>> getAquacultureData() {
-    // Cache ထဲတွင် ရှိပြီးသားဖြစ်က တိုက်ရိုက်ထုတ်ပေးပြီး မရှိသေးမှသာ Load လုပ်ပါမည်
     _aquacultureFuture ??= _fetchAndLoadAquaculture();
     return _aquacultureFuture!;
   }
@@ -127,8 +134,9 @@ class DatabaseService {
         final List<dynamic> data = json.decode(response);
 
         for (var item in data) {
-          final String aquaId = item['id'] as String? ?? DateTime.now().toString();
-          await box.put(aquaId, Map<String, dynamic>.from(item as Map));
+          final castedItem = _safeCast(item);
+          final String aquaId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(aquaId, castedItem);
         }
         await box.flush();
       } catch (e) {
@@ -137,7 +145,7 @@ class DatabaseService {
     }
 
     return box.values.map((item) {
-      return AquacultureModel.fromJson(Map<String, dynamic>.from(item as Map));
+      return AquacultureModel.fromJson(_safeCast(item));
     }).toList();
   }
 }

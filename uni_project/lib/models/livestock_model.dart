@@ -2,9 +2,9 @@ class LivestockModel {
   final String id;
   final String title;
   final String image;
-  final String type;       // 🆕 မွေးမြူမှုအမျိုးအစား
-  final String duration;   // 🆕 ကြီးထွားချိန်ကာလ
-  final String feedType;   // 🆕 အစာစနစ်
+  final String type;
+  final String duration;
+  final String feedType;
   final String description;
   final List<LiveSubStepModel> subSteps;
 
@@ -22,16 +22,16 @@ class LivestockModel {
   factory LivestockModel.fromJson(Map<String, dynamic> json) {
     var list = json['sub_steps'] as List?;
     List<LiveSubStepModel> stepsList = list != null
-        ? list.map((i) => LiveSubStepModel.fromJson(i)).toList()
+        ? list.map((i) => LiveSubStepModel.fromJson(Map<String, dynamic>.from(i as Map))).toList() // 💡 ပြင်ဆင်ထားသော လိုင်း
         : [];
 
     return LivestockModel(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      type: json['type'] as String? ?? '',       // 🆕
-      duration: json['duration'] as String? ?? '', // 🆕
-      feedType: json['feed_type'] as String? ?? '', // 🆕
+      type: json['type'] as String? ?? '',
+      duration: json['duration'] as String? ?? '',
+      feedType: json['feed_type'] as String? ?? '',
       description: json['description'] as String? ?? '',
       subSteps: stepsList,
     );

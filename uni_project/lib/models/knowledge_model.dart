@@ -22,7 +22,7 @@ class KnowledgeModel {
   factory KnowledgeModel.fromJson(Map<String, dynamic> json) {
     var list = json['sub_steps'] as List?;
     List<KnowSubStepModel> stepsList = list != null
-        ? list.map((i) => KnowSubStepModel.fromJson(i)).toList()
+        ? list.map((i) => KnowSubStepModel.fromJson(Map<String, dynamic>.from(i as Map))).toList() // 💡 ပြင်ဆင်ထားသော လိုင်း
         : [];
 
     return KnowledgeModel(

@@ -1,6 +1,3 @@
-// 💡 အပေါ်ဆုံးက part 'crop_model.g.dart'; ကို ဖြုတ်လိုက်ပါပြီ။
-// 💡 @HiveType, @HiveField များကိုလည်း လုံးဝ ဖြုတ်လိုက်ပါပြီ။
-
 class CropModel {
   final String id;
   final String title;
@@ -19,7 +16,7 @@ class CropModel {
   factory CropModel.fromJson(Map<String, dynamic> json) {
     var list = json['sub_steps'] as List?;
     List<SubStepModel> stepsList = list != null
-        ? list.map((i) => SubStepModel.fromJson(i)).toList()
+        ? list.map((i) => SubStepModel.fromJson(Map<String, dynamic>.from(i as Map))).toList() // 💡 ပြင်ဆင်ထားသော လိုင်း
         : [];
 
     return CropModel(

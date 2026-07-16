@@ -22,7 +22,7 @@ class AquacultureModel {
   factory AquacultureModel.fromJson(Map<String, dynamic> json) {
     var list = json['sub_steps'] as List?;
     List<AquaSubStepModel> stepsList = list != null
-        ? list.map((i) => AquaSubStepModel.fromJson(i)).toList()
+        ? list.map((i) => AquaSubStepModel.fromJson(Map<String, dynamic>.from(i as Map))).toList() // 💡 ပြင်ဆင်ထားသော လိုင်း
         : [];
 
     return AquacultureModel(
