@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uni_project/widgets/app_background.dart';
-import '../../services/database_service.dart'; // 💡 ဒေတာလှမ်းယူရန် Service ကို Import လုပ်ပါ
-import '../../models/crop_model.dart';       // Model Import
-import 'crop_list_screen.dart';              // သီးနှံစာရင်း Screen Import
+import '../../services/database_service.dart';
+import '../../models/crop_model.dart';
+import '../../models/livestock_model.dart';   // 🆕 LivestockModel Import
+import 'crop_list_screen.dart';
+import 'livestock_list_screen.dart';          // 🆕 LivestockListScreen Import
 
 class GuideScreen extends StatelessWidget {
   const GuideScreen({super.key});
@@ -12,25 +14,37 @@ class GuideScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppBackground(
-        // 💡 Hive/JSON မှ သီးနှံဒေတာများကို ပထမဦးစွာ လှမ်းဖတ်ပါမည်
-        child: FutureBuilder<List<CropModel>>(
-          future: DatabaseService().getCropsData(),
+        // 💡 Future.wait ကိုသုံးပြီး စိုက်ပျိုးရေးနှင့် မွေးမြူရေး ဒေတာနှစ်ခုစလုံးကို တစ်ပြိုင်နက် ဖတ်ယူခြင်း
+        child: FutureBuilder<List<dynamic>>(
+          future: Future.wait([
+            DatabaseService().getCropsData(),
+            DatabaseService().getLivestockData(), // 🆕 မွေးမြူရေးဒေတာ လှမ်းယူခြင်း
+          ]),
           builder: (context, snapshot) {
-            // ဒေတာအရေအတွက်ကို dynamic ယူမည် (ဒေတာမကျသေးပါက မူလအတိုင်း 0 ပြထားမည်)
-            int cropCount = snapshot.hasData ? snapshot.data!.length : 0;
+            // ဒေတာအရေအတွက်ကို dynamic ယူမည် (ဒေတာမကျသေးပါက 0 ပြထားမည်)
+            int cropCount = 0;
+            int livestockCount = 0;
+
+            if (snapshot.hasData) {
+              final List<CropModel> crops = List<CropModel>.from(snapshot.data![0]);
+              final List<LivestockModel> livestock = List<LivestockModel>.from(snapshot.data![1]);
+
+              cropCount = crops.length;
+              livestockCount = livestock.length; // 🆕 မွေးမြူရေးအရေအတွက် သတ်မှတ်ခြင်း
+            }
 
             // 💡 ဒေတာရရှိမှုအပေါ် မူတည်ပြီး ကဏ္ဍစာရင်းကို ညှိယူခြင်း
             final List<Map<String, dynamic>> categories = [
               {
                 'title': 'စိုက်ပျိုးနည်းပညာ',
-                'subtitle': '$cropCount Guides', // 💡 JSON/Hive ထဲက အရေအတွက်အတိုင်း ပြောင်းလဲသွားမည်
+                'subtitle': '$cropCount Guides',
                 'icon': Icons.eco_rounded,
                 'color': const Color(0xFFE8F5E9),
                 'iconColor': Colors.green.shade700,
               },
               {
                 'title': 'မွေးမြူနည်းပညာ',
-                'subtitle': '85 Guides',
+                'subtitle': '$livestockCount Guides', // 💡 🆕 Dynamic Count ပြောင်းလဲထားပါသည်
                 'icon': Icons.pets_rounded,
                 'color': const Color(0xFFFFF3E0),
                 'iconColor': Colors.orange.shade700,
@@ -93,12 +107,21 @@ class GuideScreen extends StatelessWidget {
                             bgColor: item['color'],
                             iconColor: item['iconColor'],
                             onTap: () {
-                              // 💡 စိုက်ပျိုးနည်းပညာကို နှိပ်လိုက်လျှင် CropListScreen သို့ သွားရန်
+                              // 💡 စိုက်ပျိုးနည်းပညာကို နှိပ်လိုက်လျှင်
                               if (item['title'] == 'စိုက်ပျိုးနည်းပညာ') {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => CropListScreen(),
+                                  ),
+                                );
+                              }
+                              // 🆕 မွေးမြူနည်းပညာကို နှိပ်လိုက်လျှင် LivestockListScreen သို့ သွားရန်
+                              else if (item['title'] == 'မွေးမြူနည်းပညာ') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LivestockListScreen(),
                                   ),
                                 );
                               }

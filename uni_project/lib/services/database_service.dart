@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/crop_model.dart';
+import '../models/livestock_model.dart';
 
 class DatabaseService {
   static const String boxName = "crops_box";
+  static const String liveBoxName = "livestock_box";
 
   // 💡 StatelessWidget ဖြစ်နေသော UI ဘက်မှ ခဏခဏ လှမ်းခေါ်လျှင် Loop မပတ်စေရန် Future ကို Cache လုပ်ထားမည့် variable
   Future<List<CropModel>>? _cropsFuture;
@@ -20,13 +22,40 @@ class DatabaseService {
     return _cropsFuture!;
   }
 
+  Future<List<LivestockModel>> getLivestockData() async {
+    var box = await Hive.openBox(liveBoxName);
+
+    // ဒေတာ အသစ်ဝင်အောင် စမ်းသပ်စဉ်မှာ clear() ခဏသုံးနိုင်ပြီး အဆင်ပြေရင် ပိတ်လိုက်ပါ
+    // await box.clear();
+
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/livestock_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final String liveId = item['id'] as String? ?? DateTime.now().toString();
+          await box.put(liveId, item);
+        }
+        await box.flush();
+      } catch (e) {
+        print("====== HIVE LIVESTOCK ERROR ====== $e");
+      }
+    }
+
+    return box.values.map((item) {
+      return LivestockModel.fromJson(Map<String, dynamic>.from(item));
+    }).toList();
+  }
+
+
   // 💡 JSON မှ ဖတ်ပြီး Hive ထဲထည့်ကာ ဒေတာထုတ်ပေးမည့် သီးသန့် အဓိကဖန်ရှင်
   Future<List<CropModel>> _fetchAndLoadCrops() async {
     // Box မပွင့်သေးလျှင် ဖွင့်မည်
     var box = await Hive.openBox(boxName);
 
     // အဟောင်းတွေ ရှုပ်မနေအောင် ရှင်းထုတ်မည်
-    await box.clear();
+    //await box.clear();
 
     if (box.isEmpty) {
       try {
