@@ -6,16 +6,26 @@ import '../models/crop_model.dart';
 class DatabaseService {
   static const String boxName = "crops_box";
 
+  // 💡 StatelessWidget ဖြစ်နေသော UI ဘက်မှ ခဏခဏ လှမ်းခေါ်လျှင် Loop မပတ်စေရန် Future ကို Cache လုပ်ထားမည့် variable
+  Future<List<CropModel>>? _cropsFuture;
+
+  // 💡 main.dart မှ လှမ်းခေါ်ရမည့် Function
   static Future<void> initHive() async {
     await Hive.initFlutter();
   }
 
-  Future<List<CropModel>> getCropsData() async {
-    // 💡 စိတ်ချရအောင် Box မပွင့်သေးရင် ဖွင့်ပေးမည့်စနစ်
+  Future<List<CropModel>> getCropsData() {
+    // အကယ်၍ _cropsFuture ထဲမှာ ဒေတာ ရှိပြီးသားဖြစ်ပါက အသစ်ထပ်မလုပ်တော့ဘဲ လက်ရှိရှိတာကိုပဲ တန်းပြန်ပေးမည်
+    _cropsFuture ??= _fetchAndLoadCrops();
+    return _cropsFuture!;
+  }
+
+  // 💡 JSON မှ ဖတ်ပြီး Hive ထဲထည့်ကာ ဒေတာထုတ်ပေးမည့် သီးသန့် အဓိကဖန်ရှင်
+  Future<List<CropModel>> _fetchAndLoadCrops() async {
+    // Box မပွင့်သေးလျှင် ဖွင့်မည်
     var box = await Hive.openBox(boxName);
 
-    // 🔥 [အရေးကြီးဆုံး ပြင်ဆင်ချက်] စမ်းသပ်ရလွယ်ကူအောင် Box ကို အမြဲတမ်း Clear လုပ်ပြီး JSON ကနေ ပြန်ဖတ်ခိုင်းကြည့်ပါမည်
-    // နောက်ပိုင်း အားလုံးအဆင်ပြေမှ box.clear() ကို ပြန်ဖြုတ်နိုင်ပါတယ်
+    // အဟောင်းတွေ ရှုပ်မနေအောင် ရှင်းထုတ်မည်
     await box.clear();
 
     if (box.isEmpty) {
@@ -26,28 +36,22 @@ class DatabaseService {
         // ၂။ JSON Data ကို Decode လုပ်ခြင်း
         final List<dynamic> data = json.decode(response);
 
-        // ၃။ ဒေတာတစ်ခုချင်းစီကို Hive ထဲ ထည့်ခြင်း
+        // ၃။ ဒေတာများကို ပိုမိုစိတ်ချရသော Cast ဖြင့် Hive ထဲ ထည့်ခြင်း
         for (var item in data) {
-          final crop = CropModel.fromJson(item);
-          await box.put(crop.id, item);
+          final crop = CropModel.fromJson(item as Map<String, dynamic>);
+          await box.put(crop.id, Map<String, dynamic>.from(item as Map));
         }
 
-        // ၄။ Disk ပေါ်သို့ အသေသိမ်းခိုင်းခြင်း
+        // ၄။ Memory ထဲမှ ဒေတာများကို Device Storage (Disk) ပေါ်သို့ အသေသိမ်းခြင်း
         await box.flush();
-
       } catch (e) {
-        // 💡 တကယ်လို့ Error တက်ရင် ဘာကြောင့်လဲဆိုတာကို Debug Console မှာ မြင်ရအောင် ပရင့်ထုတ်ခိုင်းခြင်း
-        print("====== HIVE JSON ERROR ======");
-        print(e.toString());
-        print("=============================");
+        print("====== HIVE JSON ERROR ====== $e");
       }
     }
 
-    // Hive ထဲက ဒေတာများကို List အဖြစ် ပြန်ထုတ်ပေးခြင်း
-    final List<CropModel> cropList = box.values.map((item) {
-      return CropModel.fromJson(Map<String, dynamic>.from(item));
+    // ၅။ Hive ထဲမှ ဒေတာများကို Type casting မှန်ကန်စွာဖြင့် List ပြန်ထုတ်ခြင်း
+    return box.values.map((item) {
+      return CropModel.fromJson(Map<String, dynamic>.from(item as Map));
     }).toList();
-
-    return cropList;
   }
 }

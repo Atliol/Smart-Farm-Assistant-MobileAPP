@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_project/screens/main_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uni_project/services/database_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -9,6 +10,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await DatabaseService.initHive();
 
   runApp(const MyApp());
 }

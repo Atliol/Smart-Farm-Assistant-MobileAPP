@@ -6,7 +6,11 @@ import '../../widgets/app_background.dart';
 import 'crop_detail_screen.dart';
 
 class CropListScreen extends StatelessWidget {
-  const CropListScreen({super.key});
+  // 💡 DatabaseService ကို တစ်ကြိမ်တည်း ဆောက်ပြီး future ကို instance အဆင့်မှာ သိမ်းထားခြင်းဖြင့်
+  // StatelessWidget ဖြစ်နေသော်လည်း UI Rebuild ဖြစ်တိုင်း Data ကို ထပ်ခါတလဲလဲ မတောင်းတော့ဘဲ Loop ပတ်ခြင်းမှ ကာကွယ်ပေးပါတယ်။
+  final DatabaseService _dbService = DatabaseService();
+
+  CropListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +24,27 @@ class CropListScreen extends StatelessWidget {
       ),
       body: AppBackground(
         child: FutureBuilder<List<CropModel>>(
-          future: DatabaseService().getCropsData(), // Hive/JSON မှ ဒေတာလှမ်းတောင်းခြင်း
+          // 🔥 DatabaseService ထဲက variable ကတစ်ဆင့် ခေါ်ယူသိမ်းဆည်းထားသော future ကို သုံးစွဲခြင်း
+          future: _dbService.getCropsData(),
           builder: (context, snapshot) {
+            // ၁။ ဒေတာ loading ဖြစ်နေစဉ်ပြသရန်
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
+
+            // ၂။ အကယ်၍ Error တစ်ခုခု တက်ခဲ့ရင် Debug Console မှာတင်မကဘဲ UI မှာပါ မြင်ရအောင် စစ်ပေးခြင်း
+            if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            }
+
+            // ၃။ ဒေတာ တကယ်မရှိရင် ပြသရန်
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text("ဒေတာ မရှိသေးပါဗျာ။"));
             }
 
             final crops = snapshot.data!;
 
-            // 💡 JSON/Hive ထဲက သီးနှံအရေအတွက် အတိုင်း Dynamic UI ပြသခြင်း
+            // 💡 မူရင်း UI Design (ListView.builder နှင့် Card) ကို လုံးဝ (လုံးဝ) မပြောင်းလဲဘဲ ပြန်လည်အသုံးပြုထားပါသည်
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: crops.length,
@@ -46,7 +59,7 @@ class CropListScreen extends StatelessWidget {
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
-                        crop.image, // Local Asset လမ်းကြောင်းဖတ်ခြင်း
+                        crop.image,
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -60,7 +73,6 @@ class CropListScreen extends StatelessWidget {
                     subtitle: const Text("ဝင်ရောက်ဖတ်ရှုရန် နှိပ်ပါ", style: TextStyle(color: Colors.green, fontSize: 12)),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      // 💡 နှိပ်လိုက်သော သီးနှံ၏ သီးသန့် အချက်အလက် UI သို့ သွားမည်
                       Navigator.push(
                         context,
                         MaterialPageRoute(
