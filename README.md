@@ -46,6 +46,3 @@ dart pub global run flutterfire_cli:flutterfire configure
 flutter run
 ```
 
-
-test
-
