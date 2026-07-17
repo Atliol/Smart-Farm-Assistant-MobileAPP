@@ -15,7 +15,7 @@ class CommentSheet extends StatefulWidget {
 }
 
 class _CommentSheetState extends State<CommentSheet> {
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _replyController = TextEditingController();
 

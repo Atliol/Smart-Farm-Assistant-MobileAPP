@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   String? _profileBase64String;
 
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -112,27 +112,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // 💡 <b>FIXED: Required named parameter 'onLoginSuccess' အား ဖြည့်စွက်ကာ အမှားပြင်ဆင်ပြီးသားစနစ်</b> 🚀
   Future<void> _handleLogout() async {
     try {
-      // ၁။ Dialog Box အား အရင်ပိတ်ပါမည်
-      Navigator.pop(context);
-
-      // ၂။ Firebase Auth မှ Sign Out ထွက်ပါမည်
       await FirebaseAuth.instance.signOut();
 
       if (mounted) {
-        // ၃။ Stack အဟောင်းအားလုံးကို ဖျက်ပြီး LoginScreen ဆီသို့ onLoginSuccess ပါရမီသယ်ဆောင်လျက် သွားပါမည်
-        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => LoginScreen(
               onLoginSuccess: () {
-                // အကောင့်ပြန်ဝင်လျှင် MainWrapper ဆီသို့ အောင်မြင်စွာပို့ဆောင်ပေးမည်ဖြစ်သည် ✨
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainWrapper()),
-                );
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainWrapper()),
+                  );
+                }
               },
             ),
           ),
-              (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
         );
       }
     } catch (e) {

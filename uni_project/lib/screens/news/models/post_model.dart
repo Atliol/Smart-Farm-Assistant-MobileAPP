@@ -7,7 +7,7 @@ class PostModel {
   final String authorName;
   final String title;
   final String content;
-  final String? imageUrl; // 💡 ဓာတ်ပုံ URL သိမ်းရန် Variable (ပုံမပါရင် null ဖြစ်နိုင်ပါတယ်)
+  final String? imageUrl;
   final int commentsCount;
   final List<dynamic> likedBy;
   final Timestamp? createdAt;

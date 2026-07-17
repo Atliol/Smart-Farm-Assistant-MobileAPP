@@ -24,7 +24,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   late PageController _pageController;
   late int _currentIndex;
   double _dragOffset = 0.0;
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -259,7 +259,7 @@ class ImageCommentSheet extends StatefulWidget {
 
 class _ImageCommentSheetState extends State<ImageCommentSheet> {
   final TextEditingController _commentController = TextEditingController();
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
 
   Future<void> _sendComment() async {
     String text = _commentController.text.trim();

@@ -32,11 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (userCredential.user != null) {
-        if (mounted) {
-          setState(() => _isLoading = false);
-          widget.onLoginSuccess();
-          Navigator.pop(context);
-        }
+      if (mounted) {
+        setState(() => _isLoading = false);
+        widget.onLoginSuccess();
+        // Use maybePop to avoid Navigator assertion when this is the root.
+        Navigator.of(context).maybePop();
+      }
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);

@@ -7,7 +7,6 @@ class NotiScreen extends StatelessWidget {
 
   // 💡 Noti အမျိုးအစားအလိုက် Icon, Color နှင့် ပြသရမည့်စာသားကို RichText အတွက် Helper
   Map<String, dynamic> _getNotiDisplayDetails(String type, String senderName, String? additionalText) {
-    String messagePrefix = "";
     String messageSuffix = "";
     IconData iconData = Icons.notifications_rounded;
     Color iconColor = Colors.grey;
@@ -47,21 +46,52 @@ class NotiScreen extends StatelessWidget {
   }
 
   // 💡 Firestore Timestamp ကို "Just now", "X mins ago" စသဖြင့် ပြောင်းပေးသည့် Logic
-  String _convertToAgoText(Timestamp? timestamp) {
-    if (timestamp == null) return "Just now";
+  String _convertToAgoText(dynamic ts) {
+    try {
+      if (ts == null) return "Just now";
 
-    final now = DateTime.now();
-    final difference = now.difference(timestamp.toDate());
+      DateTime dateTime;
 
-    if (difference.inDays >= 7) {
-      return "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}";
-    } else if (difference.inDays >= 1) {
-      return "${difference.inDays} days ago";
-    } else if (difference.inHours >= 1) {
-      return "${difference.inHours} hours ago";
-    } else if (difference.inMinutes >= 1) {
-      return "${difference.inMinutes} mins ago";
-    } else {
+      // handle both Timestamp and plain DateTime stored in Firestore map
+      if (ts is Timestamp) {
+        dateTime = ts.toDate();
+      } else if (ts is DateTime) {
+        dateTime = ts;
+      } else if (ts is Map) {
+        final seconds = ts['_seconds'] ?? ts['seconds'];
+        final nanos = ts['_nanoseconds'] ?? ts['nanoseconds'] ?? 0;
+        if (seconds != null) {
+          final int s = (seconds is num) ? seconds.toInt() : int.parse(seconds.toString());
+          final int n = (nanos is num) ? nanos.toInt() : int.parse(nanos.toString());
+          dateTime = DateTime.fromMillisecondsSinceEpoch(s * 1000 + (n ~/ 1000000));
+        } else {
+          return "Just now";
+        }
+      } else if (ts is int) {
+        dateTime = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+      } else if (ts is String) {
+        dateTime = DateTime.tryParse(ts) ?? DateTime.now();
+      } else {
+        return "Just now";
+      }
+
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      if (difference.inDays >= 7) {
+        return "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+      } else if (difference.inDays >= 1) {
+        return "${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago";
+      } else if (difference.inHours >= 1) {
+        return "${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago";
+      } else if (difference.inMinutes >= 1) {
+        return "${difference.inMinutes} min${difference.inMinutes > 1 ? 's' : ''} ago";
+      } else if (difference.inSeconds >= 1) {
+        return "${difference.inSeconds} sec${difference.inSeconds > 1 ? 's' : ''} ago";
+      } else {
+        return "Just now";
+      }
+    } catch (e) {
       return "Just now";
     }
   }
@@ -152,7 +182,7 @@ class NotiScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 12), // Noti တစ်ခုချင်းစီကြားခြားရန်
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isRead ? Colors.grey.shade50 : Colors.blue.shade50.withOpacity(0.5), // 💡 မဖတ်ရသေးရင် အရောင်ဖျော့လေးပြမည်
+                    color: isRead ? Colors.grey.shade50 : Colors.blue.shade50.withAlpha(128), // 💡 မဖတ်ရသေးရင် အရောင်ဖျော့လေးပြမည်
                     borderRadius: BorderRadius.circular(16), // 💡 Modern Rounded UI
                     border: Border.all(color: isRead ? Colors.grey.shade200 : Colors.blue.shade100, width: 1),
                   ),

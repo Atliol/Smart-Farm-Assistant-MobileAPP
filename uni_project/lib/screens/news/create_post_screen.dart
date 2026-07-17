@@ -17,7 +17,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   bool _isPosting = false;
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
 
   // 💡 ပုံအများကြီး သိမ်းဆည်းရန်အတွက် List ပုံစံအသုံးပြုခြင်း
   List<XFile> _pickedImages = [];
@@ -82,7 +82,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         'imageUrls': base64ImagesList, // 👈 ဤနေရာတွင် Base64 စာသား String Array အဖြစ် သိမ်းဆည်းလိုက်ပါပြီ
         'commentsCount': 0,
         'likedBy': [],
-        'createdAt': FieldValue.serverTimestamp(),
+        // use local timestamp for immediate UI feedback and also request server timestamp
+        'createdAt': Timestamp.now(),
+        'createdAtServer': FieldValue.serverTimestamp(),
       });
 
       if (mounted) {

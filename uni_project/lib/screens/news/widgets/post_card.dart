@@ -20,7 +20,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  final User? _currentUser = FirebaseAuth.instance.currentUser;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
 
   final TextEditingController _shareTitleController = TextEditingController();
   final TextEditingController _shareContentController = TextEditingController();
@@ -244,10 +244,13 @@ class _PostCardState extends State<PostCard> {
       await FirebaseFirestore.instance.collection('reports').add({
         'postId': widget.post.id,
         'postOwnerId': widget.post.userId,
+        'postOwnerName': widget.post.userName,
         'postContent': widget.post.content,
+        'postImageUrl': widget.post.imageUrl,
         'reportedByUid': _currentUser!.uid,
         'reportedByName': _currentUser!.displayName ?? "အသုံးပြုသူ",
         'reason': reason,
+        'status': 'pending',
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -343,29 +346,42 @@ class _PostCardState extends State<PostCard> {
     try {
       DocumentSnapshot postDoc = await postRef.get();
       if (!postDoc.exists) return;
-      List<dynamic> likedBy = postDoc.get('likedBy') is List ? postDoc.get('likedBy') : [];
-      String postOwnerId = postDoc.get('userId') ?? ""; // ပို့စ်ပိုင်ရှင် ID ကို ရယူခြင်း
+
+      final postData = postDoc.data() as Map<String, dynamic>? ?? {};
+      List<dynamic> likedBy = postData['likedBy'] is List ? postData['likedBy'] : [];
+      String postOwnerId = postData['userId'] ?? widget.post.userId;
 
       bool isAlreadyLiked = false;
       dynamic itemToRemove;
       for (var item in likedBy) {
-        if (item is Map && item['uid'] == uid) { isAlreadyLiked = true; itemToRemove = item; break; }
-        else if (item.toString() == uid || item.toString() == displayName) { isAlreadyLiked = true; itemToRemove = item; break; }
+        if (item is Map && item['uid'] == uid) {
+          isAlreadyLiked = true;
+          itemToRemove = item;
+          break;
+        }
+        if (item.toString() == uid || item.toString() == displayName) {
+          isAlreadyLiked = true;
+          itemToRemove = item;
+          break;
+        }
       }
 
-      if (isAlreadyLiked) {
+      if (isAlreadyLiked && itemToRemove != null) {
         await postRef.update({'likedBy': FieldValue.arrayRemove([itemToRemove])});
       } else {
         await postRef.update({'likedBy': FieldValue.arrayUnion([{'uid': uid, 'name': displayName}])});
 
-        // 💡 👍 ပို့စ်ကို Like လုပ်လိုက်လျှင် ပို့စ်ပိုင်ရှင်ဆီသို့ Notification ပို့ပေးခြင်း
-        await NotificationService.sendNotification(
-          receiverId: postOwnerId,
-          type: 'post_like',
-          postId: widget.post.id,
-        );
+        if (postOwnerId.isNotEmpty && postOwnerId != uid) {
+          await NotificationService.sendNotification(
+            receiverId: postOwnerId,
+            type: 'post_like',
+            postId: widget.post.id,
+          );
+        }
       }
-    } catch (e) { print(e); }
+    } catch (e) {
+      print("Like toggle error: $e");
+    }
   }
 
   Future<void> _sharePostWithThoughts() async {
