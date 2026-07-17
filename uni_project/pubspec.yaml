@@ -30,8 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_maps_flutter: ^2.11.0 # Map ပြသရန်
-  maps_toolkit: ^3.0.0          # ဧရိယာ (Square Meters) နှင့် အကွာအဝေး (Perimeter) တွက်ချက်ရန်
+  google_maps_flutter: ^2.11.0
+  maps_toolkit: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -46,6 +46,9 @@ dependencies:
   image_picker: ^1.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.3
+  flutter_map: ^8.2.1
+  latlong2: ^0.9.1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

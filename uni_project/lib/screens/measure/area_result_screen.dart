@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
 import '../../constants/app_colors.dart';
 import '../../models/land_area_model.dart';
+import '../../services/land_api_service.dart';
+import 'saved_land_screen.dart';
 
 class AreaResultScreen extends StatefulWidget {
   final List<LatLng> points;
@@ -25,8 +28,13 @@ class AreaResultScreen extends StatefulWidget {
 
 class _AreaResultScreenState extends State<AreaResultScreen> {
   final TextEditingController _titleController = TextEditingController();
+  bool _isLoading = false;
 
-  void _saveLand() {
+  void _navigateToSavedLandScreen() {
+    Navigator.pop(context);
+  }
+
+  void _saveLand() async {
     if (_titleController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("မြေကွက်အမည် ဖြည့်သွင်းပေးပါဗျာ။")),
@@ -34,7 +42,10 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
       return;
     }
 
-    // 💡 Backend သို့မဟုတ် Local DB သို့ ပေးပို့ရန် Model အသင့်ဖန်တီးခြင်း
+    setState(() {
+      _isLoading = true;
+    });
+
     final savedLand = LandAreaModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleController.text.trim(),
@@ -42,17 +53,35 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
       areaSqMeters: widget.areaSqMeters,
       areaHectares: widget.areaHectares,
       perimeterMeters: widget.perimeter,
-      points: widget.points,
+      points: widget.points.map((p) => gmaps.LatLng(p.latitude, p.longitude)).toList(),
       createdAt: DateTime.now(),
     );
 
-    // TODO: ချိတ်ဆက်ရန် အသင့်ဖြစ်သော Backend API logic (HTTP POST) ကို ဤနေရာတွင် ရေးသားနိုင်ပါသည်
-    // Example: await http.post(url, body: jsonEncode(savedLand.toJson()));
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("'${savedLand.title}' အား စနစ်တကျသိမ်းဆည်းပြီးပါပြီ။")),
-    );
-    Navigator.popUntil(context, (route) => route.isFirst);
+    try {
+      bool isSuccess = await LandApiService().saveLandArea(savedLand);
+      if (!mounted) return;
+      if (isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("'${savedLand.title}' အား စနစ်တကျသိမ်းဆည်းပြီးပါပြီ။")),
+        );
+        _navigateToSavedLandScreen();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("ဆာဗာသို့ သိမ်းဆည်းရန် မအောင်မြင်ပါ။ နောက်မှ ပြန်ကြိုးစားပါ။")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("ချိတ်ဆက်မှု အမှားအယွင်းရှိပါသည်: $e")),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -62,12 +91,15 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
         title: const Text("Area Result", style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _isLoading ? null : _navigateToSavedLandScreen,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // 🚜 Decorative Icon Card
             CircleAvatar(
               radius: 45,
               backgroundColor: Colors.green.shade50,
@@ -81,8 +113,6 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green.shade800),
             ),
             const SizedBox(height: 10),
-
-            // Detailed Area Matrix
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -103,10 +133,9 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Input Field for Name
             TextField(
               controller: _titleController,
+              enabled: !_isLoading,
               decoration: InputDecoration(
                 labelText: "မြေကွက်အမည် သတ်မှတ်ရန်",
                 hintText: "ဥပမာ - ဦးဘတင့် ခြံကွက်",
@@ -115,8 +144,6 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
               ),
             ),
             const SizedBox(height: 30),
-
-            // Action Buttons
             Row(
               children: [
                 Expanded(
@@ -125,8 +152,8 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
                       minimumSize: const Size(0, 50),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Back to Map"),
+                    onPressed: _isLoading ? null : _navigateToSavedLandScreen,
+                    child: const Text("Back to Saved Land"),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -137,8 +164,14 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
                       minimumSize: const Size(0, 50),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    onPressed: _saveLand,
-                    child: const Text("Save Land", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    onPressed: _isLoading ? null : _saveLand,
+                    child: _isLoading
+                        ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                    )
+                        : const Text("Save Land", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],

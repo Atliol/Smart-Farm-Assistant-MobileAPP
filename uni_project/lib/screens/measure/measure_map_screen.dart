@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../constants/app_colors.dart';
 import '../../services/land_calculation_service.dart';
 import 'area_result_screen.dart';
@@ -12,51 +15,102 @@ class MeasureMapScreen extends StatefulWidget {
 }
 
 class _MeasureMapScreenState extends State<MeasureMapScreen> {
-  GoogleMapController? _mapController; // 💡 Nullable ပြောင်းလဲ၍ Safe ဖြစ်စေပါသည်
-  MapType _currentMapType = MapType.satellite;
+  final MapController _mapController = MapController();
+  bool _isSatellite = true;
   final List<LatLng> _points = [];
   bool _isDrawing = false;
+  bool _isLocating = false;
 
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(21.9588, 96.0891),
-    zoom: 15.0,
-  );
+  static const LatLng _initialPosition = LatLng(21.9588, 96.0891);
 
-  void _onMapTap(LatLng latLng) {
+  void _onMapTap(TapPosition tapPosition, LatLng latLng) {
     if (!_isDrawing) return;
     setState(() {
       _points.add(latLng);
     });
   }
 
-  @override
-  void dispose() {
-    _mapController?.dispose(); // 💡 Screen အပိတ်တွင် Controller ကို သေချာဖျက်ပေးပါသည်
-    super.dispose();
+  void _toggleMapType() {
+    setState(() {
+      _isSatellite = !_isSatellite;
+    });
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    setState(() {
+      _isLocating = true;
+    });
+
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw 'ကျေးဇူးပြု၍ ဖုန်း/Browser ၏ GPS (Location) ကို ဖွင့်ပေးပါဗျာ။';
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw 'Location ရယူခွင့်ကို ငြင်းပယ်ထားပါသဖြင့် တည်နေရာ ရှာမရနိုင်ပါ။';
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw 'Location ခွင့်ပြုချက်ကို အပြီးတိုင် ပိတ်ထားသဖြင့် ဖုန်း Setting ထဲတွင် သွားဖွင့်ပေးရပါမည်။';
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      _mapController.move(
+        LatLng(position.latitude, position.longitude),
+        18.5, // 💡 လက်ရှိနေရာရောက်ရင် Point ချရလွယ်အောင် Zoom Level ကို ပိုမိုနီးကပ်အောင် မြှင့်ထားပါတယ်
+      );
+
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLocating = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Set<Polygon> polygons = {};
+    List<Polygon> polygons = [];
     if (_points.length >= 3) {
       polygons.add(
         Polygon(
-          polygonId: const PolygonId('measured_area'),
           points: _points,
-          strokeWidth: 3,
-          strokeColor: Colors.green.shade400,
-          fillColor: Colors.white.withOpacity(0.3),
+          borderStrokeWidth: 3,
+          borderColor: Colors.green.shade400,
+          color: Colors.white.withOpacity(0.3),
         ),
       );
     }
 
-    Set<Marker> markers = _points.asMap().entries.map((entry) {
+    List<Marker> markers = _points.asMap().entries.map((entry) {
       return Marker(
-        markerId: MarkerId('point_${entry.key}'),
-        position: entry.value,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        point: entry.value,
+        width: 40,
+        height: 40,
+        child: Icon(
+          Icons.location_on,
+          color: Colors.green.shade700,
+          size: 35,
+        ),
       );
-    }).toSet();
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -66,18 +120,103 @@ class _MeasureMapScreenState extends State<MeasureMapScreen> {
       ),
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: _initialPosition,
-            mapType: _currentMapType,
-            onMapCreated: (controller) => _mapController = controller,
-            onTap: _onMapTap,
-            polygons: polygons,
-            markers: markers,
-            myLocationEnabled: true, // 💡 သင့်ဖုန်းရဲ့ Blue dot တည်နေရာပြရန်
-            myLocationButtonEnabled: true,
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: _initialPosition,
+              initialZoom: 15.0,
+              maxZoom: 22.0,
+              minZoom: 3.0,
+              onTap: _onMapTap,
+              interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.all,
+              ),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: _isSatellite
+                    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                    : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.uni_project.app',
+                maxNativeZoom: 18,
+              ),
+              PolygonLayer(polygons: polygons),
+              MarkerLayer(markers: markers),
+            ],
           ),
 
-          // အောက်ခြေ Button UI overlays များ (ယခင်အတိုင်း ဆက်လက်ရှိနေပါမည်...)
+
+          Positioned(
+            top: 16,
+            left: 16,
+            child: FloatingActionButton.small(
+              heroTag: "btn_map_type",
+              backgroundColor: Colors.white,
+              onPressed: _toggleMapType,
+              child: Icon(
+                _isSatellite ? Icons.map : Icons.satellite_alt,
+                color: Colors.green.shade800,
+              ),
+            ),
+          ),
+
+
+          Positioned(
+            top: 72,
+            left: 16,
+            child: FloatingActionButton.small(
+              heroTag: "btn_current_location",
+              backgroundColor: Colors.white,
+              onPressed: _isLocating ? null : _getCurrentLocation,
+              child: _isLocating
+                  ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.green),
+              )
+                  : Icon(
+                Icons.my_location,
+                color: Colors.green.shade800,
+              ),
+            ),
+          ),
+
+
+          Positioned(
+            top: 16,
+            right: 16,
+            child: Column(
+              children: [
+                FloatingActionButton.small(
+                  heroTag: "btn_zoom_in",
+                  backgroundColor: Colors.white,
+                  onPressed: () {
+
+                    _mapController.move(
+                        _mapController.camera.center,
+                        (_mapController.camera.zoom + 1).clamp(3.0, 22.0)
+                    );
+                  },
+                  child: Icon(Icons.add, color: Colors.green.shade800, size: 22),
+                ),
+                const SizedBox(height: 8),
+                FloatingActionButton.small(
+                  heroTag: "btn_zoom_out",
+                  backgroundColor: Colors.white,
+                  onPressed: () {
+
+                    _mapController.move(
+                        _mapController.camera.center,
+                        (_mapController.camera.zoom - 1).clamp(3.0, 22.0)
+                    );
+                  },
+                  child: Icon(Icons.remove, color: Colors.green.shade800, size: 22),
+                ),
+              ],
+            ),
+          ),
+
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -144,7 +283,10 @@ class _MeasureMapScreenState extends State<MeasureMapScreen> {
                               minimumSize: const Size(0, 48),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
-                            onPressed: () => setState(() => _isDrawing = false),
+                            onPressed: () => setState(() {
+                              _isDrawing = false;
+                              _points.clear();
+                            }),
                             child: const Text("Cancel"),
                           ),
                         ),
@@ -159,7 +301,9 @@ class _MeasureMapScreenState extends State<MeasureMapScreen> {
                             onPressed: _points.length < 3
                                 ? null
                                 : () {
-                              final metrics = LandCalculationService.calculateMetrics(_points);
+                              final googleMapsPoints = _points.map((p) => gmaps.LatLng(p.latitude, p.longitude)).toList();
+                              final metrics = LandCalculationService.calculateMetrics(googleMapsPoints);
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -173,7 +317,7 @@ class _MeasureMapScreenState extends State<MeasureMapScreen> {
                                 ),
                               );
                             },
-                            child: const Text("Calculate Area", style: TextStyle(color: Colors.white)),
+                            child: const Text("Calculate Area", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           ),
                         ),
                       ],
