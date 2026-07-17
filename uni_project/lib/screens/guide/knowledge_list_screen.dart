@@ -15,7 +15,10 @@ class KnowledgeListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("အထွေထွေဗဟုသုတများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          "အထွေထွေဗဟုသုတများ",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -75,7 +78,9 @@ class KnowledgeListScreen extends StatelessWidget {
                             height: 180,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) => Container(
-                              width: double.infinity, height: 180, color: Colors.grey[200],
+                              width: double.infinity,
+                              height: 180,
+                              color: Colors.grey[200],
                               child: const Icon(Icons.article, size: 50, color: Colors.grey),
                             ),
                           ),
@@ -93,7 +98,7 @@ class KnowledgeListScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  article.tag,
+                                  article.tag.isNotEmpty ? article.tag : "ဗဟုသုတ",
                                   style: TextStyle(color: AppColors.primaryColor, fontSize: 11, fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -108,22 +113,30 @@ class KnowledgeListScreen extends StatelessWidget {
                               const SizedBox(height: 12),
                               const Divider(height: 1),
                               const SizedBox(height: 10),
-                              // 🕒 Date & Read Time
+
+                              // 🕒 Source & Read Time Row
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  // 💡 ရက်စွဲပုံအိုင်ကွန်အစား စာအုပ်ပုံ (Source Icon) ဖြင့် အစားထိုးပြီး ၎င်း၏ တန်ဖိုးကို စနစ်တကျ ပြသထားပါသည်
                                   Row(
                                     children: [
-                                      const Icon(Icons.calendar_today_rounded, size: 14, color: Colors.grey),
+                                      Icon(Icons.menu_book_rounded, size: 14, color: Colors.grey.shade600),
                                       const SizedBox(width: 6),
-                                      Text(article.date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                                      Text(
+                                        article.source.isNotEmpty ? article.source : "အထွေထွေ",
+                                        style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
+                                      ),
                                     ],
                                   ),
                                   Row(
                                     children: [
-                                      const Icon(Icons.access_time_rounded, size: 14, color: Colors.grey),
+                                      Icon(Icons.access_time_rounded, size: 14, color: Colors.grey.shade600),
                                       const SizedBox(width: 6),
-                                      Text(article.readTime, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                                      Text(
+                                        article.readTime.isNotEmpty ? article.readTime : "၅ မိနစ်စာဖတ်ရန်",
+                                        style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
+                                      ),
                                     ],
                                   ),
                                 ],

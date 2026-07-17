@@ -42,8 +42,8 @@ class CropDetailScreen extends StatelessWidget {
 
               //📝 ပင်မ Title
               Text(
-              crop.title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+                crop.title,
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
               ),
               const SizedBox(height: 10),
 
@@ -57,13 +57,15 @@ class CropDetailScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.justify, // 💡 စာသားများကို ဘယ်ညာအညီညှိပေးရန်
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
 
               // 💡 🌟 Condition အရ sub_steps ထဲမှာ Data ရှိမှသာ အောက်ပါ UI ပိုင်းကို ဆွဲမည်
               if (crop.subSteps.isNotEmpty) ...[
                 const Text(
-                "အသေးစိတ် လမ်းညွှန်ချက်များ",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                  "အသေးစိတ် လမ်းညွှန်ချက်များ",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
                 ),
                 const SizedBox(height: 16),
 

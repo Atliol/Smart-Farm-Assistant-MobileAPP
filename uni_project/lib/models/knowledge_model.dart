@@ -2,7 +2,7 @@ class KnowledgeModel {
   final String id;
   final String title;
   final String image;
-  final String date;
+  final String source;
   final String readTime;
   final String tag;
   final String description;
@@ -12,7 +12,7 @@ class KnowledgeModel {
     required this.id,
     required this.title,
     required this.image,
-    required this.date,
+    required this.source,
     required this.readTime,
     required this.tag,
     required this.description,
@@ -29,7 +29,7 @@ class KnowledgeModel {
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      date: json['date'] as String? ?? '',
+      source: json['source'] as String? ?? '',
       readTime: json['read_time'] as String? ?? '',
       tag: json['tag'] as String? ?? '',
       description: json['description'] as String? ?? '',

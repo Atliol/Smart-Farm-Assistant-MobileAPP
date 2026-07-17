@@ -92,7 +92,7 @@ class AquacultureDetailScreen extends StatelessWidget {
               if (item.subSteps.isNotEmpty) ...[
                 Text(
                   "စနစ်တကျ မွေးမြူနည်း အဆင့်ဆင့်",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.teal.shade700),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
                 ),
                 const SizedBox(height: 16),
                 Column(

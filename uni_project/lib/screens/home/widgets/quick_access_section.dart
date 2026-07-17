@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../measure/saved_land_screen.dart';
 
 class QuickAccessSection extends StatelessWidget {
   final Function(int) onTabChanged;
@@ -11,45 +12,54 @@ class QuickAccessSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Quick Access', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E))),
+        const Text(
+          'Quick Access',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+        ),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            //Guide(Bottom Navigation Index 1)
+            // 🟢 Measure (နှိပ်လိုက်လျှင် SavedLandScreen သို့ တိုက်ရိုက်သွားမည်)
             Expanded(
               child: QuickAccessCard(
-                icon: Icons.menu_book,
-                label: 'Guide',
-                color: Colors.green.shade700,
+                icon: Icons.square_foot,
+                label: 'Measure',
+                color: Colors.green.shade800,
                 onTap: () {
-                  onTabChanged(1); //To Guide Page
+                  // 💡 Navigator ကိုသုံးပြီး SavedLandScreen ဆီ တိုက်ရိုက် Push လုပ်ပါသည်
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SavedLandScreen(),
+                    ),
+                  );
                 },
               ),
             ),
             const SizedBox(width: 10),
 
-            //AI Assistant
+            // AI Assistant
             Expanded(
               child: QuickAccessCard(
                 icon: Icons.psychology,
                 label: 'AI Assistant',
                 color: Colors.cyan.shade700,
                 onTap: () {
-                  onTabChanged(2);//To AI Page
+                  onTabChanged(2); // ယခင် Index အတိုင်း ပြန်ထားနိုင်ပါသည်
                 },
               ),
             ),
             const SizedBox(width: 10),
 
-            //Pesticides
+            // Pesticides
             Expanded(
               child: QuickAccessCard(
                 icon: Icons.science,
                 label: 'Pesticides',
                 color: Colors.orange.shade700,
                 onTap: () {
-                  onTabChanged(3);//To Pesticides Page
+                  onTabChanged(3); // ယခင် Index အတိုင်း ပြန်ထားနိုင်ပါသည်
                 },
               ),
             ),
@@ -60,7 +70,7 @@ class QuickAccessSection extends StatelessWidget {
   }
 }
 
-//QuickAccessCard Widget
+// QuickAccessCard Widget ကို quick_access_section.dart ဖိုင်အောက်ခြေမှာ ထည့်ပေးထားပါ
 class QuickAccessCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -103,7 +113,7 @@ class QuickAccessCard extends StatelessWidget {
             Text(
               label,
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,//May be error
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -111,20 +121,3 @@ class QuickAccessCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

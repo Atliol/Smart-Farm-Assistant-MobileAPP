@@ -31,7 +31,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   width: double.infinity, height: 250, color: Colors.grey[300],
-                  child: const Icon(Icons.article, size: 50, color: Colors.grey),
+                  child: const Icon(Icons.book, size: 50, color: Colors.grey),
                 ),
               ),
 
@@ -55,9 +55,16 @@ class KnowledgeDetailScreen extends StatelessWidget {
                             style: TextStyle(color: AppColors.primaryColor, fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Text(
-                          "${article.date}  •  ${article.readTime}",
-                          style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+
+                        Row(
+                          children: [
+                            Icon(Icons.access_time_rounded, size: 14, color: Colors.grey.shade600),
+                            const SizedBox(width: 6),
+                            Text(
+                              article.readTime.isNotEmpty ? article.readTime : "၅ မိနစ်စာဖတ်ရန်",
+                              style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                          ],
                         ),
                       ],
                     ),

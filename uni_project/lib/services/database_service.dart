@@ -98,20 +98,20 @@ class DatabaseService {
   Future<List<KnowledgeModel>> _fetchAndLoadKnowledge() async {
     var box = await Hive.openBox(knowBoxName);
 
-    if (box.isEmpty) {
-      try {
-        final String response = await rootBundle.loadString('assets/data/knowledge_data.json');
-        final List<dynamic> data = json.decode(response);
+    // 💡 ပြဿနာဖြေရှင်းချက် - JSON ဒေတာအသစ်များကို Hive ထဲသို့ အမြဲတမ်း Overwrite / Update လုပ်ပေးရန် ပြင်ဆင်ထားပါသည်
+    try {
+      final String response = await rootBundle.loadString('assets/data/knowledge_data.json');
+      final List<dynamic> data = json.decode(response);
 
-        for (var item in data) {
-          final castedItem = _safeCast(item);
-          final String knowId = castedItem['id'] as String? ?? DateTime.now().toString();
-          await box.put(knowId, castedItem);
-        }
-        await box.flush();
-      } catch (e) {
-        print("====== HIVE KNOWLEDGE ERROR ====== $e");
+      // JSON ထဲက Data သစ်တွေကို database ထဲ အတင်းထည့်ပေးပါမည်
+      for (var item in data) {
+        final castedItem = _safeCast(item);
+        final String knowId = castedItem['id'] as String? ?? DateTime.now().toString();
+        await box.put(knowId, castedItem);
       }
+      await box.flush();
+    } catch (e) {
+      print("====== HIVE KNOWLEDGE ERROR ====== $e");
     }
 
     return box.values.map((item) {
