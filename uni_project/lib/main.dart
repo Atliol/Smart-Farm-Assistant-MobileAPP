@@ -3,21 +3,34 @@ import 'package:uni_project/screens/main_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:uni_project/services/database_service.dart';
 import 'firebase_options.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:uni_project/services/hive_db_service.dart';
+
+// 💡 နာမည်တူနေလို့ Flutter မရောအောင် 'as' သုံးပြီး နာမည်ခွဲပေးလိုက်ခြင်း
+import 'package:uni_project/services/notification_service.dart' as online_notif;
+import 'package:uni_project/services/notifications_service.dart' as local_notif;
 
 void main() async {
-  // 💡 Flutter Framework ရဲ့ Engine ကို အရင်ဆုံး အဆင်သင့်ဖြစ်အောင် လုပ်ခြင်း
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // 💡 ၁။ အမြန်ဆုံး အလုပ်လုပ်သည့် Offline Database (Hive) ကို အရင်နှိုးပါမည်
+    // ၁။ Offline Database (Hive) နှိုးခြင်း
     await DatabaseService.initHive();
 
-    // 💡 ၂။ ထို့နောက်မှ Online Firebase Database ကို နှိုးပါမည်
+    // 💡 မှတ်ချက်။ ။ ကျွန်တော်တို့သည် toMap()/fromMap() စနစ်ကို သုံးနေသည့်အတွက်
+    // Adapter များ register လုပ်ရန် မလိုပါ။ ထို့ကြောင့် အဆိုပါ Code အပိုင်းကို ဖယ်ရှားလိုက်ပါသည်။
+
+    // ၂။ Box ကို ဖွင့်လှစ်ခြင်း
+    await HiveDbService.init();
+
+    // ၃။ Notification နှင့် Firebase နှိုးခြင်း
+    await local_notif.NotificationService.init();
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
   } catch (e) {
-    // Database နှိုးစဉ် တစုံတရာ မှားယွင်းခဲ့ပါက Debug Console ၌ မြင်နိုင်ရန်
     print("Initialization Error: $e");
   }
 

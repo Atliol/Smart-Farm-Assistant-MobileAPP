@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../measure/saved_land_screen.dart';
-
+import '../../calendar/calendar_dashboard_screen.dart'; // 💡 ၁။ Calendar Dashboard ဖိုင်ကို Import လုပ်လိုက်ပါ
 class QuickAccessSection extends StatelessWidget {
   final Function(int) onTabChanged;
 
@@ -27,7 +27,6 @@ class QuickAccessSection extends StatelessWidget {
                 label: 'Measure',
                 color: Colors.green.shade800,
                 onTap: () {
-                  // 💡 Navigator ကိုသုံးပြီး SavedLandScreen ဆီ တိုက်ရိုက် Push လုပ်ပါသည်
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -46,20 +45,25 @@ class QuickAccessSection extends StatelessWidget {
                 label: 'AI Assistant',
                 color: Colors.cyan.shade700,
                 onTap: () {
-                  onTabChanged(2); // ယခင် Index အတိုင်း ပြန်ထားနိုင်ပါသည်
+                  onTabChanged(2);
                 },
               ),
             ),
             const SizedBox(width: 10),
 
-            // Pesticides
             Expanded(
               child: QuickAccessCard(
-                icon: Icons.science,
-                label: 'Pesticides',
+                icon: Icons.calendar_month,
+                label: 'Calendar',
                 color: Colors.orange.shade700,
                 onTap: () {
-                  onTabChanged(3); // ယခင် Index အတိုင်း ပြန်ထားနိုင်ပါသည်
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CalendarDashboardScreen(),
+                    ),
+                  );
                 },
               ),
             ),

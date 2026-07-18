@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'widgets/news_feed_view.dart';
 import 'auth_prompt_screen.dart';
