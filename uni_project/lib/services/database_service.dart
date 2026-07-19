@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/crop_model.dart';
+import '../models/fertilizer_model.dart';
+import '../models/fungicide_model.dart';
+import '../models/herbicide_model.dart';
+import '../models/insecticide_model.dart';
 import '../models/knowledge_model.dart';
 import '../models/livestock_model.dart';
 import '../models/aquaculture_model.dart';
@@ -11,11 +15,19 @@ class DatabaseService {
   static const String liveBoxName = "livestock_box";
   static const String knowBoxName = "knowledge_box";
   static const String aquaBoxName = "aquaculture_box";
+  static const String insBoxName = "insecticide_box";
+  static const String fungBoxName = "fungicide_box";
+  static const String herbBoxName = "herbicide_box";
+  static const String ferBoxName = "fertilizer_box";
 
   Future<List<CropModel>>? _cropsFuture;
   Future<List<LivestockModel>>? _livestockFuture;
   Future<List<KnowledgeModel>>? _knowledgeFuture;
   Future<List<AquacultureModel>>? _aquacultureFuture;
+  Future<List<InsecticideModel>>? _insecticideFuture;
+  Future<List<FungicideModel>>? _fungicideFuture;
+  Future<List<HerbicideModel>>? _herbicideFuture;
+  Future<List<FertilizerModel>>? _fertilizerFuture;
 
   static Future<void> initHive() async {
     await Hive.initFlutter();
@@ -48,10 +60,10 @@ class DatabaseService {
           final crop = CropModel.fromJson(castedItem);
           await box.put(crop.id, castedItem);
         }
-        await box.flush();
       } catch (e) {
         print("====== HIVE JSON ERROR ====== $e");
       }
+      await box.flush(); // 💡 Safe flush
     }
 
     return box.values.map((item) {
@@ -78,10 +90,10 @@ class DatabaseService {
           final String liveId = castedItem['id'] as String? ?? DateTime.now().toString();
           await box.put(liveId, castedItem);
         }
-        await box.flush();
       } catch (e) {
         print("====== HIVE LIVESTOCK ERROR ====== $e");
       }
+      await box.flush();
     }
 
     return box.values.map((item) {
@@ -98,21 +110,19 @@ class DatabaseService {
   Future<List<KnowledgeModel>> _fetchAndLoadKnowledge() async {
     var box = await Hive.openBox(knowBoxName);
 
-    // 💡 ပြဿနာဖြေရှင်းချက် - JSON ဒေတာအသစ်များကို Hive ထဲသို့ အမြဲတမ်း Overwrite / Update လုပ်ပေးရန် ပြင်ဆင်ထားပါသည်
     try {
       final String response = await rootBundle.loadString('assets/data/knowledge_data.json');
       final List<dynamic> data = json.decode(response);
 
-      // JSON ထဲက Data သစ်တွေကို database ထဲ အတင်းထည့်ပေးပါမည်
       for (var item in data) {
         final castedItem = _safeCast(item);
         final String knowId = castedItem['id'] as String? ?? DateTime.now().toString();
         await box.put(knowId, castedItem);
       }
-      await box.flush();
     } catch (e) {
       print("====== HIVE KNOWLEDGE ERROR ====== $e");
     }
+    await box.flush();
 
     return box.values.map((item) {
       return KnowledgeModel.fromJson(_safeCast(item));
@@ -138,14 +148,135 @@ class DatabaseService {
           final String aquaId = castedItem['id'] as String? ?? DateTime.now().toString();
           await box.put(aquaId, castedItem);
         }
-        await box.flush();
       } catch (e) {
         print("====== HIVE AQUACULTURE ERROR ====== $e");
       }
+      await box.flush();
     }
 
     return box.values.map((item) {
       return AquacultureModel.fromJson(_safeCast(item));
+    }).toList();
+  }
+
+  // ==================== ၅။ ပိုးသတ်ဆေးအပိုင်း (ပြင်ဆင်ပြီး) ====================
+  Future<List<InsecticideModel>> getInsecticideData() {
+    _insecticideFuture ??= _fetchAndLoadInsecticides();
+    return _insecticideFuture!;
+  }
+
+  Future<List<InsecticideModel>> _fetchAndLoadInsecticides() async {
+    var box = await Hive.openBox(insBoxName);
+
+    // 💡 Performance ကောင်းမွန်စေရန် box ထဲမှာ ဘာမှမရှိမှသာ JSON ကို Read လုပ်ပြီး ထည့်ရန် ပြင်ဆင်လိုက်သည်
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/insecticide_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final castedItem = _safeCast(item);
+          final String insId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(insId, castedItem);
+        }
+      } catch (e) {
+        print("====== HIVE INSECTICIDE ERROR ====== $e");
+      }
+      await box.flush();
+    }
+
+    return box.values.map((item) {
+      return InsecticideModel.fromJson(_safeCast(item));
+    }).toList();
+  }
+
+  // ==================== ၆။ ရောဂါကာကွယ်ကုသဆေးအပိုင်း ====================
+  Future<List<FungicideModel>> getFungicideData() {
+    _fungicideFuture ??= _fetchAndLoadFungicides();
+    return _fungicideFuture!;
+  }
+
+  Future<List<FungicideModel>> _fetchAndLoadFungicides() async {
+    var box = await Hive.openBox(fungBoxName);
+
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/fungicide_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final castedItem = _safeCast(item);
+          final String fungId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(fungId, castedItem);
+        }
+      } catch (e) {
+        print("====== HIVE FUNGICIDE ERROR ====== $e");
+      }
+      await box.flush();
+    }
+
+    return box.values.map((item) {
+      return FungicideModel.fromJson(_safeCast(item));
+    }).toList();
+  }
+
+  // ==================== ၇။ ပေါင်းသတ်ဆေးအပိုင်း ====================
+  Future<List<HerbicideModel>> getHerbicideData() {
+    _herbicideFuture ??= _fetchAndLoadHerbicides();
+    return _herbicideFuture!;
+  }
+
+  Future<List<HerbicideModel>> _fetchAndLoadHerbicides() async {
+    var box = await Hive.openBox(herbBoxName);
+
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/herbicide_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final castedItem = _safeCast(item);
+          final String herbId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(herbId, castedItem);
+        }
+      } catch (e) {
+        print("====== HIVE HERBICIDE ERROR ====== $e");
+      }
+      await box.flush();
+    }
+
+    return box.values.map((item) {
+      return HerbicideModel.fromJson(_safeCast(item));
+    }).toList();
+  }
+
+  // ==================== ၈။ ဓာတ်မြေအောဇာအပိုင်း ====================
+  Future<List<FertilizerModel>> getFertilizerData() {
+    _fertilizerFuture ??= _fetchAndLoadFertilizers();
+    return _fertilizerFuture!;
+  }
+
+  Future<List<FertilizerModel>> _fetchAndLoadFertilizers() async {
+    var box = await Hive.openBox(ferBoxName);
+
+    if (box.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/fertilizer_data.json');
+        final List<dynamic> data = json.decode(response);
+
+        for (var item in data) {
+          final castedItem = _safeCast(item);
+          final String ferId = castedItem['id'] as String? ?? DateTime.now().toString();
+          await box.put(ferId, castedItem);
+        }
+      } catch (e) {
+        print("====== HIVE FERTILIZER ERROR ====== $e");
+      }
+      await box.flush();
+    }
+
+    return box.values.map((item) {
+      return FertilizerModel.fromJson(_safeCast(item));
     }).toList();
   }
 }

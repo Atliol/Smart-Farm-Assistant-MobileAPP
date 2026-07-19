@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/app_background.dart';
-// 💡 မိမိဆောက်ထားမည့် Sub UI Screen ဖိုင်များကို ဤနေရာတွင် Import လုပ်ပါ
-// import 'sub_screens/insecticide_screen.dart';
-// import 'sub_screens/fungicide_screen.dart';
-// import 'sub_screens/herbicide_screen.dart';
-// import 'sub_screens/fertilizer_screen.dart';
+// 🆕 ပိုးသတ်ဆေးအတွက် သီးခြားဆောက်ထားသော List Screen အား Import လုပ်ပါ
+import 'fertilizer/fertilizer_list_screen.dart';
+import 'fungicide/fungicide_list_screen.dart';
+import 'herbicide/herbicide_list_screen.dart';
+import 'insecticide/insecticide_list_screen.dart';
 
 class PesticidesScreen extends StatelessWidget {
   const PesticidesScreen({super.key});
@@ -13,7 +13,7 @@ class PesticidesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // 💡 တောင်းဆိုထားသည့်အတိုင်း categories list ထဲတွင် သွားရမည့် Sub UI ဖိုင်များကို တစ်ခါတည်း သတ်မှတ်ခြင်း
+    // 💡 targetScreen နေရာတွင် အင်းဆက်ပိုးသတ်ဆေးအတွက် သီးခြားခွဲထုတ်ထားသော ကဏ္ဍကို ချိတ်ဆက်ပေးလိုက်ပါသည်
     final List<Map<String, dynamic>> categories = [
       {
         'title': 'ပိုးသတ်ဆေး',
@@ -21,8 +21,8 @@ class PesticidesScreen extends StatelessWidget {
         'icon': Icons.bug_report_rounded,
         'color': const Color(0xFFFFEBEE),
         'iconColor': Colors.red.shade700,
-        // 💡 နှိပ်လျှင် သွားရမည့် ပိုးသတ်ဆေးသီးသန့် Sub UI Widget
-        'targetScreen': const InsecticideScreen(),
+        // 💡 ၎င်းနှင့် သက်ဆိုင်ရာ သီးခြား List Screen Widget ကို တိုက်ရိုက်ခေါ်သုံးလိုက်ပါသည်
+        'targetScreen': InsecticideListScreen(),
       },
       {
         'title': 'ရောဂါကာကွယ်ကုသဆေး',
@@ -30,8 +30,7 @@ class PesticidesScreen extends StatelessWidget {
         'icon': Icons.healing_rounded,
         'color': const Color(0xFFE8F8F5),
         'iconColor': Colors.teal.shade700,
-        // 💡 နှိပ်လျှင် သွားရမည့် ရောဂါကာကွယ်ကုသဆေးသီးသန့် Sub UI Widget
-        'targetScreen': const FungicideScreen(),
+        'targetScreen': FungicideListScreen(),
       },
       {
         'title': 'ပေါင်းသတ်ဆေး',
@@ -39,8 +38,7 @@ class PesticidesScreen extends StatelessWidget {
         'icon': Icons.grass_rounded,
         'color': const Color(0xFFFFF3E0),
         'iconColor': Colors.orange.shade800,
-        // 💡 နှိပ်လျှင် သွားရမည့် ပေါင်းသတ်ဆေးသီးသန့် Sub UI Widget
-        'targetScreen': const HerbicideScreen(),
+        'targetScreen': HerbicideListScreen(),
       },
       {
         'title': 'ဓာတ်မြေသြဇာ',
@@ -48,8 +46,7 @@ class PesticidesScreen extends StatelessWidget {
         'icon': Icons.opacity_rounded,
         'color': const Color(0xFFE8F5E9),
         'iconColor': Colors.green.shade700,
-        // 💡 နှိပ်လျှင် သွားရမည့် ဓာတ်မြေသြဇာသီးသန့် Sub UI Widget
-        'targetScreen': const FertilizerScreen(),
+        'targetScreen': FertilizerListScreen(),
       },
     ];
 
@@ -66,7 +63,7 @@ class PesticidesScreen extends StatelessWidget {
                   "ဆေးဝါးများ",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 10),
                 const Text(
                   "ဆေးဝါးနှင့် ဓာတ်မြေသြဇာ အမျိုးအစားများအလိုက် ရှာဖွေပါ",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
@@ -83,7 +80,6 @@ class PesticidesScreen extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: InkWell(
-                          // 💡 နှိပ်လိုက်လျှင် list ထဲတွင် သတ်မှတ်ထားသော Sub UI ဖိုင်ဆီသို့ တိုက်ရိုက် ဦးတည်သွားစေမည့် Function
                           onTap: () {
                             Navigator.push(
                               context,
@@ -94,7 +90,7 @@ class PesticidesScreen extends StatelessWidget {
                           },
                           borderRadius: BorderRadius.circular(16),
                           child: Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(30),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(16),
@@ -156,66 +152,4 @@ class PesticidesScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-// 💡 အောက်ခြေက ယာယီ Dummy Screens တွေရဲ့ AppBar ထဲမှာ backgroundColor သတ်မှတ်ပေးလိုက်ပါ
-
-class InsecticideScreen extends StatelessWidget {
-  const InsecticideScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text("ပိုးသတ်ဆေးများ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      backgroundColor: AppColors.primaryColor, // 💡 Background Color
-      foregroundColor: Colors.white, // App Bar ပေါ်က စာသားနှင့် မျှားအရောင်ကို အမည်းရောင်ပြောင်းရန်
-      elevation: 0, // App Bar အောက်က အရိပ်လိုင်းကို ဖျောက်ရန်
-    ),
-    body: const Center(child: Text("ပိုးသတ်ဆေး စာရင်း UI")),
-  );
-}
-
-class FungicideScreen extends StatelessWidget {
-  const FungicideScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text("ရောဂါကာကွယ်ကုသဆေးများ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      backgroundColor: AppColors.primaryColor, // 💡 Background Color
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    body: const Center(child: Text("ရောဂါကာကွယ်ကုသဆေး စာရင်း UI")),
-  );
-}
-
-class HerbicideScreen extends StatelessWidget {
-  const HerbicideScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text("ပေါင်းသတ်ဆေးများ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      backgroundColor: AppColors.primaryColor, // 💡 Background Color
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    body: const Center(child: Text("ပေါင်းသတ်ဆေး စာရင်း UI")),
-  );
-}
-
-class FertilizerScreen extends StatelessWidget {
-  const FertilizerScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text("ဓာတ်မြေသြဇာများ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      backgroundColor: AppColors.primaryColor, // 💡 Background Color
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    body: const Center(child: Text("ဓာတ်မြေသြဇာ စာရင်း UI")),
-  );
 }
