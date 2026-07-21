@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uni_project/constants/app_colors.dart';
 import '../../models/farm_calendar_model.dart';
 import 'set_tasks_screen.dart';
 
@@ -40,7 +41,7 @@ class _CreateCalendarScreenState extends State<CreateCalendarScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: const Text('ပြက္ခဒိန်အသစ်တည်ဆောက်', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: themeColor,
+        backgroundColor: AppColors.primaryColor,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
@@ -161,7 +162,7 @@ class _CreateCalendarScreenState extends State<CreateCalendarScreen> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: themeColor,
+                    backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))
                 ),
                 onPressed: () {

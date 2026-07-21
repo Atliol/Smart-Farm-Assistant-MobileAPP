@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uni_project/constants/app_colors.dart';
 import '../../models/farm_calendar_model.dart';
 import '../../models/task_model.dart';
 import '../../services/hive_db_service.dart';
@@ -111,8 +112,9 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('လယ်ယာနှင့် မွေးမြူရေး လက်ထောက်', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: themeColor,
+        backgroundColor: AppColors.primaryColor,
         elevation: 0,
         actions: [
           if (_calendars.length > 1)
@@ -144,7 +146,7 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
           ? Center(
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: themeColor,
+            backgroundColor: AppColors.primaryColor,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),

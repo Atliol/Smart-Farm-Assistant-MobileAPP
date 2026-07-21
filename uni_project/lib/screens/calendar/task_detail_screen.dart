@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../../models/task_model.dart';
 
 class TaskDetailScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class TaskDetailScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: const Text('လုပ်ငန်းစဉ် အသေးစိတ်', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: themeColor,
+        backgroundColor: AppColors.primaryColor,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(

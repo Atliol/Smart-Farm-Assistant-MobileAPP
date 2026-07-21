@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import '../../constants/app_colors.dart';
 import '../../models/farm_calendar_model.dart';
 import '../../models/task_model.dart';
 import '../../services/hive_db_service.dart'; // 💡 HiveDbService ကို သုံးနိုင်ရန် Import ထည့်ပေးလိုက်ပါသည်
@@ -160,7 +161,7 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: Text('${widget.category} လုပ်ငန်းစဉ်များ သတ်မှတ်ရန်', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: themeColor,
+        backgroundColor: AppColors.primaryColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),

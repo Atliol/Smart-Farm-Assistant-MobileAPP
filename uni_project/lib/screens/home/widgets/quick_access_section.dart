@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../measure/saved_land_screen.dart';
-import '../../calendar/calendar_dashboard_screen.dart'; // 💡 ၁။ Calendar Dashboard ဖိုင်ကို Import လုပ်လိုက်ပါ
+import '../../calendar/calendar_dashboard_screen.dart';
+import '../../price/daily_price_screen.dart';
+
 class QuickAccessSection extends StatelessWidget {
   final Function(int) onTabChanged;
 
@@ -20,7 +22,7 @@ class QuickAccessSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 🟢 Measure (နှိပ်လိုက်လျှင် SavedLandScreen သို့ တိုက်ရိုက်သွားမည်)
+            // 🟢 Measure
             Expanded(
               child: QuickAccessCard(
                 icon: Icons.square_foot,
@@ -38,26 +40,31 @@ class QuickAccessSection extends StatelessWidget {
             ),
             const SizedBox(width: 10),
 
-            // AI Assistant
+            // 🟡 နေ့စဉ်စျေးနှုန်းများ (AI Assistant နေရာတွင် အစားထိုးထားပါသည်)
             Expanded(
               child: QuickAccessCard(
-                icon: Icons.psychology,
-                label: 'AI Assistant',
-                color: Colors.cyan.shade700,
+                icon: Icons.monetization_on_rounded, // 💡 စျေးနှုန်းနှင့် လိုက်ဖက်သော Icon ပြောင်းထားပါသည်
+                label: 'Crop Price',            // 💡 စာသား ပြောင်းထားပါသည်
+                color: Colors.teal.shade700,
                 onTap: () {
-                  onTabChanged(2);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DailyPriceScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
+                    ),
+                  );
                 },
               ),
             ),
             const SizedBox(width: 10),
 
+            // 🟠 Calendar
             Expanded(
               child: QuickAccessCard(
                 icon: Icons.calendar_month,
                 label: 'Calendar',
                 color: Colors.orange.shade700,
                 onTap: () {
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -74,7 +81,6 @@ class QuickAccessSection extends StatelessWidget {
   }
 }
 
-// QuickAccessCard Widget ကို quick_access_section.dart ဖိုင်အောက်ခြေမှာ ထည့်ပေးထားပါ
 class QuickAccessCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -118,6 +124,8 @@ class QuickAccessCard extends StatelessWidget {
               label,
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis, // 💡 စာသားရှည်ပါက အစဉ်ပြေပြေ ပေါ်စေရန်
             ),
           ],
         ),
