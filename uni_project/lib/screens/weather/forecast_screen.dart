@@ -83,45 +83,68 @@ class _ForecastScreenState extends State<ForecastScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Header (ရက်စွဲနှင့် နေ့အမည်)
+                    // Header (ရက်စွဲ၊ နေ့အမည် နှင့် အပူချိန်)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE1F5FE),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
-                                _getWeatherIcon(item.iconCode),
-                                color: const Color(0xFF0288D1),
-                                size: 28,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${item.dayName} (${item.date})",
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
+                        // 💡 Wrapped in Expanded to prevent overflow when text is long
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE1F5FE),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  item.condition,
-                                  style: const TextStyle(fontSize: 13, color: AppColors.primaryColor, fontWeight: FontWeight.w500),
+                                child: Icon(
+                                  _getWeatherIcon(item.iconCode),
+                                  color: const Color(0xFF0288D1),
+                                  size: 28,
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${item.dayName} (${item.date})",
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      item.condition,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        // အပူချိန်
+                        const SizedBox(width: 8),
+                        // Temperature ( fixed size )
                         Text(
                           "${item.maxTemp}°C / ${item.minTemp}°C",
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                       ],
                     ),

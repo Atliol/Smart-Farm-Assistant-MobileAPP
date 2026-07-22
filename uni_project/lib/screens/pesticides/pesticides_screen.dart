@@ -90,7 +90,7 @@ class PesticidesScreen extends StatelessWidget {
                           },
                           borderRadius: BorderRadius.circular(16),
                           child: Container(
-                            padding: const EdgeInsets.all(30),
+                            padding: const EdgeInsets.all(28),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(16),
