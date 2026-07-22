@@ -1,13 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/crop_price_model.dart';
 
 class PriceService {
   static const List<String> cities = [
     'ရန်ကုန်',
     'မန္တလေး',
-    'နေပြည်တော်',
-    'ပဲခူး',
-    'မကွေး',
-    'စစ်ကိုင်း',
   ];
 
   static const List<String> cropCategories = [
@@ -15,43 +12,93 @@ class PriceService {
     'စပါး',
     'မတ်ပဲ',
     'ပဲစင်းငုံ',
-    'စားတော်ပဲ',
-    'ကုလားပဲ',
     'ကြက်သွန်',
+    'ဆား',
   ];
+
+  static const Map<String, Map<String, String>> _fieldMapping = {
+    'paddy': {
+      'category': 'စပါး',
+      'cropName': 'ဆန်',
+      'unit': 'တန်',
+    },
+    'matpe': {
+      'category': 'မတ်ပဲ',
+      'cropName': 'မတ်ပဲ',
+      'unit': 'တန်',
+    },
+    'pigeonPea': {
+      'category': 'ပဲစင်းငုံ',
+      'cropName': 'ပီဂျင်ပီ',
+      'unit': 'တန်',
+    },
+    'onion': {
+      'category': 'ကြက်သွန်',
+      'cropName': 'ကြက်သွန်',
+      'unit': 'ကီလို',
+    },
+    'salt': {
+      'category': 'ဆား',
+      'cropName': 'ဆား',
+      'unit': 'ပိဿာ',
+    },
+  };
+
+  static const Map<String, String> _cityKeyMap = {
+    'ရန်ကုန်': 'yangon',
+    'မန္တလေး': 'mandalay',
+  };
 
   Future<List<CropPriceModel>> fetchDailyPrices({
     required String city,
     required String selectedCrop,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 300)); // API Delay Mock
+    final doc = await FirebaseFirestore.instance.collection('crop_prices').doc('today').get();
 
-    // စျေးနှုန်း ဒေတာများ ထည့်သွင်းထားသော ရန်ကုန်မြို့ Mock Data
-    final List<CropPriceModel> mockData = [
-      // စပါး အုပ်စု
-      CropPriceModel(id: '1', category: 'စပါး', cropName: 'ဆန်း(ဧည့်မထ ၂၅%)', unit: 'တစ်တင်းခွဲ', price: '၈၅,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-      CropPriceModel(id: '2', category: 'စပါး', cropName: 'ဆန်း(ရက် ၉၀ သစ်...)', unit: 'တစ်တင်းခွဲ', price: '၉၂,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-      CropPriceModel(id: '3', category: 'စပါး', cropName: 'ဆန်း(သီးထပ်ရှယ်)', unit: 'တစ်တင်းခွဲ', price: '၉၈,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-      CropPriceModel(id: '4', category: 'စပါး', cropName: 'ကြားပျံရှယ်', unit: 'တစ်တင်းခွဲ', price: '၁၂၀,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-      CropPriceModel(id: '5', category: 'စပါး', cropName: 'ပေါ်ကျွဲ(ဖျာပုံ)', unit: 'တစ်တင်းခွဲ', price: '၁၄၅,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-
-      // မတ်ပဲ အုပ်စု
-      CropPriceModel(id: '6', category: 'မတ်ပဲ', cropName: 'မတ်ပဲ(အက်ဖ်အေ...)', unit: '၁ တန်', price: '၃,၂၅၀,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-      CropPriceModel(id: '7', category: 'မတ်ပဲ', cropName: 'မတ်ပဲ(အက်စ်ကျူ...)', unit: '၁ တန်', price: '၃,၄၅၀,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-
-      // ပဲစင်းငုံ အုပ်စု
-      CropPriceModel(id: '8', category: 'ပဲစင်းငုံ', cropName: 'ပဲစင်းငုံနီ(အာစီ) (...)', unit: '၁ တန်', price: '၄,၁၀၀,၀၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-
-      // စားတော်ပဲ အုပ်စု
-      CropPriceModel(id: '9', category: 'စားတော်ပဲ', cropName: 'စားတော်ပဲလုံး', unit: '၁ ပိဿာ', price: '၆,၅၀၀ ကျပ်', city: 'ရန်ကုန်', date: '2026-07-21'),
-    ];
-
-    var cityFiltered = mockData.where((element) => element.city == city).toList();
-
-    if (selectedCrop == 'အားလုံး' || selectedCrop.isEmpty) {
-      return cityFiltered;
+    if (!doc.exists) {
+      return [];
     }
 
-    return cityFiltered.where((element) => element.category == selectedCrop).toList();
+    final data = doc.data();
+    if (data == null) {
+      return [];
+    }
+
+    final cityKey = _cityKeyMap[city] ?? 'yangon';
+    final cityData = data[cityKey] as Map<String, dynamic>?;
+    if (cityData == null) {
+      return [];
+    }
+
+    final updatedAt = cityData['updatedAt']?.toString() ?? DateTime.now().toIso8601String().split('T').first;
+    final prices = <CropPriceModel>[];
+
+    for (final entry in _fieldMapping.entries) {
+      final rawValue = cityData[entry.key];
+      if (rawValue == null) {
+        continue;
+      }
+
+      final price = rawValue.toString().trim();
+      if (price.isEmpty) {
+        continue;
+      }
+
+      prices.add(CropPriceModel(
+        id: '${cityKey}_${entry.key}',
+        category: entry.value['category']!,
+        cropName: entry.value['cropName']!,
+        unit: entry.value['unit']!,
+        price: price,
+        city: city,
+        date: updatedAt,
+      ));
+    }
+
+    if (selectedCrop == 'အားလုံး' || selectedCrop.isEmpty) {
+      return prices;
+    }
+
+    return prices.where((price) => price.category == selectedCrop).toList();
   }
 }
