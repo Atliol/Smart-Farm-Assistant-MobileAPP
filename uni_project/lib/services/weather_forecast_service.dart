@@ -4,30 +4,27 @@ import 'package:geolocator/geolocator.dart';
 import '../models/weather_forecast_model.dart';
 
 class WeatherService {
-  // 💡 လက်ရှိ ရောက်ရှိနေသော GPS Location ကို ရယူသည့် Helper Function
-  Future<Position> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // 💡 OpenWeatherMap API Key ကို ဒီမှာ ထည့်ပါ
+  final String apiKey = "8fb8375cbf17fed6233ab87c6af52244";
 
-    // Location Service ွင့်ထားသလား စစ်ခြင်း
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services ဖွင့်ထားခြင်း မရှိပါ။');
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return Future.error('Location permission ငြင်းပယ်ခံရပါသည်။');
       }
     }
-
+    
     if (permission == LocationPermission.deniedForever) {
       return Future.error('Location permissions အမြဲတမ်း ပိတ်ထားပါသည်။');
-    }
+    } 
 
-    // လက်ရှိ Lat/Lng ကို ရယူခြင်း
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.low,
     );
@@ -35,7 +32,6 @@ class WeatherService {
 
   Future<List<WeatherForecastModel>> getFourDaysForecast() async {
     try {
-      // ၁။ လက်ရှိ GPS Position ရယူခြင်း
       double latitude = 20.8783; // Default: Meiktila
       double longitude = 95.8612;
 
@@ -44,55 +40,86 @@ class WeatherService {
         latitude = position.latitude;
         longitude = position.longitude;
       } catch (e) {
-        print("GPS ရယူ၍မရပါသဖြင့် Default Location ကို အသုံးပြုပါမည်: $e");
+        print("GPS ရယူ၍မရပါ: $e");
       }
 
-      // ၂။ ရရှိလာသော GPS Coordinates ဖြင့် API ခေါ်ယူခြင်း
+      // OpenWeatherMap 5-Day / 3-Hour Forecast Endpoint
       final url = Uri.parse(
-        'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude'
-            '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max'
-            '&timezone=auto', // 💡 အလိုအလျောက် ရောက်ရှိရာ Timezone သို့ ပြောင်းမည်
+        'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude'
+        '&appid=$apiKey&units=metric&lang=my',
       );
 
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final daily = data['daily'];
+        final List list = data['list'];
+
+        // နေ့ရက်အလိုက် ဒေတာများကို Group ဖွဲ့ခြင်း
+        Map<String, List<dynamic>> groupedByDay = {};
+
+        for (var item in list) {
+          String dateStr = item['dt_txt'].split(' ')[0]; // YYYY-MM-DD
+          if (!groupedByDay.containsKey(dateStr)) {
+            groupedByDay[dateStr] = [];
+          }
+          groupedByDay[dateStr]!.add(item);
+        }
 
         List<WeatherForecastModel> forecastList = [];
+        int count = 0;
 
-        // 💡 နောက် ၄ ရက်စာ (သို့မဟုတ် ၃ ရက်စာ) ယူခြင်း
-        for (int i = 0; i < 4; i++) {
-          final rawDate = DateTime.parse(daily['time'][i]);
-          final weatherCode = daily['weathercode'][i];
-          final maxTemp = (daily['temperature_2m_max'][i] as num).round();
-          final minTemp = (daily['temperature_2m_min'][i] as num).round();
-          final rainChance = (daily['precipitation_probability_max'][i] as num).toDouble();
-          final wind = (daily['windspeed_10m_max'][i] as num).round();
+        // Group ဖွဲ့ထားသော ဒေတာများမှ တစ်ရက်စီအတွက် ခန့်မှန်းချက် ထုတ်ယူခြင်း
+        for (var entry in groupedByDay.entries) {
+          if (count >= 4) break; // နောက် ၄ ရက်စာ (သို့မဟုတ် ၃ ရက်စာ)
 
-          final dayName = _getMyanmarDayName(rawDate.weekday);
-          final dateText = _getMyanmarMonthDate(rawDate);
-          final weatherInfo = _getWeatherCondition(weatherCode);
+          final dayDataList = entry.value;
+          final DateTime date = DateTime.parse(entry.key);
+
+          double maxTemp = -100;
+          double minTemp = 100;
+          double maxPop = 0;
+          int totalHumidity = 0;
+          double maxWind = 0;
+          String condition = dayDataList[0]['weather'][0]['description'];
+          String iconCode = _getIconCode(dayDataList[0]['weather'][0]['main']);
+
+          for (var item in dayDataList) {
+            double tempMax = (item['main']['temp_max'] as num).toDouble();
+            double tempMin = (item['main']['temp_min'] as num).toDouble();
+            double pop = (item['pop'] as num).toDouble(); // Rain probability (0.0 to 1.0)
+            int humidity = (item['main']['humidity'] as num).toInt();
+            double wind = (item['wind']['speed'] as num).toDouble();
+
+            if (tempMax > maxTemp) maxTemp = tempMax;
+            if (tempMin < minTemp) minTemp = tempMin;
+            if (pop > maxPop) maxPop = pop;
+            if (wind > maxWind) maxWind = wind;
+            totalHumidity += humidity;
+          }
+
+          int avgHumidity = (totalHumidity / dayDataList.length).round();
 
           forecastList.add(
             WeatherForecastModel.fromJson({
-              'date': dateText,
-              'day_name': dayName,
-              'condition': weatherInfo['condition'],
-              'icon_code': weatherInfo['iconCode'],
-              'max_temp': maxTemp,
-              'min_temp': minTemp,
-              'humidity': 70 + (i * 3),
-              'rain_chance': rainChance,
-              'wind_speed': "$wind ကီလိုမီတာ/နာရီ",
+              'date': _getMyanmarMonthDate(date),
+              'day_name': _getMyanmarDayName(date.weekday),
+              'condition': condition,
+              'icon_code': iconCode,
+              'max_temp': maxTemp.round(),
+              'min_temp': minTemp.round(),
+              'humidity': avgHumidity,
+              'rain_chance': (maxPop * 100).roundToDouble(), // Percentage ပြောင်းခြင်း
+              'wind_speed': "${(maxWind * 3.6).round()} ကီလိုမီတာ/နာရီ", // m/s မှ km/h ပြောင်းခြင်း
             }),
           );
+
+          count++;
         }
 
         return forecastList;
       } else {
-        throw Exception("Data ယူ၍ မရပါ");
+        throw Exception("OpenWeatherMap Data ယူ၍ မရပါ");
       }
     } catch (e) {
       throw Exception("မိုးလေဝသ အချက်အလက် ခေါ်ယူရာတွင် အမှားရှိနေပါသည်: $e");
@@ -120,19 +147,13 @@ class WeatherService {
     return "${months[date.month - 1]} ${date.day}";
   }
 
-  Map<String, String> _getWeatherCondition(int code) {
-    if (code == 0) {
-      return {'condition': 'သာယာမည်', 'iconCode': 'sunny'};
-    } else if (code >= 1 && code <= 3) {
-      return {'condition': 'တိမ်အသင့်အတင့် ဖြစ်ထွန်းမည်', 'iconCode': 'cloudy'};
-    } else if (code >= 51 && code <= 65) {
-      return {'condition': 'မိုးနည်းနည်း ရွာသွန်းနိုင်သည်', 'iconCode': 'rain'};
-    } else if (code >= 80 && code <= 82) {
-      return {'condition': 'နေရာကွက်ကျား မိုးရွာမည်', 'iconCode': 'heavy_rain'};
-    } else if (code >= 95) {
-      return {'condition': 'မိုးထစ်ချုန်းရွာမည်', 'iconCode': 'thunder'};
-    } else {
-      return {'condition': 'မိုးရွာနိုင်သည်', 'iconCode': 'rain'};
+  String _getIconCode(String mainCondition) {
+    switch (mainCondition.toLowerCase()) {
+      case 'clear': return 'sunny';
+      case 'clouds': return 'cloudy';
+      case 'rain': case 'drizzle': return 'rain';
+      case 'thunderstorm': return 'thunder';
+      default: return 'rain';
     }
   }
 }

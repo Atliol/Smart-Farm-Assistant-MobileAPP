@@ -38,6 +38,41 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  String _formatAgo(dynamic ts) {
+    if (ts == null) return "Just now";
+
+    DateTime dateTime;
+    if (ts is Timestamp) {
+      dateTime = ts.toDate();
+    } else if (ts is String) {
+      dateTime = DateTime.tryParse(ts) ?? DateTime.now();
+    } else if (ts is DateTime) {
+      dateTime = ts;
+    } else {
+      return "Just now";
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays >= 2) {
+      return "${difference.inDays} days ago";
+    }
+    if (difference.inDays == 1) {
+      return "1 day ago";
+    }
+    if (difference.inHours >= 1) {
+      return "${difference.inHours} hours ago";
+    }
+    if (difference.inMinutes >= 1) {
+      return "${difference.inMinutes} min${difference.inMinutes > 1 ? 's' : ''} ago";
+    }
+    if (difference.inSeconds >= 1) {
+      return "${difference.inSeconds} sec${difference.inSeconds > 1 ? 's' : ''} ago";
+    }
+    return "Just now";
+  }
+
   // 💡 Grid ထဲက ပုံတစ်ပုံချင်းစီကို နှိပ်လျှင် ImageViewerScreen သို့ Post ID နှင့် Index အမှန်အတိုင်း သွားရန် ပြင်ဆင်ခြင်း
   Widget _buildGridImageItem(List<String> allImages, int index, double height) {
     final byteImg = _getByteImage(allImages[index]);
@@ -663,7 +698,10 @@ class _PostCardState extends State<PostCard> {
                                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black),
                                     softWrap: true,
                                   ),
-                                  const Text("Just now • 🌐", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                  Text(
+                                    _formatAgo(widget.post.createdAt) + " • 🌐",
+                                    style: const TextStyle(color: Colors.grey, fontSize: 11),
+                                  ),
                                 ],
                               ),
                             ),
