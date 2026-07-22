@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:uni_project/widgets/app_background.dart';
 
 import '../constants/app_colors.dart';
+import '../drawer_screens/about_screen.dart';
+import '../drawer_screens/contact_us_screen.dart';
+import '../drawer_screens/privacy_policy_screen.dart';
+import '../drawer_screens/user_guide_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -15,7 +19,7 @@ class CustomDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            //Drawer Header
+            // Drawer Header
             const DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primaryColor),
               child: Row(
@@ -41,52 +45,54 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
 
-            //Drawer Items
+            // Drawer Items (💡 Screen များနှင့် ချိတ်ဆက်ပြီးပါပြီ)
             ListTile(
-              leading: const Icon(Icons.account_circle, color: AppColors.primaryColor),
-              title: const Text('Profile'),
+              leading: const Icon(Icons.help, color: AppColors.primaryColor),
+              title: const Text('User Guide'),
               onTap: () {
-                //TODO: Navigate to Profile Screen
+                Navigator.pop(context); // Drawer ကို အရင်ပိတ်မည်
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserGuideScreen()),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.privacy_tip, color: AppColors.primaryColor),
               title: const Text('Privacy Policy'),
               onTap: () {
-                //TODO: Navigate to Privacy Policy Screen
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share, color: AppColors.primaryColor),
-              title: const Text('Share'),
-              onTap: () {
-                //TODO: Share Logic
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.star, color: AppColors.primaryColor),
-              title: const Text('Rate Us'),
-              onTap: () {
-                //TODO: Rating Logic
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail, color: AppColors.primaryColor),
               title: const Text('Contact Us'),
               onTap: () {
-                //TODO: Navigate to Contact Screen
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.info, color: AppColors.primaryColor),
               title: const Text('About'),
               onTap: () {
-                //TODO: Navigate to About Screen
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutScreen()),
+                );
               },
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }

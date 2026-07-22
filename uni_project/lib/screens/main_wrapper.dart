@@ -135,7 +135,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     const SizedBox(width: 40),
 
                     //Pesticides
-                    _buildNavItem(Icons.science, 'Pesticides', 3),
+                    _buildNavItem(Icons.sanitizer_rounded, 'Pesticides', 3),
 
                     //News
                     _buildNavItem(Icons.newspaper, 'News', 4),
