@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../guide/crop_list_screen.dart';
+
 class CropOverviewSection extends StatelessWidget {
   const CropOverviewSection({super.key});
 
@@ -11,10 +13,23 @@ class CropOverviewSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Crop Overview', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E))),
+            const Text(
+              'Crop Overview',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1A237E),
+              ),
+            ),
             TextButton(
-              onPressed: () {//onTap()
-                //TODO: to view all page
+              onPressed: () {
+                // 💡 Guide Screen ထဲက Crop List Screen သို့ သွားရန်
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CropListScreen(),
+                  ),
+                );
               },
               child: const Text('View All', style: TextStyle(color: Colors.teal)),
             ),

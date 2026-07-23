@@ -25,7 +25,7 @@ class PesticidesScreen extends StatelessWidget {
         'targetScreen': InsecticideListScreen(),
       },
       {
-        'title': 'ရောဂါကာကွယ်ကုသဆေး',
+        'title': 'မှိုရောဂါကာကွယ်၊ကုသဆေး',
         'subtitle': 'မှိုရောဂါ၊ ဘက်တီးရီးယားနှင့် အပင်ရောဂါများအတွက်',
         'icon': Icons.healing_rounded,
         'color': const Color(0xFFE8F8F5),
@@ -68,7 +68,7 @@ class PesticidesScreen extends StatelessWidget {
                   "ဆေးဝါးနှင့် ဓာတ်မြေသြဇာ အမျိုးအစားများအလိုက် ရှာဖွေပါ",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 Expanded(
                   child: ListView.builder(
@@ -78,7 +78,7 @@ class PesticidesScreen extends StatelessWidget {
                       final item = categories[index];
 
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
+                        padding: const EdgeInsets.only(bottom: 12.0),
                         child: InkWell(
                           onTap: () {
                             Navigator.push(

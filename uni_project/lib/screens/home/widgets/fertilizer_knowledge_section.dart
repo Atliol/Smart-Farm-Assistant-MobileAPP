@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../pesticides/fertilizer/fertilizer_list_screen.dart';
+
 class FertilizerKnowledgeSection extends StatelessWidget{
   const FertilizerKnowledgeSection({super.key});
 
@@ -19,7 +21,12 @@ class FertilizerKnowledgeSection extends StatelessWidget{
             ),
             TextButton(
               onPressed: () {
-                //TODO: Fertilizer View All
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FertilizerListScreen(),
+                  ),
+                );
               },
               child: const Text('View All', style: TextStyle(color: Colors.teal)),
             ),
