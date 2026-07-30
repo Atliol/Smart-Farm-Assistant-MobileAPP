@@ -4,6 +4,8 @@ import '../../constants/app_colors.dart';
 import '../../models/farm_calendar_model.dart';
 import '../../models/task_model.dart';
 import '../../services/hive_db_service.dart'; // 💡 HiveDbService ကို သုံးနိုင်ရန် Import ထည့်ပေးလိုက်ပါသည်
+import '../../services/notifications_service.dart';
+import '../../services/notifications_service.dart';
 
 class SetTasksScreen extends StatefulWidget {
   final FarmCalendarModel calendar;
@@ -260,14 +262,8 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
               );
 
               // 🌟 ၃။ အဓိကပြင်ဆင်ချက် - HiveDbService ရဲ့ Setup အတိုင်း `toMap()` သုံးပြီး သိမ်းဆည်းရန် ပြောင်းလဲလိုက်ခြင်း
-              try {
-                await HiveDbService.saveCalendar(finalCalendar);
-              } catch (e) {
-                final box = Hive.box<dynamic>(HiveDbService.boxName);
-                await box.put(finalCalendar.id, finalCalendar.toMap());
-              }
-
               if (mounted) {
+                await _saveCalendarWithNotifications(finalCalendar);
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -282,5 +278,27 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveCalendarWithNotifications(FarmCalendarModel calendar) async {
+    try {
+      await HiveDbService.saveCalendar(calendar);
+    } catch (_) {
+      final box = Hive.box<dynamic>(HiveDbService.boxName);
+      await box.put(calendar.id, calendar.toMap());
+    }
+
+    for (final task in calendar.tasks) {
+      final int notificationId = NotificationService.getNotificationId(task.id);
+      await NotificationService.cancelAlert(notificationId);
+      if (!task.isCompleted) {
+        await NotificationService.scheduleAlert(
+          id: notificationId,
+          crop: calendar.cropName,
+          task: task.taskName,
+          targetTimestamp: task.targetDay,
+        );
+      }
+    }
   }
 }

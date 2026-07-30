@@ -11,23 +11,25 @@ class NotificationService {
     await _plugin.initialize(const InitializationSettings(android: androidSettings));
   }
 
+  static int getNotificationId(String taskId) {
+    return taskId.hashCode & 0x7FFFFFFF;
+  }
+
   static Future<void> scheduleAlert({
     required int id,
     required String crop,
     required String task,
-    required DateTime startDate,
-    required int targetDay,
+    required int targetTimestamp,
   }) async {
-    // Alert ရက်စွဲတွက်ချက်ခြင်း
-    DateTime targetDate = startDate.add(Duration(days: targetDay - 1));
-    DateTime alertTime = DateTime(targetDate.year, targetDate.month, targetDate.day, 8, 0); // မနက် ၈:၀၀ တိုင်းပေးရန်
+    final DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(targetTimestamp);
+    final DateTime alertTime = DateTime(targetDate.year, targetDate.month, targetDate.day, 8, 0);
 
     if (alertTime.isBefore(DateTime.now())) return;
 
     await _plugin.zonedSchedule(
       id,
       '🌾 Farm Reminder ($crop)',
-      'ယနေ့ Day $targetDay: $task လုပ်ဆောင်ရန် အချိန်ရောက်ပါပြီ။',
+      'ယနေ့ ${task} လုပ်ဆောင်ရန် အချိန်ရောက်ပါပြီ။',
       tz.TZDateTime.from(alertTime, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -40,6 +42,10 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
+  }
+
+  static Future<void> cancelAlert(int id) async {
+    await _plugin.cancel(id);
   }
 
   static Future<void> cancelAllAlerts() async {

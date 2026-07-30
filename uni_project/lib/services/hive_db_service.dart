@@ -43,4 +43,14 @@ class HiveDbService {
       print('HiveDbService Error saving calendar: $e');
     }
   }
+
+  static Future<void> deleteCalendar(String calendarId) async {
+    try {
+      final box = Hive.box<dynamic>(boxName);
+      await box.delete(calendarId);
+      print('HiveDbService: ပြက္ခဒိန်ကို ဖျက်သိမ်းပြီးပါပြီ။');
+    } catch (e) {
+      print('HiveDbService Error deleting calendar: $e');
+    }
+  }
 }

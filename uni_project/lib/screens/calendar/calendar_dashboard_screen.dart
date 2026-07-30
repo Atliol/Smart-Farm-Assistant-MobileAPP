@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:uni_project/constants/app_colors.dart';
 import '../../models/farm_calendar_model.dart';
 import '../../models/task_model.dart';
 import '../../services/hive_db_service.dart';
+import '../../services/notifications_service.dart';
 import 'create_calendar_screen.dart';
 import 'task_detail_screen.dart';
 
@@ -26,16 +28,21 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
     _loadData();
   }
 
-  void _loadData() {
+  Future<void> _loadData() async {
+    final calendars = HiveDbService.getAllCalendars();
     setState(() {
-      _calendars = HiveDbService.getAllCalendars();
-      if (_calendars.isNotEmpty) {
-        _activeCalendar = _calendars.last;
-        _updateElapsedDays();
-      } else {
-        _activeCalendar = null;
-      }
+      _calendars = calendars;
+      _activeCalendar = _calendars.isNotEmpty ? _calendars.last : null;
     });
+
+    if (_activeCalendar != null) {
+      final deleted = await _deleteCalendarIfCompleted(_activeCalendar!);
+      if (deleted) {
+        await _loadData();
+        return;
+      }
+      _updateElapsedDays();
+    }
   }
 
   void _updateElapsedDays() {
@@ -47,6 +54,42 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
           .difference(DateTime(start.year, start.month, start.day))
           .inDays;
       _elapsedDays = difference >= 0 ? difference : 0;
+    }
+  }
+
+  Future<bool> _deleteCalendarIfCompleted(FarmCalendarModel calendar) async {
+    final tasks = calendar.tasks;
+    if (tasks.isNotEmpty && tasks.every((task) => task.isCompleted)) {
+      await HiveDbService.deleteCalendar(calendar.id);
+      for (final task in tasks) {
+        await NotificationService.cancelAlert(NotificationService.getNotificationId(task.id));
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _saveActiveCalendarAndNotifications() async {
+    if (_activeCalendar == null) return;
+
+    try {
+      await HiveDbService.saveCalendar(_activeCalendar!);
+    } catch (_) {
+      final box = Hive.box<dynamic>(HiveDbService.boxName);
+      await box.put(_activeCalendar!.id, _activeCalendar!.toMap());
+    }
+
+    for (final task in _activeCalendar!.tasks) {
+      final int notificationId = NotificationService.getNotificationId(task.id);
+      await NotificationService.cancelAlert(notificationId);
+      if (!task.isCompleted) {
+        await NotificationService.scheduleAlert(
+          id: notificationId,
+          crop: _activeCalendar!.cropName,
+          task: task.taskName,
+          targetTimestamp: task.targetDay,
+        );
+      }
     }
   }
 
@@ -137,8 +180,13 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
               },
             ),
           IconButton(
-              icon: const Icon(Icons.notifications_none, color: Colors.white),
-              onPressed: () {}
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreateCalendarScreen()),
+                ).then((_) => _loadData());
+              }
           ),
         ],
       ),
@@ -273,7 +321,10 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => TaskDetailScreen(task: task, cropName: _activeCalendar!.cropName))
-                          ).then((_) => _loadData());
+                          ).then((result) async {
+                            await _saveActiveCalendarAndNotifications();
+                            await _loadData();
+                          });
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -345,7 +396,10 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => TaskDetailScreen(task: task, cropName: _activeCalendar!.cropName))
-                    ).then((_) => _loadData());
+                    ).then((result) async {
+                      await _saveActiveCalendarAndNotifications();
+                      await _loadData();
+                    });
                   },
                 );
               },
