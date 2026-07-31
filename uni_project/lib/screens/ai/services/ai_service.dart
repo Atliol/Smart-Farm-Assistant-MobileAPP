@@ -1,150 +1,132 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:openrouter/openrouter.dart';
+import 'dart:typed_data';
+
+import 'package:http/http.dart' as http;
 
 class AIService {
-  static const String _apiKey = String.fromEnvironment(
-    'OPENROUTER_API_KEY',
-    defaultValue: '',
-  );
+  // ============================================================
+  // Node.js Backend URL
+  // ============================================================
 
-  static const String _model = 'google/gemini-2.0-flash-exp:free';
+  static const String _baseUrl =
+      'http://10.0.2.2:3000';
 
-  final OpenRouterClient _client = OpenRouterClient(
-    apiKey: _apiKey,
-    defaultHeaders: {
-      'HTTP-Referer': 'https://github.com/flutter_app',
-      'X-Title': 'Agriculture AI App',
-    },
-  );
+  // Android Emulator အတွက်
+  //
+  // Android Emulator မှာ localhost ဆိုတာ
+  // Computer ကို မဆိုလိုပါဘူး။
+  //
+  // 10.0.2.2 = Computer localhost
+  //
+  // Physical Phone သုံးရင် computer ရဲ့ local IP
+  // ဥပမာ 192.168.1.100:3000
+  // သုံးရပါမယ်.
+
+  // ============================================================
+  // Send Message
+  // ============================================================
 
   Future<String> sendMessage({
     required String userMessage,
     required List<Map<String, dynamic>> chatHistory,
     Uint8List? imageBytes,
   }) async {
-    if (_apiKey.isEmpty || _apiKey.startsWith('YOUR_')) {
-      return 'OpenRouter API key မရှိသေးပါ။ အက်ပလီကေးရှင်းကို --dart-define=OPENROUTER_API_KEY=your_key နဲ့ run လုပ်ပေးပါ။';
-    }
-
     try {
-      final messages = <Message>[
-        Message.system(
-          'You are a helpful AI assistant for agriculture. Always respond in natural and clear Myanmar (Burmese) language only.',
-        ),
-      ];
+      String? imageBase64;
 
-      for (final chat in chatHistory) {
-        final role = _parseRole(chat['role']?.toString());
-        final content = chat['content'];
+      // ========================================================
+      // Convert Image → Base64
+      // ========================================================
 
-        if (content == null || content.toString().trim().isEmpty) {
-          continue;
-        }
-
-        messages.add(Message(role: role, content: content.toString()));
+      if (imageBytes != null) {
+        imageBase64 = base64Encode(imageBytes);
       }
 
-      messages.add(_buildUserMessage(userMessage, imageBytes));
+      // ========================================================
+      // Request Body
+      // ========================================================
 
-      final request = ChatRequest(
-        model: _model,
-        messages: messages,
-        temperature: 0.7,
+      final Map<String, dynamic> requestBody = {
+        'userMessage': userMessage,
+        'chatHistory': chatHistory,
+        'imageBase64': imageBase64,
+      };
+
+      // ========================================================
+      // Send Request → Node.js
+      // ========================================================
+
+      final response = await http.post(
+        Uri.parse('$_baseUrl/api/ai/chat'),
+
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: jsonEncode(requestBody),
       );
 
-      final response = await _client.chatCompletion(request);
-      final reply = _extractText(response);
+      // ========================================================
+      // Debug
+      // ========================================================
 
-      return reply.isEmpty ? 'တောင်းပန်ပါတယ်၊ အဖြေမရှာဖွေနိုင်ပါ။' : reply;
-    } catch (e) {
-      debugPrint('AIService Exception: $e');
-      return 'အင်တာနက် ချိတ်ဆက်မှုကို စစ်ဆေးပေးပါဗျာ။';
-    }
-  }
+      print('====================================');
+      print('Backend Status: ${response.statusCode}');
+      print('Backend Response: ${response.body}');
+      print('====================================');
 
-  MessageRole _parseRole(String? role) {
-    switch (role?.toLowerCase()) {
-      case 'assistant':
-        return MessageRole.assistant;
-      case 'system':
-        return MessageRole.system;
-      default:
-        return MessageRole.user;
-    }
-  }
+      // ========================================================
+      // Success
+      // ========================================================
 
-  Message _buildUserMessage(String userMessage, Uint8List? imageBytes) {
-    if (imageBytes == null) {
-      return Message.user(userMessage.isEmpty
-          ? 'ဒီပုံကို ကြည့်ပြီး အသေးစိတ် ရှင်းပြပေးပါ'
-          : userMessage);
-    }
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(
+          utf8.decode(response.bodyBytes),
+        );
 
-    final mimeType = _detectMimeType(imageBytes);
-    final base64Image = base64Encode(imageBytes);
-
-    return Message(
-      role: MessageRole.user,
-      content: [
-        {
-          'type': 'text',
-          'text': userMessage.isEmpty
-              ? 'ဒီပုံကို ကြည့်ပြီး အသေးစိတ် ရှင်းပြပေးပါ'
-              : userMessage,
-        },
-        {
-          'type': 'image_url',
-          'image_url': {
-            'url': 'data:$mimeType;base64,$base64Image',
-            'detail': 'auto',
-          },
-          'detail': 'auto',
-        },
-      ],
-    );
-  }
-
-  String _extractText(ChatResponse response) {
-    final message = response.message;
-    if (message == null) {
-      return response.content ?? '';
-    }
-
-    final content = message.content;
-    if (content is String) {
-      return content.replaceAll('</think>', '').trim();
-    }
-
-    if (content is List) {
-      final parts = <String>[];
-      for (final item in content) {
-        if (item is TextContentItem) {
-          parts.add(item.text);
-        } else if (item is ImageContentItem) {
-          // ignore image items
-        } else if (item is Map<String, dynamic>) {
-          final text = item['text']?.toString();
-          if (text != null && text.trim().isNotEmpty) {
-            parts.add(text.trim());
-          }
+        if (data['success'] != true) {
+          throw Exception(
+            data['message'] ??
+                'AI response မရရှိပါ။',
+          );
         }
+
+        final answer = data['answer'];
+
+        if (answer == null) {
+          throw Exception(
+            'AI response content မရှိပါ။',
+          );
+        }
+
+        return answer.toString().trim();
       }
-      return parts.join('\n').replaceAll('</think>', '').trim();
+
+      // ========================================================
+      // Backend Error
+      // ========================================================
+
+      String errorMessage =
+          'Backend Error (${response.statusCode})';
+
+      try {
+        final Map<String, dynamic> data =
+            jsonDecode(
+          utf8.decode(response.bodyBytes),
+        );
+
+        errorMessage =
+            data['message']?.toString() ??
+                errorMessage;
+      } catch (_) {}
+
+      throw Exception(errorMessage);
+    } catch (e) {
+      print('AI Service Error: $e');
+
+      throw Exception(
+        'AI ချိတ်ဆက်ရာတွင် အမှားရှိနေပါသည်။\n$e',
+      );
     }
-
-    return response.content?.replaceAll('</think>', '').trim() ?? '';
-  }
-
-  String _detectMimeType(Uint8List bytes) {
-    if (bytes.length >= 8 && bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
-      return 'image/png';
-    }
-
-    if (bytes.length >= 3 && bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
-      return 'image/jpeg';
-    }
-
-    return 'image/jpeg';
   }
 }

@@ -149,7 +149,7 @@ class WeatherCard extends StatelessWidget {
           const Divider(color: Colors.white30, height: 1),
           const SizedBox(height: 12),
 
-          // 💡 ၂။ ထပ်ပေါင်းထည့်ထားသော "နောက် ၄ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ" Button
+          // 💡 ၂။ ထပ်ပေါင်းထည့်ထားသော "နောက် ၃ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ" Button
           InkWell(
             onTap: () {
               Navigator.push(
@@ -171,7 +171,7 @@ class WeatherCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "နောက် ၄ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ",
+                    "နောက် ၃ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,

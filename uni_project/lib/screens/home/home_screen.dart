@@ -121,6 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   WeatherCard(
                     weatherData: weatherData,
                   ),
+                // 💡 QuickAccessSection သို့ တက်ဘ်ပြောင်းလဲခြင်း Callback ကို စနစ်တကျပေးပို့ထားပါသည်
+                QuickAccessSection(
+                  onTabChanged: widget.onTabChanged,
+                ),
 
                 const SizedBox(height: 20),
 
@@ -128,11 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 20),
 
-                // 💡 QuickAccessSection သို့ တက်ဘ်ပြောင်းလဲခြင်း Callback ကို စနစ်တကျပေးပို့ထားပါသည်
-                QuickAccessSection(
-                  onTabChanged: widget.onTabChanged,
-                ),
-
+                
                 const SizedBox(height: 20),
 
                 const DiseaseAwarenessSection(),
