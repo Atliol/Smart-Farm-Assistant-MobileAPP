@@ -5,7 +5,7 @@ import 'package:uni_project/services/database_service.dart';
 import 'firebase_options.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uni_project/services/hive_db_service.dart';
-
+import 'package:uni_project/services/tracker_db_service.dart';
 // 💡 နာမည်တူနေလို့ Flutter မရောအောင် 'as' သုံးပြီး နာမည်ခွဲပေးလိုက်ခြင်း
 import 'package:uni_project/services/notification_service.dart' as online_notif;
 import 'package:uni_project/services/notifications_service.dart' as local_notif;
@@ -15,11 +15,9 @@ void main() async {
 
   try {
     // ၁။ Offline Database (Hive) နှိုးခြင်း
+    await TrackerDbService.init();
     await DatabaseService.initHive();
-
-    // 💡 မှတ်ချက်။ ။ ကျွန်တော်တို့သည် toMap()/fromMap() စနစ်ကို သုံးနေသည့်အတွက်
-    // Adapter များ register လုပ်ရန် မလိုပါ။ ထို့ကြောင့် အဆိုပါ Code အပိုင်းကို ဖယ်ရှားလိုက်ပါသည်။
-
+    
     // ၂။ Box ကို ဖွင့်လှစ်ခြင်း
     await HiveDbService.init();
 
@@ -31,10 +29,47 @@ void main() async {
     );
 
   } catch (e) {
+    // Capture initialization error and run an error app to avoid uncaught FirebaseExceptions
     print("Initialization Error: $e");
+    final String errorMsg = e.toString();
+    runApp(ErrorApp(errorMessage: errorMsg));
+    return;
   }
 
   runApp(const MyApp());
+}
+
+class ErrorApp extends StatelessWidget {
+  final String errorMessage;
+  const ErrorApp({super.key, required this.errorMessage});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Initialization Error',
+      home: Scaffold(
+        backgroundColor: Colors.red.shade700,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                const Text('Initialization Error', style: TextStyle(color: Colors.yellow, fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(errorMessage, style: const TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -52,7 +87,8 @@ class MyApp extends StatelessWidget {
           primary: const Color(0xFF00796B),
         ),
       ),
-      home: const MainWrapper(),
+      // App စတင်ချိန်တွင် HomeScreen (Index 0) သို့ စတင်ရောက်ရှိမည် ဖြစ်သည်
+      home: const MainWrapper(initialIndex: 0),
     );
   }
 }

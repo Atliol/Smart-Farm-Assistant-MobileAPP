@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../constants/app_colors.dart';
 import '../../models/task_model.dart';
 
@@ -19,6 +20,7 @@ class TaskDetailScreen extends StatelessWidget {
     // 💡 targetDay (Timestamp) မှ ပြက္ခဒိန်ရက်စွဲ (DateTime) သို့ ပြန်ပြောင်းခြင်း
     final taskDate = DateTime.fromMillisecondsSinceEpoch(task.targetDay);
     final dateStr = "${taskDate.day}/${taskDate.month}/${taskDate.year}";
+    final timeStr = DateFormat('hh:mm a').format(taskDate);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -77,11 +79,16 @@ class TaskDetailScreen extends StatelessWidget {
             Text(cropName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
 
             const SizedBox(height: 16),
-            const Row(
+            Row(
               children: [
-                Icon(Icons.alarm, color: Colors.orange, size: 20),
-                SizedBox(width: 6),
-                Text('အထက်ပါရက်စွဲတွင် သတိပေးချက် (Alert) မြည်ပါမည်၊၊', style: TextStyle(fontSize: 13, color: Colors.orange, fontWeight: FontWeight.w500)),
+                const Icon(Icons.alarm, color: Colors.orange, size: 20),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'အထက်ပါရက်စွဲ $dateStr $timeStr တွင် Alert မြည်ပါမည်၊၊',
+                    style: const TextStyle(fontSize: 13, color: Colors.orange, fontWeight: FontWeight.w500),
+                  ),
+                ),
               ],
             ),
 

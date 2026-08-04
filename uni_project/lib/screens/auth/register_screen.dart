@@ -25,39 +25,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // ၁။ Firebase Auth ကို အသုံးပြုပြီး အီးမေးလ်နှင့် ပတ်စဝေါ့ဖြင့် အကောင့်သစ်ဆောက်ခြင်း
+      // 1. Firebase Auth ကို အသုံးပြုပြီး အကောင့်သစ်ဆောက်ခြင်း
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // User ရဲ့ Display Name (အမည်) ကို Firebase Auth ထဲတွင် သွားသိမ်းခြင်း
+      // User Display Name ထည့်ခြင်း
       await userCredential.user?.updateDisplayName(_nameController.text.trim());
 
-      // ၂။ အကောင့်ရရှိလာသော User ID (UID) အတိုင်း Firestore ရဲ့ 'users' collection ထဲတွင် ပရိုဖိုင်ဒေတာ သွားသိမ်းခြင်း
+      // 2. Firestore ထဲတွင် ပရိုဖိုင်ဒေတာ သိမ်းခြင်း
       String uid = userCredential.user!.uid;
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'displayName': _nameController.text.trim(),
-        'location': 'မြန်မာနိုင်ငံ', // Default Location
-        'bio': 'တောင်သူလယ်သမား အဖွဲ့ဝင် ဖြစ်ပါသည်၊၊', // Default Bio
+        'location': 'မြန်မာနိုင်ငံ',
+        'bio': 'တောင်သူလယ်သမား အဖွဲ့ဝင် ဖြစ်ပါသည်၊၊',
         'createdAt': FieldValue.serverTimestamp(),
       });
 
       if (mounted) {
         setState(() => _isLoading = false);
-        widget.onRegisterSuccess(); // အကောင့်ဖွင့်အောင်မြင်ကြောင်း NewsScreen သို့ လှမ်းပြောမည်
-        // Auth screen အားလုံးကို ပိတ်ပြီး Home feed သို့ တိုက်ရိုက်ပြန်သွားရန်
+        widget.onRegisterSuccess();
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
       String errorMessage = "အကောင့်ဖွင့်၍မရပါ၊၊";
 
-      // အဖြစ်များသော Firebase Error များကို မြန်မာလို ပြန်ပေးခြင်း
       if (e.code == 'email-already-in-use') {
         errorMessage = "ဤအီးမေးလ်ဖြင့် အကောင့်ဖွင့်ထားပြီးသား ဖြစ်နေပါသည်၊၊";
       } else if (e.code == 'weak-password') {
-        errorMessage = "လျှို့ဝှက်နံပါတ်သည် အားနည်းလွန်းပါသည် (အနည်းဆုံး ၆ လုံး ထားပေးပါ)၊၊";
+        errorMessage = "လျှို့ဝှက်နံပါတ်သည် အနည်းဆုံး ၆ လုံး ထားပေးပါ၊၊";
       } else if (e.code == 'invalid-email') {
         errorMessage = "အီးမေးလ်ပုံစံ မမှန်ကန်ပါ၊၊";
       }
@@ -83,126 +81,246 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const Color primaryAgriColor = Color(0xFF00796B); // Teal Theme Color
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF5F7FB),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                const Text(
-                  "အကောင့်အသစ်ဖွင့်ရန် ✨",
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black87),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // 1. Curved Top Header Section
+            Container(
+              height: 230,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              decoration: const BoxDecoration(
+                color: primaryAgriColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  "လုပ်ဆောင်ချက်များကို အပြည့်အဝအသုံးပြုနိုင်ဖို့ အချက်အလက်များ ဖြည့်စွက်ပေးပါ။",
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 32),
-
-                // Name (အမည်) ရိုက်ရန်ကွက်
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: "အမည် (Name)",
-                    prefixIcon: const Icon(Icons.person_outline_rounded),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ သင့်အမည်ကို ထည့်ပေးပါ';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Email (အီးမေးလ်) ရိုက်ရန်ကွက်
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: "အီးမေးလ် (Email)",
-                    hintText: "example@gmail.com",
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ အီးမေးလ် ထည့်ပေးပါ';
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
-                      return 'မှန်ကန်သော အီးမေးလ်ပုံစံ ဖြစ်ရပါမည်';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Password (လျှို့ဝှက်နံပါတ်) ရိုက်ရန်ကွက်
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: "လျှို့ဝှက်နံပါတ် (Password)",
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    suffixIcon: IconButton(
-                      icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
-                    ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ လျှို့ဝှက်နံပါတ် ထည့်ပေးပါ';
-                    if (value.trim().length < 6) return 'လျှို့ဝှက်နံပါတ်သည် အနည်းဆုံး ၆ လုံးရှိရပါမည်';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // အကောင့်ဖွင့်ရန် ခလုတ်
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleRegister,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1877F2), // Facebook Blue အရောင်နှင့် ကိုက်ညီအောင်ထားပါသည်
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: _isLoading
-                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)))
-                        : const Text(
-                      "အကောင့်ဖွင့်မည်",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // လော့ဂ်အင်သို့ ပြန်သွားမည့်လင့်ခ်
-                Row(
+              ),
+              child: SafeArea(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("အကောင့်ရှိပြီးသားလား? "),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Text(
-                        "လော့ဂ်အင်ဝင်ရန်",
-                        style: TextStyle(color: Color(0xFF1877F2), fontWeight: FontWeight.bold),
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.eco_rounded, color: Colors.white, size: 28),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          "အကောင့်သစ်ဖွင့်ပါ 🌱",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      "စိုက်ပျိုးရေးနှင့် မွေးမြူရေးဆိုင်ရာ ဝန်ဆောင်မှုများကို အပြည့်အဝ အသုံးပြုနိုင်ရန် အကောင့်ဖွင့်ပေးပါ",
+                      style: TextStyle(fontSize: 13, color: Colors.white70, height: 1.4),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+
+            const SizedBox(height: 24),
+
+            // 2. Input Form Fields Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name Field
+                    const Text(
+                      "အမည်",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        hintText: "မောင်မောင်",
+                        prefixIcon: const Icon(Icons.person_outline_rounded, color: primaryAgriColor),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(color: primaryAgriColor, width: 2),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ အမည်ထည့်ပေးပါ';
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // Email Field
+                    const Text(
+                      "အီးမေးလ်",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: "example@gmail.com",
+                        prefixIcon: const Icon(Icons.email_outlined, color: primaryAgriColor),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(color: primaryAgriColor, width: 2),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ အီးမေးလ် ထည့်ပေးပါ';
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
+                          return 'မှန်ကန်သော အီးမေးလ်ပုံစံ ဖြစ်ရပါမည်';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // Password Field
+                    const Text(
+                      "လျှို့ဝှက်နံပါတ်",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        hintText: "••••••••",
+                        prefixIcon: const Icon(Icons.lock_outline_rounded, color: primaryAgriColor),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(color: primaryAgriColor, width: 2),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) return 'ကျေးဇူးပြု၍ လျှို့ဝှက်နံပါတ် ထည့်ပေးပါ';
+                        if (value.trim().length < 6) return 'လျှို့ဝှက်နံပါတ်သည် အနည်းဆုံး ၆ လုံးရှိရပါမည်';
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleRegister,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryAgriColor,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        child: _isLoading
+                            ? const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                                ),
+                              )
+                            : const Text(
+                                "အကောင့်ဖွင့်မည်",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Navigate back to Login
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("အကောင့်ရှိပြီးသားလား? ", style: TextStyle(color: Colors.grey)),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Text(
+                            "လော့ဂ်အင်ဝင်ရန်",
+                            style: TextStyle(color: primaryAgriColor, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

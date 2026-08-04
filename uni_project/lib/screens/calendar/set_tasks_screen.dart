@@ -5,7 +5,7 @@ import '../../models/farm_calendar_model.dart';
 import '../../models/task_model.dart';
 import '../../services/hive_db_service.dart'; // 💡 HiveDbService ကို သုံးနိုင်ရန် Import ထည့်ပေးလိုက်ပါသည်
 import '../../services/notifications_service.dart';
-import '../../services/notifications_service.dart';
+import 'calendar_dashboard_screen.dart';
 
 class SetTasksScreen extends StatefulWidget {
   final FarmCalendarModel calendar;
@@ -55,6 +55,9 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
     DateTime selectedTaskDate = task != null
         ? DateTime.fromMillisecondsSinceEpoch(task.targetDay)
         : DateTime.now();
+    TimeOfDay selectedTaskTime = task != null
+        ? TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(task.targetDay))
+        : const TimeOfDay(hour: 8, minute: 0);
 
     showDialog(
       context: context,
@@ -64,54 +67,93 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
             return AlertDialog(
               title: Text(isEdit ? 'လုပ်ငန်းစဉ်ပြင်ဆင်ရန်' : 'လုပ်ငန်းစဉ်အသစ်ထည့်ရန်',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'လုပ်ငန်းစဉ် / သတိပေးချက် ခေါင်းစဉ်',
-                      border: OutlineInputBorder(),
-                    ),
+              content: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.65,
                   ),
-                  const SizedBox(height: 20),
-                  const Text('သတိပေးမည့် ရက်စွဲရွေးချယ်ရန်', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-                  const SizedBox(height: 8),
-                  InkWell(
-                    onTap: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: selectedTaskDate,
-                        firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                        lastDate: DateTime(2035),
-                      );
-                      if (picked != null) {
-                        setDialogState(() => selectedTaskDate = picked);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(4)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('${selectedTaskDate.day}/${selectedTaskDate.month}/${selectedTaskDate.year}',
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          const Icon(Icons.calendar_month, color: Colors.blue),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.notification_important, color: Colors.orange, size: 18),
-                      SizedBox(width: 5),
-                      Text('အောက်ပါရက်စွဲတွင် Alert မြည်ပေးပါမည်၊၊', style: TextStyle(fontSize: 12, color: Colors.orange)),
+                      TextField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'လုပ်ငန်းစဉ် / သတိပေးချက် ခေါင်းစဉ်',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text('သတိပေးမည့် ရက်စွဲရွေးချယ်ရန်', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: () async {
+                          final DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: selectedTaskDate,
+                            firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                            lastDate: DateTime(2035),
+                          );
+                          if (picked != null) {
+                            setDialogState(() => selectedTaskDate = picked);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(4)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${selectedTaskDate.day}/${selectedTaskDate.month}/${selectedTaskDate.year}',
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              const Icon(Icons.calendar_month, color: Colors.blue),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text('သတိပေးမည့် အချိန်ရွေးချယ်ရန်', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: () async {
+                          final TimeOfDay? picked = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTaskTime,
+                          );
+                          if (picked != null) {
+                            setDialogState(() => selectedTaskTime = picked);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(4)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(selectedTaskTime.format(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              const Icon(Icons.access_time, color: Colors.blue),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Icon(Icons.notification_important, color: Colors.orange.shade700, size: 16),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'အောက်ပါရက်စွဲနှင့် အချိန်တွင် Alert မြည်ပေးပါမည်။',
+                              style: TextStyle(fontSize: 13, color: Colors.orange.shade700),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
               actions: [
                 TextButton(
@@ -121,29 +163,41 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
                   onPressed: () {
-                    if (nameController.text.isNotEmpty) {
-                      setState(() {
-                        final int dateTimestamp = selectedTaskDate.millisecondsSinceEpoch;
-
-                        if (isEdit) {
-                          _taskList[index] = TaskModel(
-                            id: task!.id,
-                            taskName: nameController.text.trim(),
-                            targetDay: dateTimestamp,
-                            isCompleted: task.isCompleted,
-                          );
-                        } else {
-                          _taskList.add(TaskModel(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            taskName: nameController.text.trim(),
-                            targetDay: dateTimestamp,
-                            isCompleted: false,
-                          ));
-                        }
-                        _taskList.sort((a, b) => a.targetDay.compareTo(b.targetDay));
-                      });
-                      Navigator.pop(context);
+                    if (nameController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('လုပ်ငန်းစဉ်အမည်ကို ဖြည့်ပေးပါ')),
+                      );
+                      return;
                     }
+
+                    setState(() {
+                      final DateTime combinedDateTime = DateTime(
+                        selectedTaskDate.year,
+                        selectedTaskDate.month,
+                        selectedTaskDate.day,
+                        selectedTaskTime.hour,
+                        selectedTaskTime.minute,
+                      );
+                      final int dateTimestamp = combinedDateTime.millisecondsSinceEpoch;
+
+                      if (isEdit) {
+                        _taskList[index] = TaskModel(
+                          id: task!.id,
+                          taskName: nameController.text.trim(),
+                          targetDay: dateTimestamp,
+                          isCompleted: task.isCompleted,
+                        );
+                      } else {
+                        _taskList.add(TaskModel(
+                          id: DateTime.now().millisecondsSinceEpoch.toString(),
+                          taskName: nameController.text.trim(),
+                          targetDay: dateTimestamp,
+                          isCompleted: false,
+                        ));
+                      }
+                      _taskList.sort((a, b) => a.targetDay.compareTo(b.targetDay));
+                    });
+                    Navigator.pop(context);
                   },
                   child: Text(isEdit ? 'သိမ်းဆည်းမည်' : 'ထည့်သွင်းမည်', style: const TextStyle(color: Colors.white)),
                 ),
@@ -247,11 +301,12 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () async {
-              // ၁။ ယူလာသော list အား assign ပြန်လုပ်ပေးခြင်း
+              final navigator = Navigator.of(context);
+              final messenger = ScaffoldMessenger.of(context);
+
               widget.calendar.tasks = _taskList;
               widget.calendar.totalDays = _taskList.isNotEmpty ? _taskList.length : 1;
 
-              // ၂။ Model အသစ်တည်ဆောက်ခြင်း
               final finalCalendar = FarmCalendarModel(
                 id: widget.calendar.id,
                 cropName: widget.calendar.cropName,
@@ -261,11 +316,15 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
                 imagePath: widget.calendar.imagePath,
               );
 
-              // 🌟 ၃။ အဓိကပြင်ဆင်ချက် - HiveDbService ရဲ့ Setup အတိုင်း `toMap()` သုံးပြီး သိမ်းဆည်းရန် ပြောင်းလဲလိုက်ခြင်း
               if (mounted) {
                 await _saveCalendarWithNotifications(finalCalendar);
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                ScaffoldMessenger.of(context).showSnackBar(
+                if (!mounted) return;
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const CalendarDashboardScreen()),
+                  (route) => false,
+                );
+                if (!mounted) return;
+                messenger.showSnackBar(
                   const SnackBar(
                     content: Text('လုပ်ငန်းစဉ်ပြက္ခဒိန်ကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ၊၊'),
                     backgroundColor: Colors.green,
@@ -273,7 +332,7 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
                 );
               }
             },
-            child: const Text('ပြက္ခဒိန်နှင့် လုပ်ငန်းစဉ်အားလုံး သိမ်းဆည်းမည်', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            child: const Text('လုပ်ငန်းစဉ်အားလုံး သိမ်းဆည်းမည်', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           ),
         ),
       ),

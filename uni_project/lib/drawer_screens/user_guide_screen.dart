@@ -37,8 +37,8 @@ class UserGuideScreen extends StatelessWidget {
         icon: Icons.home_rounded,
         subItems: [
           GuideSubItem(
-            subTitle: '• Weather Card & ၄ ရက်စာ ခန့်မှန်းချက်',
-            subDescription: 'လက်ရှိ ရောက်ရှိနေသော ဒေသ၏ ရာသီဥတုကို ကြည့်နိုင်ပြီး၊ အောက်ခြေရှိ Button ကို နှိပ်၍ နောက် ၄ ရက်စာ မိုးလေဝသ အသေးစိတ်ကို ကြည့်နိုင်ပါသည်။',
+            subTitle: '• Weather Card & ၃ ရက်စာ ခန့်မှန်းချက်',
+            subDescription: 'လက်ရှိ ရောက်ရှိနေသော ဒေသ၏ ရာသီဥတုကို ကြည့်နိုင်ပြီး၊ အောက်ခြေရှိ Button ကို နှိပ်၍ နောက် ၃ ရက်စာ မိုးလေဝသ အသေးစိတ်ကို ကြည့်နိုင်ပါသည်။',
           ),
           GuideSubItem(
             subTitle: '• Quick Access Section',
@@ -49,7 +49,7 @@ class UserGuideScreen extends StatelessWidget {
 
       // ၂။ Guide (မြေတိုင်းတာခြင်း & ပြက္ခဒိန်)
       GuideItem(
-        title: 'Guide (Offline)',
+        title: 'Guide (Offline/online)',
         icon: Icons.menu_book,
         subItems: [
           GuideSubItem(

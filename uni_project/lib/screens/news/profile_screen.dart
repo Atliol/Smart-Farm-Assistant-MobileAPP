@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'models/post_model.dart';
 import 'widgets/post_card.dart';
-import 'package:uni_project/screens/auth/login_screen.dart';
 import 'package:uni_project/screens/main_wrapper.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -116,18 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => LoginScreen(
-              onLoginSuccess: () {
-                if (mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainWrapper()),
-                  );
-                }
-              },
-            ),
-          ),
+          MaterialPageRoute(builder: (_) => const MainWrapper(initialIndex: 4)),
           (Route<dynamic> route) => false,
         );
       }

@@ -4,6 +4,48 @@ import 'package:firebase_auth/firebase_auth.dart';
 class NotificationService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  static bool shouldShowToUser(Map<String, dynamic> notification, String currentUid) {
+    if (currentUid.isEmpty) return false;
+
+    final bool isAdminNotification = notification['isAdminNotification'] == true;
+    final bool isBroadcast = notification['isBroadcast'] == true;
+    final dynamic receiverValue = notification['receiverId'];
+    final dynamic targetUserIdValue = notification['targetUserId'];
+    final dynamic targetUsersValue = notification['targetUsers'];
+    final dynamic receiverIdsValue = notification['receiverIds'];
+
+    if (isAdminNotification || isBroadcast) {
+      return true;
+    }
+
+    bool matchesUserId(String? userId) {
+      if (userId == null || userId.trim().isEmpty) return false;
+      final normalizedId = userId.trim().toLowerCase();
+      return normalizedId == currentUid.toLowerCase() ||
+          normalizedId == 'all' ||
+          normalizedId == 'all_users' ||
+          normalizedId == 'everyone';
+    }
+
+    if (receiverValue is String && matchesUserId(receiverValue)) {
+      return true;
+    }
+
+    if (targetUserIdValue is String && matchesUserId(targetUserIdValue)) {
+      return true;
+    }
+
+    if (targetUsersValue is List) {
+      return targetUsersValue.any((user) => user?.toString() == currentUid);
+    }
+
+    if (receiverIdsValue is List) {
+      return receiverIdsValue.any((user) => user?.toString() == currentUid);
+    }
+
+    return false;
+  }
+
   // 💡 Notification ပို့ရန် အဓိကဖန်ရှင်
   static Future<void> sendNotification({
     required String receiverId, // ဘယ်သူ့ဆီ ပို့မှာလဲ (ပို့စ်ပိုင်ရှင် ID)

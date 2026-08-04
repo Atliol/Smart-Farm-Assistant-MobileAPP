@@ -113,9 +113,10 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
   }
 
   // 💡 Timestamp မှ ရက်စွဲစာသား ပြောင်းလဲပေးသည့် Helper
-  String _formatTimestamp(int timestamp) {
+  String _formatTaskDateTime(int timestamp) {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    return "${date.day}/${date.month}/${date.year}";
+    final formattedTime = DateFormat('hh:mm a').format(date);
+    return "${date.day}/${date.month}/${date.year} • $formattedTime";
   }
 
   @override
@@ -155,6 +156,10 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('လယ်ယာနှင့် မွေးမြူရေး လက်ထောက်', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: AppColors.primaryColor,
@@ -312,7 +317,7 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
                                     color: task.isCompleted ? Colors.grey : Colors.black87
                                 )
                             ),
-                            Text('ရက်စွဲ: ${_formatTimestamp(task.targetDay)} ⏰ 08:00 AM', style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                            Text('ရက်စွဲ: ${_formatTaskDateTime(task.targetDay)}', style: const TextStyle(color: Colors.grey, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -390,7 +395,7 @@ class _CalendarDashboardScreenState extends State<CalendarDashboardScreen> {
                           color: task.isCompleted ? Colors.grey : Colors.black87
                       )
                   ),
-                  subtitle: Text('သတ်မှတ်ရက် - ${_formatTimestamp(task.targetDay)}'),
+                  subtitle: Text('သတ်မှတ်ရက် - ${_formatTaskDateTime(task.targetDay)}'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
                   onTap: () {
                     Navigator.push(

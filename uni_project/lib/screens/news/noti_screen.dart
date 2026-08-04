@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uni_project/services/notification_service.dart';
 
 class NotiScreen extends StatelessWidget {
   const NotiScreen({super.key});
 
   // 💡 Noti အမျိုးအစားအလိုက် Icon, Color နှင့် ပြသရမည့်စာသားကို RichText အတွက် Helper
-  Map<String, dynamic> _getNotiDisplayDetails(String type, String senderName, String? additionalText) {
+  Map<String, dynamic> _getNotiDisplayDetails(String type, String senderName, String? messageText) {
     String messageSuffix = "";
     IconData iconData = Icons.notifications_rounded;
     Color iconColor = Colors.grey;
@@ -23,14 +24,21 @@ class NotiScreen extends StatelessWidget {
         iconColor = Colors.red;
         break;
       case 'post_comment':
-        messageSuffix = " က သင့်ပို့စ်မှာ မှတ်ချက်ပေးခဲ့သည်- \"$additionalText\"";
+        messageSuffix = " က သင့်ပို့စ်မှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - \"$messageText\"' : ''}";
         iconData = Icons.chat_bubble_rounded;
         iconColor = Colors.green;
         break;
       case 'image_comment':
-        messageSuffix = " က သင့်ဓာတ်ပုံမှာ မှတ်ချက်ပေးခဲ့သည်- \"$additionalText\"";
+        messageSuffix = " က သင့်ဓာတ်ပုံမှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - \"$messageText\"' : ''}";
         iconData = Icons.insert_comment_rounded;
         iconColor = Colors.teal;
+        break;
+      case 'post_deleted':
+        messageSuffix = messageText != null && messageText.isNotEmpty
+            ? " က $messageText"
+            : " က သင့်ပို့စ်ကို ဖျက်လိုက်သည်။";
+        iconData = Icons.delete_forever_rounded;
+        iconColor = Colors.redAccent;
         break;
       default:
         messageSuffix = " က သင့်ထံ အကြောင်းကြားစာ ပို့ခဲ့သည်။";
@@ -81,13 +89,13 @@ class NotiScreen extends StatelessWidget {
       if (difference.inDays >= 7) {
         return "${dateTime.day}/${dateTime.month}/${dateTime.year}";
       } else if (difference.inDays >= 1) {
-        return "${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago";
+        return "${difference.inDays} day${difference.inDays > 1? 's' : ''} ago";
       } else if (difference.inHours >= 1) {
-        return "${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago";
+        return "${difference.inHours} hour${difference.inHours > 1? 's' : ''} ago";
       } else if (difference.inMinutes >= 1) {
-        return "${difference.inMinutes} min${difference.inMinutes > 1 ? 's' : ''} ago";
+        return "${difference.inMinutes} min${difference.inMinutes > 1? 's' : ''} ago";
       } else if (difference.inSeconds >= 1) {
-        return "${difference.inSeconds} sec${difference.inSeconds > 1 ? 's' : ''} ago";
+        return "${difference.inSeconds} sec${difference.inSeconds > 1? 's' : ''} ago";
       } else {
         return "Just now";
       }
@@ -116,10 +124,12 @@ class NotiScreen extends StatelessWidget {
             onPressed: () async {
               var snapshots = await FirebaseFirestore.instance
                   .collection('notifications')
-                  .where('receiverId', isEqualTo: currentUid)
-                  .where('isRead', isEqualTo: false)
+                  .orderBy('createdAt', descending: true)
                   .get();
               for (var doc in snapshots.docs) {
+                final data = doc.data();
+                if (!NotificationService.shouldShowToUser(data, currentUid)) continue;
+                if ((data['isRead'] ?? false) == true) continue;
                 doc.reference.update({'isRead': true});
               }
             },
@@ -135,7 +145,6 @@ class NotiScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('notifications')
-            .where('receiverId', isEqualTo: currentUid)
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -155,13 +164,29 @@ class NotiScreen extends StatelessWidget {
             );
           }
 
-          var notiDocs = snapshot.data!.docs;
+          final visibleDocs = snapshot.data!.docs.where((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return NotificationService.shouldShowToUser(data, currentUid);
+          }).toList();
+
+          if (visibleDocs.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.notifications_none_rounded, size: 70, color: Colors.grey),
+                  SizedBox(height: 10),
+                  Text("အကြောင်းကြားစာများ မရှိသေးပါ", style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            );
+          }
 
           return ListView.builder(
-            itemCount: notiDocs.length,
+            itemCount: visibleDocs.length,
             padding: const EdgeInsets.all(12), // Noti Item တွေ ဘေးမကပ်စေရန် Padding ထည့်သည်
             itemBuilder: (context, index) {
-              var doc = notiDocs[index];
+              var doc = visibleDocs[index];
               var data = doc.data() as Map<String, dynamic>;
               bool isRead = data['isRead'] ?? false;
               String senderName = data['senderName'] ?? 'အသုံးပြုသူ';
@@ -169,7 +194,7 @@ class NotiScreen extends StatelessWidget {
               var details = _getNotiDisplayDetails(
                 data['type'] ?? '',
                 senderName,
-                data['additionalText'],
+                (data['type'] == 'post_deleted' ? data['message'] : data['additionalText']) as String?,
               );
 
               return GestureDetector(

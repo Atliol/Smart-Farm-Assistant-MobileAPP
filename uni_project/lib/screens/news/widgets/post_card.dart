@@ -65,10 +65,10 @@ class _PostCardState extends State<PostCard> {
       return "${difference.inHours} hours ago";
     }
     if (difference.inMinutes >= 1) {
-      return "${difference.inMinutes} min${difference.inMinutes > 1 ? 's' : ''} ago";
+      return "${difference.inMinutes} min${difference.inMinutes > 1? 's' : ''} ago";
     }
     if (difference.inSeconds >= 1) {
-      return "${difference.inSeconds} sec${difference.inSeconds > 1 ? 's' : ''} ago";
+      return "${difference.inSeconds} sec${difference.inSeconds > 1? 's' : ''} ago";
     }
     return "Just now";
   }

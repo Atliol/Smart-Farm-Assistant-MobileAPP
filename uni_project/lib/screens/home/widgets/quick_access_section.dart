@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../measure/saved_land_screen.dart';
-import '../../calendar/calendar_dashboard_screen.dart';
+  import '../../calculator/calculator_screen.dart';
 import '../../price/daily_price_screen.dart';
+import '../../tracker/tracker_screen.dart';
 
 class QuickAccessSection extends StatelessWidget {
   final Function(int) onTabChanged;
@@ -58,17 +59,35 @@ class QuickAccessSection extends StatelessWidget {
             ),
             const SizedBox(width: 10),
 
+            // 🟡 နေ့စဉ်စျေးနှုန်းများ (AI Assistant နေရာတွင် အစားထိုးထားပါသည်)
+            Expanded(
+              child: QuickAccessCard(
+                icon: Icons.account_balance_wallet_outlined, // 💡 စျေးနှုန်းနှင့် လိုက်ဖက်သော Icon ပြောင်းထားပါသည်
+                label: 'Tracker',            // 💡 စာသား ပြောင်းထားပါသည်
+                color: Colors.teal.shade700,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TrackerScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+
             // 🟠 Calendar
             Expanded(
               child: QuickAccessCard(
-                icon: Icons.calendar_month,
-                label: 'Calendar',
+                icon: Icons.calculate_rounded,
+                label: 'Calculator',
                 color: Colors.orange.shade700,
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CalendarDashboardScreen(),
+                      builder: (context) => const CalculatorScreen(),
                     ),
                   );
                 },

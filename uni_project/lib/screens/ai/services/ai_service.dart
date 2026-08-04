@@ -111,7 +111,7 @@ class AIService {
 
       try {
         final Map<String, dynamic> data =
-            jsonDecode(
+        jsonDecode(
           utf8.decode(response.bodyBytes),
         );
 

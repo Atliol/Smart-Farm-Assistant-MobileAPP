@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// မိမိပရောဂျက်အမည်နှင့် ဖိုဒါလမ်းကြောင်းအတိုင်း လော့ဂ်အင်စကရင်ကို import လုပ်ပေးပါ
 import '../auth/login_screen.dart';
 
 class AuthPromptScreen extends StatelessWidget {
@@ -9,52 +8,108 @@ class AuthPromptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(color: Colors.green.withOpacity(0.1), shape: BoxShape.circle),
-                child: const Icon(Icons.lock_person_rounded, size: 70, color: Color(0xFF00796B)),
-              ),
-              const SizedBox(height: 24),
-              const Text("ကြည့်ရှုရန် အကောင့်ဝင်ပါ", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              const Text(
-                "News Feed နှင့် လုပ်ဆောင်ချက်များကို အပြည့်အဝ အသုံးပြုနိုင်ရန် ကျေးဇူးပြု၍ အကောင့်ဖွင့်ပါ သို့မဟုတ် Login ဝင်ပေးပါဗျာ။",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 14, height: 1.5),
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  // ပြင်ဆင်လိုက်သည့်နေရာ: တိုက်ရိုက် LoginScreen သို့ Navigate လုပ်ခိုင်းခြင်း
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(
-                          onLoginSuccess: onLoginSuccess, // အောင်မြင်ရင် NewsScreen ဘက်ကို state လှမ်းပြောင်းခိုင်းမည်
+      body: Stack(
+        children: [
+          // 1. Background Image with Dark Overlay
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/watermelon_1.png', // မိမိ project ထဲမှ ပုံလမ်းကြောင်း ပြောင်းပေးပါ
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.45), // စာသားများ ပေါ်လွင်စေရန် အမဲရောင် အုပ်ပေးခြင်း
+            ),
+          ),
+
+          // 2. Main Content Layout
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+              child: Column(
+                children: [
+                  const Spacer(),
+
+                  // Title: Newsfeed
+                  const Text(
+                    "Newsfeed",
+                    style: TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Subtitle Description
+                  const Text(
+                    "စိုက်ပျိုးရေးနှင့်မွေးမြုုရေးဆိုင်ရာအကြောင်းအရာများ\nကိုဆွေးနွေးနိင်ရန်အတွက်အင်တာနက်ဖွင့်ပြီး\n loginဝင်ရန်လိုအပ်ပါသည်.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 15,
+                      height: 1.4,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Login Button (White Rounded Button)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(
+                              onLoginSuccess: onLoginSuccess,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF004D40),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00796B),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF004D40),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(
+                            Icons.logout_rounded,
+                            color: Color(0xFF004D40),
+                            size: 22,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: const Text("လော့ဂ်အင် / အကောင့်ဖွင့်ရန်", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
+
+                  const Spacer(),
+
+                  
+                  const SizedBox(height: 10),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

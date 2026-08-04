@@ -44,7 +44,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
-          "နောက် ၄ ရက်စာ မိုးလေဝသခန့်မှန်းချက်",
+          "နောက် ၃ ရက်စာ မိုးလေဝသခန့်မှန်းချက်",
           style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
         ),
       ),

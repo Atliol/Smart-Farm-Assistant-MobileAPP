@@ -19,6 +19,8 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 * **AI Engine:** Google Generative AI SDK (`google_generative_ai`)
 * **Offline Database** Hive  (`Json Type`)
 * **Flutter Map** Land Measurement 
+* **calculator** price calculator
+* **money tracker** month,year money calculate 
 * **Backend:** Firebase Core (`firebase_core`)
 * **HTTP Network:** `http` package
 

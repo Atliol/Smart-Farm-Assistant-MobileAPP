@@ -7,6 +7,7 @@ import 'post_card.dart';
 import '../profile_screen.dart';
 import 'package:uni_project/screens/news/create_post_screen.dart';
 import 'package:uni_project/screens/news/noti_screen.dart'; // 💡 NotiScreen ကို Import လုပ်လိုက်ပါသည်
+import 'package:uni_project/services/notification_service.dart';
 
 class NewsFeedView extends StatefulWidget {
   const NewsFeedView({super.key});
@@ -42,11 +43,17 @@ class _NewsFeedViewState extends State<NewsFeedView> {
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('notifications')
-                .where('receiverId', isEqualTo: currentUserId)
-                .where('isRead', isEqualTo: false)
+                .orderBy('createdAt', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
-              int unreadCount = snapshot.hasData ? snapshot.data!.docs.length : 0;
+              int unreadCount = 0;
+              if (snapshot.hasData) {
+                unreadCount = snapshot.data!.docs.where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return !((data['isRead'] ?? false) as bool) &&
+                      NotificationService.shouldShowToUser(data, currentUserId);
+                }).length;
+              }
 
               return Stack(
                 alignment: Alignment.center,
