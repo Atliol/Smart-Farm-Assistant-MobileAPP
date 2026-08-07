@@ -136,19 +136,19 @@ class _MainWrapperState extends State<MainWrapper> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     // Home
-                    _buildNavItem(Icons.home, 'Home', 0),
+                    _buildNavItem(Icons.home, 'ပင်မ', 0),
 
                     // Guide
-                    _buildNavItem(Icons.menu_book, 'Guide', 1),
+                    _buildNavItem(Icons.menu_book, 'လမ်းညွှန်', 1),
 
                     // AI Button Space
                     const SizedBox(width: 40),
 
                     // Pesticides
-                    _buildNavItem(Icons.sanitizer_rounded, 'Pesticides', 3),
+                    _buildNavItem(Icons.sanitizer_rounded, 'ဆေးဝါး', 3),
 
                     // News
-                    _buildNavItem(Icons.newspaper, 'News', 4),
+                    _buildNavItem(Icons.newspaper, 'သတင်းများ', 4),
                   ],
                 ),
               ),

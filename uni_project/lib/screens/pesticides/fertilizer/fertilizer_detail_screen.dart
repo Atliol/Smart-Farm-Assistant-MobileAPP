@@ -13,7 +13,7 @@ class FertilizerDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("မြေသြဇာကျွေးနည်း အသေးစိတ်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+        title: const Text("ဓာတ်မြေသြဇာ အသေးစိတ်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
       ),

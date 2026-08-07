@@ -15,14 +15,14 @@ class WeatherCard extends StatelessWidget {
     // Offline Demo Data
     final data = weatherData ??
         {
-          "name": "internetမရှိပါ",
+          "name": "အင်တာနက်မရှိပါ",
           "main": {
             "temp": 0,
             "humidity": 0,
           },
           "weather": [
             {
-              "main": "locationဖွင့်ပါ",
+              "main": "တည်နေရာဖွင့်ပါ",
               "icon": "03d",
             }
           ],
@@ -31,9 +31,9 @@ class WeatherCard extends StatelessWidget {
           }
         };
 
-    final city = data['name'] ?? 'internetမရှိပါ';
+    final city = data['name'] ?? 'အင်တာနက်မရှိပါ';
     final temp = ((data['main']?['temp'] ?? 0) as num).round();
-    final condition = data['weather'][0]['main'] ?? 'locationဖွင့်ပါ';
+    final condition = data['weather'][0]['main'] ?? 'တည်နေရာဖွင့်ပါ';
     final iconCode = data['weather'][0]['icon'] ?? '03d';
     final humidity = data['main']['humidity'].toString();
     final wind = data['wind']['speed'].toString();
@@ -132,12 +132,12 @@ class WeatherCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   WeatherInfoTile(
                     icon: Icons.water_drop,
-                    label: 'Humidity',
+                    label: 'စိုထိုင်းဆ',
                     value: '$humidity%',
                   ),
                   WeatherInfoTile(
                     icon: Icons.air,
-                    label: 'Wind',
+                    label: 'လေတိုက်နှုန်း',
                     value: '$wind m/s',
                   ),
                 ],
@@ -171,7 +171,7 @@ class WeatherCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "နောက် ၃ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ",
+                    "၄ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,

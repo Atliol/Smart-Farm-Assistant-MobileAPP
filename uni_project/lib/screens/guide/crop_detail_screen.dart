@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; // 💡 'Import' မှ 'import' သို့ ပြောင်းပါ
 import '../../constants/app_colors.dart';
 import '../../models/crop_model.dart';
 import '../../widgets/app_background.dart';
@@ -13,7 +13,14 @@ class CropDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(crop.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          crop.title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -33,8 +40,14 @@ class CropDetailScreen extends StatelessWidget {
                   height: 220,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    width: double.infinity, height: 220, color: Colors.grey[300],
-                    child: const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                    width: double.infinity,
+                    height: 220,
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.image_not_supported,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
@@ -43,7 +56,11 @@ class CropDetailScreen extends StatelessWidget {
               //📝 ပင်မ Title
               Text(
                 crop.title,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A237E),
+                ),
               ),
               const SizedBox(height: 10),
 
@@ -55,7 +72,7 @@ class CropDetailScreen extends StatelessWidget {
                   height: 1.6,
                   color: Colors.black87,
                 ),
-                textAlign: TextAlign.justify, // 💡 စာသားများကို ဘယ်ညာအညီညှိပေးရန်
+                textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 16),
               const Divider(),
@@ -65,7 +82,11 @@ class CropDetailScreen extends StatelessWidget {
               if (crop.subSteps.isNotEmpty) ...[
                 const Text(
                   "အသေးစိတ် လမ်းညွှန်ချက်များ",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1A237E),
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -73,11 +94,11 @@ class CropDetailScreen extends StatelessWidget {
                 Column(
                   children: crop.subSteps.map((step) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0), // အဆင့်တစ်ခုချင်းစီကြားခြားပေးရန်
+                      padding: const EdgeInsets.only(bottom: 24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 1. Sub Title (Bold ဖြင့်ပြမည်)
+                          // 1. Sub Title
                           Text(
                             step.subTitle,
                             style: const TextStyle(
@@ -88,7 +109,7 @@ class CropDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
 
-                          // 2. Sub Image (ပုံလမ်းကြောင်း မလွတ်မှသာ ပြသမည်)
+                          // 2. Sub Image
                           if (step.subImage.isNotEmpty) ...[
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
@@ -97,7 +118,8 @@ class CropDetailScreen extends StatelessWidget {
                                 width: double.infinity,
                                 height: 150,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(), // ပုံမရှိရင် ဖျောက်ထားမည်
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const SizedBox.shrink(),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -111,7 +133,7 @@ class CropDetailScreen extends StatelessWidget {
                               height: 1.5,
                               color: Colors.grey.shade800,
                             ),
-                            textAlign: TextAlign.justify, // 💡 စာသားများကို ဘယ်ညာအညီညှိပေးရန်
+                            textAlign: TextAlign.justify,
                           ),
                         ],
                       ),

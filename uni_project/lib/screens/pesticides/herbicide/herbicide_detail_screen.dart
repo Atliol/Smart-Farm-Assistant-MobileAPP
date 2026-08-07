@@ -13,7 +13,7 @@ class HerbicideDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("ပေါင်းသတ်ဆေး အသေးစိတ်လမ်းညွှန်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+        title: const Text("ပေါင်းသတ်ဆေး အသေးစိတ်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
       ),

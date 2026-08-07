@@ -48,7 +48,7 @@ class CustomDrawer extends StatelessWidget {
             // Drawer Items (💡 Screen များနှင့် ချိတ်ဆက်ပြီးပါပြီ)
             ListTile(
               leading: const Icon(Icons.help, color: AppColors.primaryColor),
-              title: const Text('User Guide'),
+              title: const Text('အသုံးပြုနည်း လမ်းညွှန်'),
               onTap: () {
                 Navigator.pop(context); // Drawer ကို အရင်ပိတ်မည်
                 Navigator.push(
@@ -59,7 +59,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.privacy_tip, color: AppColors.primaryColor),
-              title: const Text('Privacy Policy'),
+              title: const Text('လုံခြုံရေး မူဝါဒ'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -70,7 +70,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail, color: AppColors.primaryColor),
-              title: const Text('Contact Us'),
+              title: const Text('ဆက်သွယ်ရန်'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -81,7 +81,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.info, color: AppColors.primaryColor),
-              title: const Text('About'),
+              title: const Text('ကျွန်ုပ်တို့အကြောင်း'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(

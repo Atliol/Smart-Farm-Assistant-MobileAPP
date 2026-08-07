@@ -45,7 +45,7 @@ class AuthPromptScreen extends StatelessWidget {
 
                   // Subtitle Description
                   const Text(
-                    "စိုက်ပျိုးရေးနှင့်မွေးမြုုရေးဆိုင်ရာအကြောင်းအရာများ\nကိုဆွေးနွေးနိင်ရန်အတွက်အင်တာနက်ဖွင့်ပြီး\n loginဝင်ရန်လိုအပ်ပါသည်.",
+                    "စိုက်ပျိုးရေးနှင့်မွေးမြုုရေးဆိုင်ရာအကြောင်းအရာများကိုဆွေးနွေးနိင်ရန်အတွက်အင်တာနက်ဖွင့်ပြီး Login ဝင်ရန်လိုအပ်ပါသည်",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white70,

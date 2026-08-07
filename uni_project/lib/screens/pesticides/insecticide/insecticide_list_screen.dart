@@ -15,7 +15,7 @@ class InsecticideListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("ပိုးသတ်ဆေး လမ်းညွှန်ချက်များ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text("ပိုးသတ်ဆေးများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,

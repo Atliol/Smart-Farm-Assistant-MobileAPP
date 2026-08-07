@@ -15,7 +15,7 @@ class FertilizerListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("ဓာတ်မြေသြဇာ အသုံးချနည်းများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text("ဓာတ်မြေသြဇာများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,

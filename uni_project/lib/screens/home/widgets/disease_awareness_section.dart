@@ -17,7 +17,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Disease Awareness', // အပင်ရောဂါများအကြောင်း
+              'အပင်ရောဂါများ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -26,17 +26,16 @@ class DiseaseAwarenessSection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // 💡 "အပင်ရောဂါ" Tag စစ်ထုတ်ထားသော List Screen ဆီသို့ Navigate ပြုလုပ်ခြင်း
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const KnowledgeListScreen(
-                      initialTag: 'အပင်ရောဂါ', // 💡 Tag စစ်ထုတ်ရန် ရွေးချယ်ပေးလိုက်ခြင်း
+                      initialTag: 'အပင်ရောဂါ',
                     ),
                   ),
                 );
               },
-              child: const Text('View All', style: TextStyle(color: Colors.teal)),
+              child: const Text('အားလုံး', style: TextStyle(color: Colors.teal)),
             ),
           ],
         ),

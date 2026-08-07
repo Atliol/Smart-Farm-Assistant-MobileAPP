@@ -97,7 +97,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const Center(
                 child: Text(
-                  'မေးမြန်းလိုပါက contact@shwelelyar.com သို့ ဆက်သွယ်နိုင်ပါသည်။',
+                  'မေးမြန်းလိုပါက shwelelyar4u@gmail.com သို့ ဆက်သွယ်နိုင်ပါသည်။',
                   style: TextStyle(fontSize: 11, color: Colors.grey),
                 ),
               ),

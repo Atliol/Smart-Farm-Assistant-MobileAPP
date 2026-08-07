@@ -4,21 +4,32 @@ import '../../models/aquaculture_model.dart';
 import '../../models/knowledge_model.dart';
 import '../../services/database_service.dart';
 import '../../models/crop_model.dart';
-import '../../models/livestock_model.dart';   // 🆕 LivestockModel Import
+import '../../models/livestock_model.dart';
 import 'aquaculture_list_screen.dart';
 import 'crop_list_screen.dart';
 import 'knowledge_list_screen.dart';
-import 'livestock_list_screen.dart';          // 🆕 LivestockListScreen Import
+import 'livestock_list_screen.dart';
 
 class GuideScreen extends StatelessWidget {
   const GuideScreen({super.key});
+
+  // 💡 အင်္ဂလိပ် ဂဏန်းများကို မြန်မာဂဏန်းသို့ ပြောင်းပေးသော Helper Function
+  String _toMyanmarNumerals(int number) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const myanmar = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+
+    String numStr = number.toString();
+    for (int i = 0; i < english.length; i++) {
+      numStr = numStr.replaceAll(english[i], myanmar[i]);
+    }
+    return numStr;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppBackground(
-        // 💡 Future.wait ကိုသုံးပြီး စိုက်ပျိုးရေးနှင့် မွေးမြူရေး ဒေတာနှစ်ခုစလုံးကို တစ်ပြိုင်နက် ဖတ်ယူခြင်း
         child: FutureBuilder<List<dynamic>>(
           future: Future.wait([
             DatabaseService().getCropsData(),
@@ -27,7 +38,6 @@ class GuideScreen extends StatelessWidget {
             DatabaseService().getAquacultureData(),
           ]),
           builder: (context, snapshot) {
-            // ဒေတာအရေအတွက်ကို dynamic ယူမည် (ဒေတာမကျသေးပါက 0 ပြထားမည်)
             int cropCount = 0;
             int livestockCount = 0;
             int knowledgeCount = 0;
@@ -45,32 +55,32 @@ class GuideScreen extends StatelessWidget {
               aquaCount = aqua.length;
             }
 
-            // 💡 ဒေတာရရှိမှုအပေါ် မူတည်ပြီး ကဏ္ဍစာရင်းကို ညှိယူခြင်း
+            // 💡 _toMyanmarNumerals() ကို အသုံးပြု၍ မြန်မာဂဏန်း ပြောင်းထားပါသည်
             final List<Map<String, dynamic>> categories = [
               {
                 'title': 'စိုက်ပျိုးနည်းပညာ',
-                'subtitle': '$cropCount Guides',
+                'subtitle': '${_toMyanmarNumerals(cropCount)} ခု',
                 'icon': Icons.eco_rounded,
                 'color': const Color(0xFFE8F5E9),
                 'iconColor': Colors.green.shade700,
               },
               {
                 'title': 'မွေးမြူနည်းပညာ',
-                'subtitle': '$livestockCount Guides', // 💡 🆕 Dynamic Count ပြောင်းလဲထားပါသည်
+                'subtitle': '${_toMyanmarNumerals(livestockCount)} ခု',
                 'icon': Icons.pets_rounded,
                 'color': const Color(0xFFFFF3E0),
                 'iconColor': Colors.orange.shade700,
               },
               {
                 'title': 'ရေလုပ်ငန်းနည်းပညာ',
-                'subtitle': '$aquaCount Guides',
+                'subtitle': '${_toMyanmarNumerals(aquaCount)} ခု',
                 'icon': Icons.water_rounded,
                 'color': const Color(0xFFE1F5FE),
                 'iconColor': Colors.blue.shade700,
               },
               {
                 'title': 'အထွေထွေဗဟုသုတ',
-                'subtitle': '$knowledgeCount Guides',
+                'subtitle': '${_toMyanmarNumerals(knowledgeCount)} ခု',
                 'icon': Icons.lightbulb_rounded,
                 'color': const Color(0xFFF3E5F5),
                 'iconColor': Colors.purple.shade700,
@@ -83,11 +93,10 @@ class GuideScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header Content
                     const Text(
-                      "Knowledge Guides",
+                      "စိုက်ပျိုးမွေးမြူရေးဆိုင်ရာ နည်းပညာများ",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1A237E),
                       ),
@@ -97,9 +106,8 @@ class GuideScreen extends StatelessWidget {
                       "စိုက်ပျိုးမွေးမြူရေး လမ်းညွှန်ချက်များ ဖတ်ရှုပါ",
                       style: TextStyle(fontSize: 14, color: Colors.black54),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
 
-                    // Category Grid
                     Expanded(
                       child: GridView.builder(
                         itemCount: categories.length,
@@ -119,7 +127,6 @@ class GuideScreen extends StatelessWidget {
                             bgColor: item['color'],
                             iconColor: item['iconColor'],
                             onTap: () {
-                              // 💡 စိုက်ပျိုးနည်းပညာကို နှိပ်လိုက်လျှင်
                               if (item['title'] == 'စိုက်ပျိုးနည်းပညာ') {
                                 Navigator.push(
                                   context,
@@ -127,27 +134,21 @@ class GuideScreen extends StatelessWidget {
                                     builder: (context) => CropListScreen(),
                                   ),
                                 );
-                              }
-                              // 🆕 မွေးမြူနည်းပညာကို နှိပ်လိုက်လျှင် LivestockListScreen သို့ သွားရန်
-                              else if (item['title'] == 'မွေးမြူနည်းပညာ') {
+                              } else if (item['title'] == 'မွေးမြူနည်းပညာ') {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => LivestockListScreen(),
                                   ),
                                 );
-                              }
-
-                              else if (item['title'] == 'အထွေထွေဗဟုသုတ') {
+                              } else if (item['title'] == 'အထွေထွေဗဟုသုတ') {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => KnowledgeListScreen(),
+                                    builder: (context) => const KnowledgeListScreen(),
                                   ),
                                 );
-                              }
-
-                              else if (item['title'] == 'ရေလုပ်ငန်းနည်းပညာ') {
+                              } else if (item['title'] == 'ရေလုပ်ငန်းနည်းပညာ') {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -170,7 +171,6 @@ class GuideScreen extends StatelessWidget {
     );
   }
 
-  // မူလ ကတ်ပြားဒီဇိုင်း Function (ပြောင်းလဲမှုမရှိပါ)
   Widget _buildCategoryCard(
       BuildContext context, {
         required String title,

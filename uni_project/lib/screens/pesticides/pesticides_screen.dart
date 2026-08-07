@@ -25,7 +25,7 @@ class PesticidesScreen extends StatelessWidget {
         'targetScreen': InsecticideListScreen(),
       },
       {
-        'title': 'မှိုရောဂါကာကွယ်၊ကုသဆေး',
+        'title': 'မှိုသတ်ဆေး/ကာကွယ်ဆေး',
         'subtitle': 'မှိုရောဂါ၊ ဘက်တီးရီးယားနှင့် အပင်ရောဂါများအတွက်',
         'icon': Icons.healing_rounded,
         'color': const Color(0xFFE8F8F5),
@@ -34,7 +34,7 @@ class PesticidesScreen extends StatelessWidget {
       },
       {
         'title': 'ပေါင်းသတ်ဆေး',
-        'subtitle': 'စိုက်ခင်းအတွင်း မလိုလားအပ်သော ပေါင်းမြက်များ နှိမ်နင်းရန်',
+        'subtitle': 'မလိုလားအပ်သော ပေါင်းမြက်များ နှိမ်နင်းရန်',
         'icon': Icons.grass_rounded,
         'color': const Color(0xFFFFF3E0),
         'iconColor': Colors.orange.shade800,
@@ -42,7 +42,7 @@ class PesticidesScreen extends StatelessWidget {
       },
       {
         'title': 'ဓာတ်မြေသြဇာ',
-        'subtitle': 'အပင်ထွားကြိုင်းပြီး အထွက်နှုန်းတိုးစေမည့် အာဟာရများ',
+        'subtitle': 'အပင်ထွားကြိုင်းပြီး အထွက်နှုန်းတိုးစေရန်',
         'icon': Icons.opacity_rounded,
         'color': const Color(0xFFE8F5E9),
         'iconColor': Colors.green.shade700,
@@ -60,12 +60,12 @@ class PesticidesScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "ဆေးဝါးများ",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+                  "စိုက်ပျိုးရေးဆေးဝါးနှင့် ဓာတ်မြေသြဇာများ",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "ဆေးဝါးနှင့် ဓာတ်မြေသြဇာ အမျိုးအစားများအလိုက် ရှာဖွေပါ",
+                  "ဆေးဝါးနှင့် ဓာတ်မြေသြဇာ အမျိုးအစားများအလိုက်ရှာဖွေပါ",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 const SizedBox(height: 20),

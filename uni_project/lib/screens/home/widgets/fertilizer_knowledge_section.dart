@@ -16,7 +16,7 @@ class FertilizerKnowledgeSection extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Fertilizer Knowledge',
+              'ဓာတ်မြေသြဇာများ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
             ),
             TextButton(
@@ -28,7 +28,7 @@ class FertilizerKnowledgeSection extends StatelessWidget{
                   ),
                 );
               },
-              child: const Text('View All', style: TextStyle(color: Colors.teal)),
+              child: const Text('အားလုံး', style: TextStyle(color: Colors.teal)),
             ),
           ],
         ),

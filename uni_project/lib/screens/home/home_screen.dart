@@ -8,7 +8,6 @@ import 'package:uni_project/screens/home/widgets/fertilizer_knowledge_section.da
 import 'package:uni_project/screens/home/widgets/quick_access_section.dart';
 import 'package:uni_project/screens/home/widgets/weather_card.dart';
 import 'package:uni_project/widgets/app_background.dart';
-import '../calendar/calendar_dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int) onTabChanged;
@@ -121,7 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   WeatherCard(
                     weatherData: weatherData,
                   ),
-                // 💡 QuickAccessSection သို့ တက်ဘ်ပြောင်းလဲခြင်း Callback ကို စနစ်တကျပေးပို့ထားပါသည်
+
+                const SizedBox(height: 20),
+
                 QuickAccessSection(
                   onTabChanged: widget.onTabChanged,
                 ),
@@ -130,9 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const CropOverviewSection(),
 
-                const SizedBox(height: 20),
-
-                
                 const SizedBox(height: 20),
 
                 const DiseaseAwarenessSection(),
