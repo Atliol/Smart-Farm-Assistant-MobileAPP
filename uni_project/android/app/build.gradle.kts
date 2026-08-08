@@ -10,8 +10,8 @@ plugins {
 
 android {
     namespace = "com.dev.kl.uni_project"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -33,6 +33,11 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+        externalNativeBuild {
+            cmake {
+                arguments.add("-DANDROID_STL=c++_shared")
+            }
+        }
     }
 
     buildTypes {
@@ -45,7 +50,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

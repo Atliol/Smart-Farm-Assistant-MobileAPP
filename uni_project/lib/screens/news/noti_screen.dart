@@ -24,12 +24,12 @@ class NotiScreen extends StatelessWidget {
         iconColor = Colors.red;
         break;
       case 'post_comment':
-        messageSuffix = " က သင့်ပို့စ်မှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - \"$messageText\"' : ''}";
+        messageSuffix = " က သင့်ပို့စ်မှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - "${messageText}"' : ''}";
         iconData = Icons.chat_bubble_rounded;
         iconColor = Colors.green;
         break;
       case 'image_comment':
-        messageSuffix = " က သင့်ဓာတ်ပုံမှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - \"$messageText\"' : ''}";
+        messageSuffix = " က သင့်ဓာတ်ပုံမှာ မှတ်ချက်ပေးခဲ့သည်${messageText != null && messageText.isNotEmpty ? ' - "${messageText}"' : ''}";
         iconData = Icons.insert_comment_rounded;
         iconColor = Colors.teal;
         break;
@@ -41,7 +41,9 @@ class NotiScreen extends StatelessWidget {
         iconColor = Colors.redAccent;
         break;
       default:
-        messageSuffix = " က သင့်ထံ အကြောင်းကြားစာ ပို့ခဲ့သည်။";
+        messageSuffix =  messageText != null && messageText.isNotEmpty
+            ? " က $messageText"
+            : " က သင့်reportကို ဖျက်လိုက်သည်။";
         iconData = Icons.notifications_rounded;
         iconColor = Colors.grey;
     }
@@ -128,7 +130,7 @@ class NotiScreen extends StatelessWidget {
                   .get();
               for (var doc in snapshots.docs) {
                 final data = doc.data();
-                if (!NotificationService.shouldShowToUser(data, currentUid)) continue;
+                if (!CloudNotificationService.shouldShowToUser(data, currentUid)) continue;
                 if ((data['isRead'] ?? false) == true) continue;
                 doc.reference.update({'isRead': true});
               }
@@ -166,7 +168,7 @@ class NotiScreen extends StatelessWidget {
 
           final visibleDocs = snapshot.data!.docs.where((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            return NotificationService.shouldShowToUser(data, currentUid);
+            return CloudNotificationService.shouldShowToUser(data, currentUid);
           }).toList();
 
           if (visibleDocs.isEmpty) {

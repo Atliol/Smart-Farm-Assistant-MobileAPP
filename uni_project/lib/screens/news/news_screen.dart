@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'widgets/news_feed_view.dart';
 import 'auth_prompt_screen.dart';
@@ -25,7 +24,8 @@ class _NewsScreenState extends State<NewsScreen> {
 
           final user = snapshot.data;
           if (user != null) {
-            return const NewsFeedView();
+            // 🆕 ကျွန်တော် ထပ်ထည့်ခဲ့တဲ့ Scaffold/AppBar ကြီးကို ဖြုတ်ပြီး မူလအတိုင်း ပြန်ပြောင်းထားပါတယ်။
+            return const NewsFeedView(); 
           }
 
           return AuthPromptScreen(

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../models/cost_calculator_model.dart';
 import '../../services/cost_calculator_service.dart';
-import 'widgets/cost_chart_widget.dart';
-import 'widgets/result_card_widget.dart';
+import 'pages/calculator_input_page.dart';
+import 'pages/calculator_result_page.dart';
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
 
-@override
+  @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
+  int _currentIndex = 0;
+
+  // Initial Controller Values
   final _acresController = TextEditingController(text: '1');
   final _ureaPriceController = TextEditingController(text: '120000');
   final _tspPriceController = TextEditingController(text: '110000');
@@ -22,8 +25,25 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String _selectedCrop = 'စပါး';
   CalculationResult? _result;
 
+  // သီးနှံအလိုက် ၁ ဧက ခန့်မှန်းအထွက်နှုန်း (တင်း/အိတ်)
+  double _getExpectedYieldForCrop(String crop) {
+    switch (crop) {
+      case 'စပါး':
+        return 70.0;
+      case 'ပြောင်း':
+        return 50.0;
+      case 'မတ်ပဲ':
+      case 'ပဲတီစိမ်း':
+        return 20.0;
+      case 'မြေပဲ':
+        return 40.0;
+      default:
+        return 50.0;
+    }
+  }
+
   void _onCalculate() {
-    FocusScope.of(context).unfocus(); // Keyboard ခေါက်ချရန်
+    FocusScope.of(context).unfocus();
 
     double acres = double.tryParse(_acresController.text) ?? 1.0;
     double ureaPrice = double.tryParse(_ureaPriceController.text) ?? 0;
@@ -40,9 +60,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         tspPricePerBag: tspPrice,
         mopPricePerBag: mopPrice,
         laborCost: labor,
-        expectedYieldBags: 70,
+        expectedYieldBags: _getExpectedYieldForCrop(_selectedCrop),
         marketPricePerBag: cropPrice,
       );
+      _currentIndex = 1; // တွက်ချက်ပြီးလျှင် Results စာမျက်နှာသို့ ရွှေ့မည်
+    });
+  }
+
+  void _onReset() {
+    setState(() {
+      _acresController.text = '1';
+      _ureaPriceController.text = '120000';
+      _tspPriceController.text = '110000';
+      _mopPriceController.text = '95000';
+      _laborCostController.text = '150000';
+      _cropPriceController.text = '20000';
+      _selectedCrop = 'စပါး';
+      _result = null;
+      _currentIndex = 0; // Input စာမျက်နှာသို့ ပြန်သွားမည်
     });
   }
 
@@ -59,231 +94,74 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF00796B);
+    final List<Widget> pages = [
+      CalculatorInputPage(
+        acresController: _acresController,
+        ureaPriceController: _ureaPriceController,
+        tspPriceController: _tspPriceController,
+        mopPriceController: _mopPriceController,
+        laborCostController: _laborCostController,
+        cropPriceController: _cropPriceController,
+        selectedCrop: _selectedCrop,
+        onCropChanged: (val) {
+          if (val != null) setState(() => _selectedCrop = val);
+        },
+        onCalculate: _onCalculate,
+      ),
+      CalculatorResultPage(
+        result: _result,
+        onReset: _onReset,
+      ),
+    ];
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: const Text(
-          'စိုက်ပျိုးစရိတ် တွက်ချက်စက် 🧮',
+          'စိုက်ပျိုးစရိတ် တွက်ချက်ခြင်း',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: primaryColor,
+        backgroundColor: const Color(0xFF00796B),
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Header Banner Box
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: primaryColor.withOpacity(0.2)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.calculate_outlined, color: primaryColor, size: 32),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'စိုက်ပျိုးစရိတ်နှင့် အမြတ် ခန့်မှန်းရန်',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
-                            fontSize: 15,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'အချက်အလက်များကို ဖြည့်သွင်း၍ တွက်ချက်မည်ကို နှိပ်ပါ',
-                          style: TextStyle(color: Colors.black45, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // 2. Input Section Card
-            Card(
-              elevation: 1.5,
-              shadowColor: Colors.black12,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionTitle('သီးနှံနှင့် မြေဧက အချက်အလက်'),
-                    const SizedBox(height: 12),
-                    
-                    // Dropdown
-                    DropdownButtonFormField<String>(
-                      value: _selectedCrop,
-                      decoration: _inputDecoration(
-                        label: 'သီးနှံအမျိုးအစား ရွေးပါ',
-                        icon: Icons.grass_outlined,
-                      ),
-                      items: ['စပါး', 'ပြောင်း', 'နှမ်း', 'မြေပဲ']
-                          .map((crop) => DropdownMenuItem(
-                                value: crop,
-                                child: Text(crop),
-                              ))
-                          .toList(),
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() => _selectedCrop = val);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Acres Input
-                    TextField(
-                      controller: _acresController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: _inputDecoration(
-                        label: 'စိုက်ပျိုးမည့် မြေဧက',
-                        suffixText: 'ဧက',
-                        icon: Icons.landscape_outlined,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 20),
-                    _buildSectionTitle('ကုန်ကျစရိတ်နှင့် စျေးနှုန်းများ'),
-                    const SizedBox(height: 12),
-
-                    // Urea Price Input
-                    TextField(
-                      controller: _ureaPriceController,
-                      keyboardType: TextInputType.number,
-                      decoration: _inputDecoration(
-                        label: 'ယူရီးယား ၁ အိတ်စျေး',
-                        suffixText: 'ကျပ်',
-                        icon: Icons.shopping_bag_outlined,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Labor Cost Input
-                    TextField(
-                      controller: _laborCostController,
-                      keyboardType: TextInputType.number,
-                      decoration: _inputDecoration(
-                        label: 'ခန့်မှန်း လုပ်သား/စက်ကိရိယာခ',
-                        suffixText: 'ကျပ်',
-                        icon: Icons.engineering_outlined,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Market Price Input
-                    TextField(
-                      controller: _cropPriceController,
-                      keyboardType: TextInputType.number,
-                      decoration: _inputDecoration(
-                        label: 'ခန့်မှန်း သီးနှံ ပေါက်စျေး (၁ တင်း)',
-                        suffixText: 'ကျပ်',
-                        icon: Icons.sell_outlined,
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Calculate Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _onCalculate,
-                        icon: const Icon(Icons.analytics_outlined, color: Colors.white),
-                        label: const Text(
-                          'တွက်ချက်မည်',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // 3. Results & Chart Display Section
-            if (_result != null) ...[
-              ResultCardWidget(result: _result!),
-              const SizedBox(height: 16),
-              CostChartWidget(result: _result!),
-            ],
-          ],
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pages,
       ),
-    );
-  }
-
-  // Section Label Builder
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF00796B),
-      ),
-    );
-  }
-
-  // Custom Input Decoration
-  InputDecoration _inputDecoration({
-    required String label,
-    required IconData icon,
-    String? suffixText,
-  }) {
-    return InputDecoration(
-      labelText: label,
-      suffixText: suffixText,
-      prefixIcon: Icon(icon, color: const Color(0xFF00796B), size: 20),
-      filled: true,
-      fillColor: Colors.grey.shade50,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFF00796B), width: 1.8),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          // ဘာမှ မတွက်ရသေးဘဲ Results Tab ကို နှိပ်ပါက သတိပေးရန်
+          if (index == 1 && _result == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('ကျေးဇူးပြု၍ အချက်အလက်များဖြည့်စွက်ပြီး "တွက်ချက်မည်" ကို နှိပ်ပါ'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            return;
+          }
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        selectedItemColor: const Color(0xFF00796B),
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit_note_outlined),
+            activeIcon: Icon(Icons.edit_note_rounded),
+            label: 'တွက်ချက်ရန်',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart_rounded),
+            label: 'ရလဒ်များ',
+          ),
+        ],
       ),
     );
   }

@@ -7,8 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uni_project/services/hive_db_service.dart';
 import 'package:uni_project/services/tracker_db_service.dart';
 // 💡 နာမည်တူနေလို့ Flutter မရောအောင် 'as' သုံးပြီး နာမည်ခွဲပေးလိုက်ခြင်း
-import 'package:uni_project/services/notification_service.dart' as online_notif;
-import 'package:uni_project/services/notifications_service.dart' as local_notif;
+import 'package:uni_project/services/notification_service.dart' ;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +19,6 @@ void main() async {
     
     // ၂။ Box ကို ဖွင့်လှစ်ခြင်း
     await HiveDbService.init();
-
-    // ၃။ Notification နှင့် Firebase နှိုးခြင်း
-    await local_notif.NotificationService.init();
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

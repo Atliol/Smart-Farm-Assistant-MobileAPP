@@ -11,7 +11,7 @@ class PriceService {
     'အားလုံး',
     'စပါး',
     'မတ်ပဲ',
-    'ပဲစင်းငုံ',
+    'ဆီ',
     'ကြက်သွန်',
     'ဆား',
   ];
@@ -20,7 +20,7 @@ class PriceService {
     'paddy': {
       'category': 'စပါး',
       'cropName': 'ဆန်',
-      'unit': 'တန်',
+      'unit': 'တင်း',
     },
     'matpe': {
       'category': 'မတ်ပဲ',
@@ -28,9 +28,9 @@ class PriceService {
       'unit': 'တန်',
     },
     'pigeonPea': {
-      'category': 'ပဲစင်းငုံ',
-      'cropName': 'ပီဂျင်ပီ',
-      'unit': 'တန်',
+      'category': 'ဆီ',
+      'cropName': 'ပဲဆီ',
+      'unit': 'ပိဿာ',
     },
     'onion': {
       'category': 'ကြက်သွန်',

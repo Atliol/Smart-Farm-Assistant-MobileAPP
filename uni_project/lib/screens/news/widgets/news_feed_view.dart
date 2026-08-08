@@ -6,8 +6,10 @@ import '../models/post_model.dart';
 import 'post_card.dart';
 import '../profile_screen.dart';
 import 'package:uni_project/screens/news/create_post_screen.dart';
-import 'package:uni_project/screens/news/noti_screen.dart'; // 💡 NotiScreen ကို Import လုပ်လိုက်ပါသည်
+import 'package:uni_project/screens/news/noti_screen.dart'; 
 import 'package:uni_project/services/notification_service.dart';
+// 💡 Messenger Screen ကို သွားနိုင်ရန် Import ထည့်ပေးထားပါသည်
+import '../chat_list_screen.dart'; 
 
 class NewsFeedView extends StatefulWidget {
   const NewsFeedView({super.key});
@@ -18,7 +20,7 @@ class NewsFeedView extends StatefulWidget {
 
 class _NewsFeedViewState extends State<NewsFeedView> {
 
-  // 💡 အကူ Logic: Base64 String သန့်စင်ပြီး စိတ်ချရသော MemoryImage ထုတ်ပေးရန်
+  // Base64 String သန့်စင်ပြီး စိတ်ချရသော MemoryImage ထုတ်ပေးရန်
   ImageProvider? _getAvatarImage(String? base64Str) {
     if (base64Str == null || base64Str.isEmpty || base64Str.startsWith('blob:')) return null;
     try {
@@ -39,7 +41,18 @@ class _NewsFeedViewState extends State<NewsFeedView> {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // 💡 🔔 Facebook စတိုင် မဖတ်ရသေးသော Noti အရေအတွက်ပြပေးမည့် Badge ပါဝင်သော Noti Icon
+          // 💡 ✨ အသစ်ထည့်သွင်းလိုက်သည့် ချက်တင်/မက်ဆင်ဂျာ အိုင်ကွန် ✨
+          IconButton(
+            icon: const Icon(Icons.chat_bubble_rounded, size: 24, color: Colors.black87),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ChatListScreen()),
+              );
+            },
+          ),
+
+          // 🔔 Noti Icon (Badge ပါဝင်သော Stack)
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('notifications')
@@ -51,7 +64,7 @@ class _NewsFeedViewState extends State<NewsFeedView> {
                 unreadCount = snapshot.data!.docs.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
                   return !((data['isRead'] ?? false) as bool) &&
-                      NotificationService.shouldShowToUser(data, currentUserId);
+                      CloudNotificationService.shouldShowToUser(data, currentUserId);
                 }).length;
               }
 
@@ -97,6 +110,7 @@ class _NewsFeedViewState extends State<NewsFeedView> {
             },
           ),
 
+          // ပရိုဖိုင်ပုံစံလေး (ညာဘက်အစွန်ဆုံး)
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -145,7 +159,6 @@ class _NewsFeedViewState extends State<NewsFeedView> {
                       MaterialPageRoute(builder: (context) => ProfileScreen(userId: currentUserId)),
                     );
                   },
-                  // 💡 ပြင်ဆင်လိုက်သည့်နေရာ: "ဘာတွေတွေးနေလဲ" ဘေးက မိမိကိုယ်ပိုင် ပရိုဖိုင်ပုံလေး ✨
                   child: StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance.collection('users').doc(currentUserId).snapshots(),
                     builder: (context, userSnapshot) {

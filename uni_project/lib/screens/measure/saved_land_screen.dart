@@ -3,7 +3,6 @@ import '../../constants/app_colors.dart';
 import '../../models/land_area_model.dart';
 import '../../services/land_api_service.dart';
 import 'measure_map_screen.dart';
-import 'package:uni_project/screens/home/home_screen.dart';
 import 'view_saved_map_screen.dart';
 
 class SavedLandScreen extends StatefulWidget {
@@ -166,7 +165,7 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.3),
                   Icon(Icons.landscape, size: 80, color: Colors.grey.shade300),
                   const SizedBox(height: 16),
-                  const Center(child: Text("သိမ်းဆည်းထားသော မြေကွက်များ မရှိသေးပါဗျာ။", style: TextStyle(color: Colors.grey))),
+                  const Center(child: Text("သိမ်းဆည်းထားသော မြေကွက်များ မရှိသေးပါ\n မြေကွက်သိမ်းဆည်းရန် အပေါင်းကိုနိပ်ပါ", style: TextStyle(color: Colors.grey))),
                 ],
               );
             }

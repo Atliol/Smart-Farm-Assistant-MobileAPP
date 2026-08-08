@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'models/post_model.dart';
 import 'widgets/post_card.dart';
 import 'package:uni_project/screens/main_wrapper.dart';
+import 'services/social_service.dart'; // 🆕 ထည့်သွင်းရန်
+import 'chat_room_screen.dart'; // 🆕 အောက်တွင် ပြုလုပ်မည့် Messenger မျက်နှာပြင်
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -20,12 +22,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
   final _bioController = TextEditingController();
   final _locationController = TextEditingController();
+  final SocialService _socialService = SocialService(); // 🆕 Service သတ်မှတ်ခြင်း
 
   bool _isLoading = true;
   bool _isSaving = false;
   bool _isEditing = false;
 
   String? _profileBase64String;
+  int _postCount = 0; 
 
   User? get _currentUser => FirebaseAuth.instance.currentUser;
   final ImagePicker _picker = ImagePicker();
@@ -52,8 +56,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _nameController.text = 'အသုံးပြုသူ';
         }
       }
+
+      QuerySnapshot postSnapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('userId', isEqualTo: widget.userId)
+          .get();
+      
+      setState(() {
+        _postCount = postSnapshot.docs.length;
+      });
+
     } catch (e) {
-      print("Error loading profile: $e");
+      print("Error loading profile or post count: $e");
     } finally {
       setState(() => _isLoading = false);
     }
@@ -65,7 +79,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (image != null) {
         setState(() => _isLoading = true);
-
         List<int> imageBytes = await image.readAsBytes();
         String base64Image = base64Encode(imageBytes);
 
@@ -108,20 +121,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     finally { setState(() => _isSaving = false); }
   }
 
-  // 💡 <b>FIXED: Required named parameter 'onLoginSuccess' အား ဖြည့်စွက်ကာ အမှားပြင်ဆင်ပြီးသားစနစ်</b> 🚀
   Future<void> _handleLogout() async {
     try {
       await FirebaseAuth.instance.signOut();
-
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const MainWrapper(initialIndex: 4)),
           (Route<dynamic> route) => false,
         );
       }
-    } catch (e) {
-      print("Logout Error: $e");
-    }
+    } catch (e) { print("Logout Error: $e"); }
   }
 
   ImageProvider? _getProfileImage() {
@@ -130,11 +139,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (!_profileBase64String!.startsWith('blob:')) {
           return MemoryImage(base64Decode(_profileBase64String!));
         }
-      } catch (e) {
-        print("Invalid base64 string: $e");
-      }
+      } catch (e) { print("Invalid base64 string: $e"); }
     }
     return null;
+  }
+
+  Widget _buildStatItem(String count, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          count,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+        ),
+      ],
+    );
   }
 
   @override
@@ -151,6 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
         ),
         backgroundColor: Colors.white,
+        elevation: 0,
         actions: [
           if (isMyProfile) ...[
             IconButton(
@@ -166,14 +191,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: const Text("အကောင့်ထွက်ရန်"),
                     content: const Text("အကောင့်ထဲမှ သေချာပေါက် ထွက်လိုပါသလားဗျာ။"),
                     actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("မထွက်တော့ပါ", style: TextStyle(color: Colors.grey)),
-                      ),
-                      TextButton(
-                        onPressed: _handleLogout,
-                        child: const Text("ထွက်မည်", style: TextStyle(color: Colors.red)),
-                      ),
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text("မထွက်တော့ပါ", style: TextStyle(color: Colors.grey))),
+                      TextButton(onPressed: _handleLogout, child: const Text("ထွက်မည်", style: TextStyle(color: Colors.red))),
                     ],
                   ),
                 );
@@ -188,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 16),
             child: Column(
               children: [
                 Center(
@@ -221,8 +240,99 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 12),
                 if (!_isEditing) ...[
                   Text(_nameController.text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  if (_locationController.text.isNotEmpty) Text("📍 ${_locationController.text}", style: const TextStyle(color: Colors.grey)),
-                  if (_bioController.text.isNotEmpty) Padding(padding: const EdgeInsets.all(8.0), child: Text(_bioController.text, textAlign: TextAlign.center)),
+                  const SizedBox(height: 4),
+                  if (_locationController.text.isNotEmpty)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.red, size: 16),
+                        const SizedBox(width: 4),
+                        Text(_locationController.text, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                      ],
+                    ),
+                  if (_bioController.text.isNotEmpty) 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), 
+                      child: Text(_bioController.text, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15))
+                    ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // 🔥 Real-time Stats Area (Followers / Following ချိတ်ဆက်မှု)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(child: _buildStatItem("$_postCount", "Posts")),
+                        Container(height: 30, width: 1, color: Colors.grey.shade300), 
+                        
+                        // Friends (Followers) Count
+                        Expanded(
+                          child: StreamBuilder<int>(
+                            stream: _socialService.getCount(widget.userId, 'followers'),
+                            builder: (context, snapshot) => _buildStatItem("${snapshot.data ?? 0}", "Friends"),
+                          ),
+                        ),
+                        Container(height: 30, width: 1, color: Colors.grey.shade300), 
+                        
+                        // Following Count
+                        Expanded(
+                          child: StreamBuilder<int>(
+                            stream: _socialService.getCount(widget.userId, 'following'),
+                            builder: (context, snapshot) => _buildStatItem("${snapshot.data ?? 0}", "Following"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // 🆕 တခြားသူဖြစ်ခဲ့ရင် Follow နှင့် Message ပို့မယ့် ခလုတ်များ ထည့်သွင်းခြင်း
+                  if (!isMyProfile && _currentUser != null) ...[
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        StreamBuilder<bool>(
+                          stream: _socialService.isFollowing(_currentUser!.uid, widget.userId),
+                          builder: (context, snapshot) {
+                            bool isFollowing = snapshot.data ?? false;
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isFollowing ? Colors.grey.shade300 : Colors.blue.shade800,
+                                foregroundColor: isFollowing ? Colors.black : Colors.white,
+                                minimumSize: const Size(120, 38),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              onPressed: () => _socialService.toggleFollow(_currentUser!.uid, widget.userId, isFollowing),
+                              child: Text(isFollowing ? "Unfollow" : "Follow"),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 12),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(120, 38),
+                            side: BorderSide(color: Colors.blue.shade800),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChatRoomScreen(
+                                  receiverId: widget.userId,
+                                  receiverName: _nameController.text,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.message_rounded, size: 18),
+                          label: const Text("Message"),
+                        ),
+                      ],
+                    ),
+                  ],
                 ] else ...[
                   TextField(controller: _nameController, decoration: const InputDecoration(labelText: "အမည်")),
                   TextField(controller: _locationController, decoration: const InputDecoration(labelText: "နေရပ်")),
@@ -239,7 +349,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Text(
                     isMyProfile ? "ကျွန်ုပ်၏ ပို့စ်များနှင့် မျှဝေမှုများ" : "${_nameController.text} ၏ ပို့စ်များ",
                     style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)
-                )
+                ),
             ),
           ),
           Expanded(
