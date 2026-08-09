@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../news/services/agora_service.dart';
 import '../news/services/call_service.dart';
 
+
 class CallScreen extends StatefulWidget {
   final String callDocId;
   final String channelId;
@@ -28,7 +29,7 @@ class CallScreen extends StatefulWidget {
 class _CallScreenState extends State<CallScreen> {
   final AgoraService _agoraService = AgoraService();
   final CallService _callService = CallService();
-  final AudioPlayer _dialTonePlayer = AudioPlayer(); // 🎵 Dialing Tone အတွက် Player
+  final AudioPlayer _dialingPlayer = AudioPlayer();
 
   int? _remoteUid;
   bool _localUserJoined = false;
@@ -39,56 +40,61 @@ class _CallScreenState extends State<CallScreen> {
   @override
   void initState() {
     super.initState();
+    _dialingPlayer.setReleaseMode(ReleaseMode.loop);
     _initCallSession();
   }
 
-  Future<void> _initCallSession() async {
-    // 🎵 ၁။ ဖုန်းစခေါ်တာနဲ့ "တီး... တီး..." သံကို Loop ပတ်ပြီး စဖွင့်ပါမယ်
+  Future<void> _playDialingTone() async {
     try {
-      await _dialTonePlayer.setReleaseMode(ReleaseMode.loop);
-      await _dialTonePlayer.play(AssetSource('audio/dialing_tone.mp3'));
-    } catch (audioError) {
-      debugPrint("🎵 Audio Player Error: $audioError");
+      await _dialingPlayer.play(AssetSource('audio/dialing_tone.mp3'), volume: 1.0);
+    } catch (e) {
+      debugPrint('❌ Dialing tone playback error: $e');
     }
+  }
 
-    // ၂။ Firestore မှာ Call Status ကို Listen လုပ်မယ်
-    _callStreamSubscription = _callService.streamCallStatus(widget.callDocId).listen((doc) async {
-      if (doc.exists && doc.data() != null) {
-        var data = doc.data() as Map<String, dynamic>;
-        
-        // 🛠️ တစ်ဖက်လူက ဖုန်းကိုင်လိုက်ရင် (connected) "တီး... တီး..." သံကို ရပ်လိုက်မယ်
-        if (data['status'] == 'connected') {
-          await _stopDialTone();
-        }
-        
-        // တစ်ဖက်လူက ဖုန်းချလိုက်ရင် (ended) UI ကနေ ဆင်းမယ်
-        if (data['status'] == 'ended' && mounted) {
-          _leaveAndPopUI();
-        }
-      } else if (!doc.exists && mounted) {
-        _leaveAndPopUI();
+  Future<void> _stopDialingTone() async {
+    try {
+      await _dialingPlayer.stop();
+    } catch (e) {
+      debugPrint('❌ Stop dialing tone error: $e');
+    }
+  }
+
+  Future<void> _initCallSession() async {
+    // 1. Firestore မှာ Call Status ကို Listen လုပ်မယ် (တစ်ဖက်က ဖုန်းချရင် UI ပါ ဆင်းမယ်)
+    _callStreamSubscription = _callService.streamCallStatus(widget.callDocId).listen((doc) {
+      if (!doc.exists && mounted) {
+        _stopDialingTone();
+        _endCallAndLeave();
+        return;
+      }
+
+      final data = doc.data() as Map<String, dynamic>?;
+      if (data != null && data['status'] == 'connected') {
+        _stopDialingTone();
       }
     });
 
+    _playDialingTone();
+
     try {
-      // ၃။ Agora Engine ကို Initialize လုပ်ခြင်း
+      // 2. Agora Engine ကို Initialize လုပ်ခြင်း
       await _agoraService.initialize(
         isVideoCall: widget.isVideoCall,
-        onUserJoined: (uid) async {
+        onUserJoined: (uid) {
           setState(() => _remoteUid = uid);
-          await _stopDialTone(); // 🛠️ တစ်ဖက်လူ Stream ထဲ ဝင်လာရင်လည်း အသံ သေချာပေါက်ရပ်မယ်
         },
-        onUserOffline: (uid) async {
+        onUserOffline: (uid) {
           setState(() => _remoteUid = null);
           _endCallAndLeave();
         },
       );
 
-      // ၄။ Channel သို့ Join ခြင်း
+      // 3. Channel သို့ Join ခြင်း
       await _agoraService.joinChannel(
         channelId: widget.channelId,
         isVideoCall: widget.isVideoCall,
-        token: '', // Testing mode
+        token: '', // Testing mode အတွက်အလွတ်ထားပါသည်
       );
 
       setState(() {
@@ -100,26 +106,7 @@ class _CallScreenState extends State<CallScreen> {
     }
   }
 
-  // 🎵 Dial Tone ကို ပိတ်ပေးမယ့် Utility Function
-  Future<void> _stopDialTone() async {
-    try {
-      await _dialTonePlayer.stop();
-    } catch (e) {
-      debugPrint("Error stopping audio: $e");
-    }
-  }
-
-  // Database ကနေ ဖုန်းကျသွားတဲ့အခါ သုံးမယ့် သန့်ရှင်းရေး Function
-  void _leaveAndPopUI() async {
-    await _stopDialTone();
-    _callStreamSubscription?.cancel();
-    await _agoraService.leaveChannel();
-    if (mounted) Navigator.pop(context);
-  }
-
-  // ကိုယ်တိုင် ဖုန်းချခလုတ်နှိပ်သည့်အခါ သုံးမည့် Function
   Future<void> _endCallAndLeave() async {
-    await _stopDialTone(); // 🎵 အသံ အရင်ပိတ်မယ်
     _callStreamSubscription?.cancel();
     await _agoraService.leaveChannel();
     await _callService.endCall(widget.callDocId);
@@ -128,8 +115,9 @@ class _CallScreenState extends State<CallScreen> {
 
   @override
   void dispose() {
-    _dialTonePlayer.dispose(); // 🛠️ Memory leak မဖြစ်အောင် Player ကို လုံးဝဖျက်ပစ်မယ်
     _callStreamSubscription?.cancel();
+    _stopDialingTone();
+    _dialingPlayer.dispose();
     _agoraService.leaveChannel();
     super.dispose();
   }

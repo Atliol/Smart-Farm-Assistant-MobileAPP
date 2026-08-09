@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import '../models/call_model.dart';
 import 'push_notification_service.dart';
 
@@ -44,7 +43,7 @@ class CallService {
       }
       return true;
     } catch (e) {
-      debugPrint("Make Call Error: $e");
+      print("Make Call Error: $e");
       return false;
     }
   }
