@@ -339,14 +339,12 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _showPostMenu(bool isMyPost) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) {
-        return Dialog(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        return SafeArea(
+          child: Wrap(
             children: [
               if (isMyPost)
                 ListTile(
@@ -368,7 +366,7 @@ class _PostCardState extends State<PostCard> {
                 ),
             ],
           ),
-        ));
+        );
       },
     );
   }

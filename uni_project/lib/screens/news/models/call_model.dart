@@ -1,22 +1,30 @@
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CallModel {
   final String callId;
   final String callerId;
   final String callerName;
-  final String receiverId;
-  final String receiverName;
+  final String callerPic;
   final String channelId;
-  final String status; // 'dialing', 'ringing', 'connected', 'ended'
+  final bool hasDialed;
+  final bool isAccepted;
   final bool isVideoCall;
+  final String receiverId;
+  final String status;
+  final Timestamp timestamp;
 
   CallModel({
     required this.callId,
     required this.callerId,
     required this.callerName,
-    required this.receiverId,
-    required this.receiverName,
+    required this.callerPic,
     required this.channelId,
-    required this.status,
+    required this.hasDialed,
+    required this.isAccepted,
     required this.isVideoCall,
+    required this.receiverId,
+    required this.status,
+    required this.timestamp,
   });
 
   Map<String, dynamic> toMap() {
@@ -24,11 +32,14 @@ class CallModel {
       'callId': callId,
       'callerId': callerId,
       'callerName': callerName,
-      'receiverId': receiverId,
-      'receiverName': receiverName,
+      'callerPic': callerPic,
       'channelId': channelId,
-      'status': status,
+      'hasDialed': hasDialed,
+      'isAccepted': isAccepted,
       'isVideoCall': isVideoCall,
+      'receiverId': receiverId,
+      'status': status,
+      'timestamp': timestamp,
     };
   }
 
@@ -37,11 +48,14 @@ class CallModel {
       callId: map['callId'] ?? '',
       callerId: map['callerId'] ?? '',
       callerName: map['callerName'] ?? '',
-      receiverId: map['receiverId'] ?? '',
-      receiverName: map['receiverName'] ?? '',
+      callerPic: map['callerPic'] ?? '',
       channelId: map['channelId'] ?? '',
-      status: map['status'] ?? 'dialing',
+      hasDialed: map['hasDialed'] ?? false,
+      isAccepted: map['isAccepted'] ?? false,
       isVideoCall: map['isVideoCall'] ?? false,
+      receiverId: map['receiverId'] ?? '',
+      status: map['status'] ?? 'dialing',
+      timestamp: map['timestamp'] ?? Timestamp.now(),
     );
   }
 }

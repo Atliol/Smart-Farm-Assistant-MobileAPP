@@ -1,36 +1,69 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/call_model.dart';
+import 'push_notification_service.dart';
 
 class CallService {
-  final CollectionReference _callCollection = FirebaseFirestore.instance.collection('calls');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // ဖုန်းခေါ်ဝင်လာမှုကို စောင့်ကြည့်ရန် Stream (လက်ခံမည့်သူအတွက်)
-  Stream<DocumentSnapshot> listenToCall(String userId) {
-    return _callCollection.doc(userId).snapshots();
+  // 1. Incoming Call များကို Listen လုပ်ရန်
+  Stream<QuerySnapshot> listenToCall(String currentUserId) {
+    return _firestore
+        .collection('calls')
+        .where('receiverId', isEqualTo: currentUserId)
+        .where('status', isEqualTo: 'dialing')
+        .snapshots();
   }
 
-  // ၁။ ဖုန်းစတင်ခေါ်ဆိုခြင်း (Make Call)
-  Future<bool> makeCall(CallModel call) async {
+  // 2. ဖုန်းစခေါ်ချိန်တွင် Firestore သို့ သိမ်းပြီး FCM Notification ပါ တစ်ခါတည်း ပို့ရန်
+  Future<bool> makeCall({required CallModel call}) async {
     try {
-      // Caller ရော Receiver ပါ Document တစ်ခုတည်းအောက်မှာ သိမ်းဆည်းရန် 
-      // Receiver ရဲ့ UID ကို Document ID အဖြစ် သုံးပါမယ် (ဒါမှ Receiver ဘက်က နားစွင့်ရလွယ်ကူမယ်)
-      await _callCollection.doc(call.receiverId).set(call.toMap());
+      // Document ID ကို ရောထွေးမှုမရှိစေရန် call.callId ကို သေချာသုံးထားပါတယ်
+      await _firestore.collection('calls').doc(call.callId).set(call.toMap());
+
+      // Target Receiver ရဲ့ FCM Token ကို Firestore ထဲက သွားယူမယ်
+      DocumentSnapshot userDoc = 
+          await _firestore.collection('users').doc(call.receiverId).get();
+
+      if (userDoc.exists && userDoc.data() != null) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        String? receiverToken = userData['fcmToken'];
+
+        if (receiverToken != null && receiverToken.isNotEmpty) {
+          // http package သုံးပြီး FCM ဆီ notification တိုက်ရိုက်ပို့ခြင်း
+          await PushNotificationService.sendCallNotification(
+            callerId: call.callerId,
+            receiverId: call.receiverId,
+            receiverToken: receiverToken,
+            channelId: call.channelId,
+            callerName: call.callerName,
+            callType: call.isVideoCall ? 'video' : 'voice',
+            callId: call.callId,
+          );
+        }
+      }
       return true;
     } catch (e) {
-      print("Error making call: $e");
+      debugPrint("Make Call Error: $e");
       return false;
     }
   }
 
-  // ၂။ ဖုန်းလက်ခံလိုက်ခြင်း (Answer Call)
-  Future<void> answerCall(String receiverId) async {
-    await _callCollection.doc(receiverId).update({'status': 'connected'});
+  // 3. ဖုန်းလက်ခံလိုက်လျှင် Call Document ကို Update လုပ်ရန်
+  Future<void> acceptCall(String callId) async {
+    await _firestore.collection('calls').doc(callId).update({
+      'isAccepted': true,
+      'status': 'connected',
+    });
   }
 
-  // ၃။ ဖုန်းချလိုက်ခြင်း/ငြင်းပယ်လိုက်ခြင်း (End Call)
-  Future<void> endCall(String receiverId) async {
-    await _callCollection.doc(receiverId).update({'status': 'ended'});
-    // ခေတ္တစောင့်ပြီး record ကို ဖျက်ထုတ်နိုင်သည်
-    await _callCollection.doc(receiverId).delete();
+  // 4. ဖုန်းချလိုက်လျှင် Call Document ကို ဖျက်ရန်
+  Future<void> endCall(String callId) async {
+    await _firestore.collection('calls').doc(callId).delete();
+  }
+
+  // 5. Call Document ရဲ့ အပြောင်းအလဲကို Listen လုပ်ရန် Helper Stream
+  Stream<DocumentSnapshot> streamCallStatus(String callId) {
+    return _firestore.collection('calls').doc(callId).snapshots();
   }
 }

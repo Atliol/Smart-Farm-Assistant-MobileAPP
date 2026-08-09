@@ -1,19 +1,23 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-const String agoraAppId = "ba1d817bc8f641d29036198cbc46ec81"; 
-const String? agoraToken = null; 
+import 'package:audioplayers/audioplayers.dart';
+import '../news/services/agora_service.dart';
+import '../news/services/call_service.dart';
 
 class CallScreen extends StatefulWidget {
-  final String channelId;    
+  final String callDocId;
+  final String channelId;
+  final String receiverId;
   final String receiverName;
-  final bool isVideoCall;    
+  final bool isVideoCall;
 
   const CallScreen({
-    super.key, 
-    required this.channelId, 
-    required this.receiverName, 
+    super.key,
+    required this.callDocId,
+    required this.channelId,
+    required this.receiverId,
+    required this.receiverName,
     required this.isVideoCall,
   });
 
@@ -22,403 +26,237 @@ class CallScreen extends StatefulWidget {
 }
 
 class _CallScreenState extends State<CallScreen> {
-  int? _remoteUid; 
+  final AgoraService _agoraService = AgoraService();
+  final CallService _callService = CallService();
+  final AudioPlayer _dialTonePlayer = AudioPlayer(); // 🎵 Dialing Tone အတွက် Player
+
+  int? _remoteUid;
   bool _localUserJoined = false;
-  bool _muted = false;
-  bool _speakerOn = false; // Speaker status tracking
-  late RtcEngine _engine;
-  bool _isEngineInitialized = false;
+  bool _isMuted = false;
+
+  StreamSubscription? _callStreamSubscription;
 
   @override
   void initState() {
     super.initState();
-    initAgora();
+    _initCallSession();
   }
 
-  Future<void> initAgora() async {
-    // 🎙️ Call အမျိုးအစားအလိုက် လိုအပ်တဲ့ Permission ကိုပဲ တောင်းခံခြင်း
-    if (widget.isVideoCall) {
-      await [Permission.microphone, Permission.camera].request();
-    } else {
-      await Permission.microphone.request();
+  Future<void> _initCallSession() async {
+    // 🎵 ၁။ ဖုန်းစခေါ်တာနဲ့ "တီး... တီး..." သံကို Loop ပတ်ပြီး စဖွင့်ပါမယ်
+    try {
+      await _dialTonePlayer.setReleaseMode(ReleaseMode.loop);
+      await _dialTonePlayer.play(AssetSource('audio/dialing_tone.mp3'));
+    } catch (audioError) {
+      debugPrint("🎵 Audio Player Error: $audioError");
     }
 
-    // 🔧 Agora Engine ကို ဖန်တီးပြီး ပြင်ဆင်ခြင်း
-    _engine = createAgoraRtcEngine();
-    
-    // One-to-One Call ဖြစ်တဲ့အတွက် channelProfileCommunication ကို အသုံးပြုရပါမည်
-    await _engine.initialize(const RtcEngineContext(
-      appId: agoraAppId,
-      channelProfile: ChannelProfileType.channelProfileCommunication,
-    ));
+    // ၂။ Firestore မှာ Call Status ကို Listen လုပ်မယ်
+    _callStreamSubscription = _callService.streamCallStatus(widget.callDocId).listen((doc) async {
+      if (doc.exists && doc.data() != null) {
+        var data = doc.data() as Map<String, dynamic>;
+        
+        // 🛠️ တစ်ဖက်လူက ဖုန်းကိုင်လိုက်ရင် (connected) "တီး... တီး..." သံကို ရပ်လိုက်မယ်
+        if (data['status'] == 'connected') {
+          await _stopDialTone();
+        }
+        
+        // တစ်ဖက်လူက ဖုန်းချလိုက်ရင် (ended) UI ကနေ ဆင်းမယ်
+        if (data['status'] == 'ended' && mounted) {
+          _leaveAndPopUI();
+        }
+      } else if (!doc.exists && mounted) {
+        _leaveAndPopUI();
+      }
+    });
 
-    // 📡 Event Handler များ သတ်မှတ်ခြင်း
-    _engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          debugPrint("Local user ${connection.localUid} joined");
-          if (mounted) {
-            setState(() {
-              _localUserJoined = true;
-            });
-          }
+    try {
+      // ၃။ Agora Engine ကို Initialize လုပ်ခြင်း
+      await _agoraService.initialize(
+        isVideoCall: widget.isVideoCall,
+        onUserJoined: (uid) async {
+          setState(() => _remoteUid = uid);
+          await _stopDialTone(); // 🛠️ တစ်ဖက်လူ Stream ထဲ ဝင်လာရင်လည်း အသံ သေချာပေါက်ရပ်မယ်
         },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
-          debugPrint("Remote user $remoteUid joined");
-          if (mounted) {
-            setState(() {
-              _remoteUid = remoteUid;
-            });
-          }
+        onUserOffline: (uid) async {
+          setState(() => _remoteUid = null);
+          _endCallAndLeave();
         },
-        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
-          debugPrint("Remote user $remoteUid left channel");
-          if (mounted) {
-            setState(() {
-              _remoteUid = null;
-            });
-            Navigator.pop(context); 
-          }
-        },
-      ),
-    );
+      );
 
-    // 📹 Video သို့မဟုတ် 📞 Audio စနစ်ကို Call Type အပေါ်မူတည်ပြီး ဖွင့်ပေးခြင်း
-    if (widget.isVideoCall) {
-      await _engine.enableVideo();
-      await _engine.startPreview();
-      _speakerOn = true; // Video Call ဆိုလျှင် Speakerphone တခါတည်းဖွင့်မည်
-    } else {
-      await _engine.enableAudio();
-      _speakerOn = false; // Voice Call ဆိုလျှင် နားနှင့်ကပ်ပြောရမည့် Earpiece အတိုင်းသွားမည်
-    }
+      // ၄။ Channel သို့ Join ခြင်း
+      await _agoraService.joinChannel(
+        channelId: widget.channelId,
+        isVideoCall: widget.isVideoCall,
+        token: '', // Testing mode
+      );
 
-    // Speaker phone အခြေအနေကို Engine ထံ သတ်မှတ်ပေးခြင်း
-    await _engine.setEnableSpeakerphone(_speakerOn);
-
-    // 🚀 Channel ထဲသို့ ဝင်ရောက်ခြင်း
-    await _engine.joinChannel(
-      token: agoraToken ?? '',
-      channelId: widget.channelId,
-      uid: 0, 
-      options: ChannelMediaOptions(
-        // Communication Profile တွင် clientRole ကို ထည့်သွင်းရန် မလိုအပ်ပါ
-        publishCameraTrack: widget.isVideoCall,
-        publishMicrophoneTrack: true,
-        autoSubscribeAudio: true,
-        autoSubscribeVideo: widget.isVideoCall,
-      ),
-    );
-
-    if (mounted) {
       setState(() {
-        _isEngineInitialized = true;
+        _localUserJoined = true;
       });
+    } catch (e) {
+      debugPrint("Agora Session Init Error: $e");
+      _endCallAndLeave();
     }
+  }
+
+  // 🎵 Dial Tone ကို ပိတ်ပေးမယ့် Utility Function
+  Future<void> _stopDialTone() async {
+    try {
+      await _dialTonePlayer.stop();
+    } catch (e) {
+      debugPrint("Error stopping audio: $e");
+    }
+  }
+
+  // Database ကနေ ဖုန်းကျသွားတဲ့အခါ သုံးမယ့် သန့်ရှင်းရေး Function
+  void _leaveAndPopUI() async {
+    await _stopDialTone();
+    _callStreamSubscription?.cancel();
+    await _agoraService.leaveChannel();
+    if (mounted) Navigator.pop(context);
+  }
+
+  // ကိုယ်တိုင် ဖုန်းချခလုတ်နှိပ်သည့်အခါ သုံးမည့် Function
+  Future<void> _endCallAndLeave() async {
+    await _stopDialTone(); // 🎵 အသံ အရင်ပိတ်မယ်
+    _callStreamSubscription?.cancel();
+    await _agoraService.leaveChannel();
+    await _callService.endCall(widget.callDocId);
+    if (mounted) Navigator.pop(context);
   }
 
   @override
   void dispose() {
-    _disposeAgora();
+    _dialTonePlayer.dispose(); // 🛠️ Memory leak မဖြစ်အောင် Player ကို လုံးဝဖျက်ပစ်မယ်
+    _callStreamSubscription?.cancel();
+    _agoraService.leaveChannel();
     super.dispose();
-  }
-
-  Future<void> _disposeAgora() async {
-    try {
-      if (widget.isVideoCall) {
-        await _engine.stopPreview();
-      }
-      await _engine.leaveChannel();
-      await _engine.release();
-    } catch (e) {
-      debugPrint("Agora release error: $e");
-    }
-  }
-
-  void _onToggleMute() {
-    setState(() {
-      _muted = !_muted;
-    });
-    _engine.muteLocalAudioStream(_muted);
-  }
-
-  void _onToggleSpeaker() {
-    setState(() {
-      _speakerOn = !_speakerOn;
-    });
-    _engine.setEnableSpeakerphone(_speakerOn);
-  }
-
-  void _onCallEnd() {
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Engine အလုပ်လုပ်ရန် ပြင်ဆင်နေစဉ် ခဏစောင့်ခိုင်းသည့် UI ပြသခြင်း
-    if (!_isEngineInitialized) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
-      backgroundColor: const Color(0xfff1f2f6), 
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            
-            // 👤 Receiver Name
-            Text(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(child: _renderView()),
+          
+          // User Name Display
+          Positioned(
+            top: 60,
+            left: 20,
+            child: Text(
               widget.receiverName,
               style: const TextStyle(
-                color: Color(0xff1c2b70), 
-                fontSize: 26, 
+                color: Colors.white,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
-            
-            // 🟢 Status or Timer
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          ),
+
+          // Control Actions Panel
+          Positioned(
+            bottom: 48,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // Mic Mute Button
                 CircleAvatar(
-                  radius: 4,
-                  backgroundColor: _remoteUid == null ? Colors.orange : Colors.green,
+                  radius: 28,
+                  backgroundColor: _isMuted ? Colors.white : Colors.white24,
+                  child: IconButton(
+                    icon: Icon(_isMuted ? Icons.mic_off : Icons.mic, color: _isMuted ? Colors.black : Colors.white),
+                    onPressed: () {
+                      setState(() => _isMuted = !_isMuted);
+                      _agoraService.toggleMute(_isMuted);
+                    },
+                  ),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  _remoteUid == null ? "ခေါ်ဆိုနေပါသည်..." : "00:01", // ဒုတိယမြောက်လူဝင်လာလျှင် အသံချိတ်ဆက်မှုရပြီဖြစ်ကြောင်း ပြသရန်
-                  style: const TextStyle(color: Colors.grey, fontSize: 16),
+                // End Call Button
+                CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.red,
+                  child: IconButton(
+                    iconSize: 32,
+                    icon: const Icon(Icons.call_end, color: Colors.white),
+                    onPressed: _endCallAndLeave,
+                  ),
                 ),
+                // Switch Camera (Video Call ဖြစ်မှသာ ပြသမည်)
+                if (widget.isVideoCall)
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.white24,
+                    child: IconButton(
+                      icon: const Icon(Icons.switch_camera, color: Colors.white),
+                      onPressed: () => _agoraService.switchCamera(),
+                    ),
+                  ),
               ],
             ),
-            
-            const SizedBox(height: 30),
-
-            // 📺 View Area (Video Or Custom Oval Design for Voice Call)
-            Expanded(
-              child: _viewRows(),
-            ),
-
-            const SizedBox(height: 20),
-
-            // 🎛️ 2x3 Grid Buttons Control Panel
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildControlButton(
-                        icon: _muted ? Icons.mic_off : Icons.mic,
-                        label: "Mute",
-                        isActive: _muted,
-                        onTap: _onToggleMute,
-                      ),
-                      _buildControlButton(
-                        icon: Icons.dialpad,
-                        label: "Keypad",
-                        onTap: () {},
-                      ),
-                      _buildControlButton(
-                        icon: _speakerOn ? Icons.volume_up : Icons.volume_down,
-                        label: "Speaker",
-                        isActive: _speakerOn,
-                        onTap: _onToggleSpeaker,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildControlButton(
-                        icon: Icons.person_add_alt_1,
-                        label: "Add call",
-                        onTap: () {},
-                      ),
-                      _buildControlButton(
-                        icon: Icons.videocam,
-                        label: "Video call",
-                        isActive: widget.isVideoCall,
-                        onTap: () {},
-                      ),
-                      _buildControlButton(
-                        icon: Icons.pause_circle_outline,
-                        label: "Hold",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // 🔴 End Call Button
-            InkWell(
-              onTap: _onCallEnd,
-              customBorder: const CircleBorder(),
-              child: Container(
-                width: 75,
-                height: 75,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xffb81c1c), 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    )
-                  ],
-                ),
-                child: const Icon(
-                  Icons.call_end,
-                  color: Colors.white,
-                  size: 36,
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // 📺 View Render Widget
-  Widget _viewRows() {
+  Widget _renderView() {
     if (!widget.isVideoCall) {
-      // 📞 Voice Call UI Design
       return Center(
-        child: Container(
-          width: 260,
-          height: 380,
-          decoration: BoxDecoration(
-            color: const Color(0xffe4e7f2), 
-            borderRadius: BorderRadius.circular(130), 
-          ),
-          child: Center(
-            child: Container(
-              width: 170,
-              height: 170,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(color: Colors.white, width: 4),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  )
-                ],
-                image: const DecorationImage(
-                  image: NetworkImage("https://picsum.photos/200"), 
-                  fit: BoxFit.cover,
-                ),
-              ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.person, size: 100, color: Colors.white54),
+            const SizedBox(height: 16),
+            Text(
+              _remoteUid != null ? "Connected" : "Voice Calling...",
+              style: const TextStyle(color: Colors.white70, fontSize: 18),
             ),
-          ),
+          ],
         ),
       );
     }
 
-    // 📹 Video Call View Area
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Stack(
-          children: [
-            // Remote Video View (FullScreen Inside Container)
-            Center(
-              child: _remoteUid != null
-                  ? AgoraVideoView(
-                      controller: VideoViewController.remote(
-                        rtcEngine: _engine,
-                        canvas: VideoCanvas(uid: _remoteUid),
-                        connection: RtcConnection(channelId: widget.channelId),
-                      ),
-                    )
-                  : const Center(
-                      child: Text(
-                        'တစ်ဖက်လူကို စောင့်ဆိုင်းနေပါသည်...',
-                        style: TextStyle(color: Color(0xff1c2b70), fontSize: 16),
-                      ),
-                    ),
+    if (_localUserJoined && _remoteUid != null && _agoraService.engine != null) {
+      return Stack(
+        children: [
+          AgoraVideoView(
+            controller: VideoViewController.remote(
+              rtcEngine: _agoraService.engine!,
+              canvas: VideoCanvas(uid: _remoteUid),
+              connection: RtcConnection(channelId: widget.channelId),
             ),
-            // Local Preview (Pip Window)
-            if (_localUserJoined)
-              Positioned(
-                right: 16,
-                top: 16,
-                width: 100,
-                height: 140,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: AgoraVideoView(
-                    controller: VideoViewController(
-                      rtcEngine: _engine,
-                      canvas: const VideoCanvas(uid: 0),
-                    ),
-                  ),
+          ),
+          Positioned(
+            right: 16,
+            top: 60,
+            width: 120,
+            height: 160,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AgoraVideoView(
+                controller: VideoViewController(
+                  rtcEngine: _agoraService.engine!,
+                  canvas: const VideoCanvas(uid: 0),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 🎛️ UI Helper for Controls
-  Widget _buildControlButton({
-    required IconData icon,
-    required String label,
-    bool isActive = false,
-    required VoidCallback onTap,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 65,
-            height: 65,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isActive ? const Color(0xff1c2b70) : Colors.white,
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                )
-              ],
-            ),
-            child: Icon(
-              icon,
-              color: isActive ? Colors.white : const Color(0xff4a4a4a),
-              size: 26,
             ),
           ),
+        ],
+      );
+    } else if (_localUserJoined && _agoraService.engine != null) {
+      return AgoraVideoView(
+        controller: VideoViewController(
+          rtcEngine: _agoraService.engine!,
+          canvas: const VideoCanvas(uid: 0),
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xff555555),
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
+    }
   }
 }

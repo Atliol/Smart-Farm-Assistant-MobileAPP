@@ -85,7 +85,7 @@ class ResultCardWidget extends StatelessWidget {
             
             const SizedBox(height: 8),
             _buildCostRow(
-              '💰 စုစုပေါင်း ရင်းနှီးစရိတ်:',
+              ' စုစုပေါင်း ရင်းနှီးစရိတ်:',
               '${_formatCurrency(result.totalInvestment)} ကျပ်',
               isBold: true,
               valueColor: Colors.red.shade700,
@@ -97,12 +97,12 @@ class ResultCardWidget extends StatelessWidget {
 
             // ၃။ အထွက်နှုန်း နှင့် ဝင်ငွေ အပိုင်း
             _buildCostRow(
-              '🌾 ခန့်မှန်း အထွက်နှုန်း:',
+              ' ခန့်မှန်း အထွက်နှုန်း:',
               '${_formatDecimal(result.estimatedYieldMax)} $yieldUnit',
             ),
             const SizedBox(height: 6),
             _buildCostRow(
-              '💵 ခန့်မှန်း ရရှိမည့် ဝင်ငွေ:',
+              ' ခန့်မှန်း ရရှိမည့် ဝင်ငွေ:',
               '${_formatCurrency(result.estimatedRevenue)} ကျပ်',
             ),
             
@@ -117,7 +117,7 @@ class ResultCardWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    isProfit ? '✨ ခန့်မှန်း အသားတင်အမြတ်:' : '⚠️ ခန့်မှန်း အသားတင်အရှုံး:',
+                    isProfit ? ' ခန့်မှန်း အသားတင်အမြတ်:' : ' ခန့်မှန်း အသားတင်အရှုံး:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isProfit ? Colors.green.shade900 : Colors.red.shade900,
