@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/knowledge_model.dart';
+import '../../../services/database_service.dart';
+import '../../guide/knowledge_detail_screen.dart';
 import '../../guide/knowledge_list_screen.dart';
 // 💡 သင့် General Knowledge List Screen ဖိုင်၏ လမ်းကြောင်းကို Import လုပ်ပေးပါ
 // import '../screens/guide/general_knowledge_list_screen.dart';
@@ -54,30 +57,142 @@ class DiseaseAwarenessSection extends StatelessWidget {
               ),
             ],
           ),
-          child: const Column(
+          child: Column(
             children: [
               DiseaseRow(
-                title: 'Rice Blast',
-                description: 'Fungal disease that affects rice leaves.',
-                imagePath: 'assets/rice_blast.png',
+                title: 'စပါးဂုတ်ကျိုးရောဂါ',
+                description: 'ရောဂါဒဏ်ခံနိုင်သော စပါးမျိုးများကို ရွေးချယ်စိုက်ပျိုးပါ။',
+                imagePath: 'assets/images/know_disease_12.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final knowledgeList = await dbService.getKnowledgeData();
+
+                  // Database ထဲမှ 'Rice Blast' သို့မဟုတ် 'ဂုတ်ကျိုးရောဂါ' ဒေတာကို ရှာဖွေခြင်း
+                  final diseaseItem = knowledgeList.firstWhere(
+                        (element) => element.id == 'know_012',
+                    orElse: () => KnowledgeModel(
+                      id: 'know_012',
+                      title: 'စပါးဂုတ်ကျိုးရောဂါ',
+                      image: 'assets/images/know_disease_12.png',
+                      description: 'ရောဂါဒဏ်ခံနိုင်သော စပါးမျိုးများကို ရွေးချယ်စိုက်ပျိုးပါ။',
+                      tag: 'အပင်ရောဂါ',
+                      source: 'စိုက်ပျိုးရေး',
+                      readTime: '၅ မိနစ်စာဖတ်ရန်',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KnowledgeDetailScreen(article: diseaseItem),
+                      ),
+                    );
+                  }
+                },
               ),
-              Divider(height: 24),
+              const Divider(height: 24),
+
               DiseaseRow(
-                title: 'Leaf Curl',
-                description: 'Common in vegetables, causes leaf curling.',
-                imagePath: 'assets/leaf_curl.png',
+                title: 'စပါးရွက်ဖုံးပုတ်ရောဂါ',
+                description: 'ပိုတက်ရှ်မြေသြဇာ ထည့်ပါ။ မှိုသတ်ဆေးဖျန်းပါ။',
+                imagePath: 'assets/images/know_disease_14.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final knowledgeList = await dbService.getKnowledgeData();
+
+                  final diseaseItem = knowledgeList.firstWhere(
+                        (element) => element.id == 'know_014',
+                    orElse: () => KnowledgeModel(
+                      id: 'know_014',
+                      title: 'စပါးရွက်ဖုံးပုတ်ရောဂါ',
+                      image: 'assets/images/know_disease_14.png',
+                      description: 'ပိုတက်ရှ်မြေသြဇာ ထည့်ပါ။ မှိုသတ်ဆေးဖျန်းပါ',
+                      tag: 'အပင်ရောဂါ',
+                      source: 'စိုက်ပျိုးရေး',
+                      readTime: '၅ မိနစ်စာဖတ်ရန်',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KnowledgeDetailScreen(article: diseaseItem),
+                      ),
+                    );
+                  }
+                },
               ),
-              Divider(height: 24),
+              const Divider(height: 24),
+
               DiseaseRow(
-                title: 'Brown Spot',
-                description: 'Affects yield if not controlled early.',
-                imagePath: 'assets/brown_spot.png',
+                title: 'စပါးဘက်တီးရီးယားရွက်စင်းရောဂါ',
+                description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဆေးဖျန်းပါ။',
+                imagePath: 'assets/images/know_disease_15.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final knowledgeList = await dbService.getKnowledgeData();
+
+                  final diseaseItem = knowledgeList.firstWhere(
+                        (element) => element.id == 'know_015',
+                    orElse: () => KnowledgeModel(
+                      id: 'know_015',
+                      title: 'စပါးဘက်တီးရီးယားရွက်စင်းရောဂါ',
+                      image: 'assets/images/know_disease_15.png',
+                      description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဆေးဖျန်းပါ။',
+                      tag: 'အပင်ရောဂါ',
+                      source: 'စိုက်ပျိုးရေး',
+                      readTime: '၅ မိနစ်စာဖတ်ရန်',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KnowledgeDetailScreen(article: diseaseItem),
+                      ),
+                    );
+                  }
+                },
               ),
-              Divider(height: 24),
+              const Divider(height: 24),
+
               DiseaseRow(
-                title: 'Stem Rot',
-                description: 'Causes stem rot and plant wilting.',
-                imagePath: 'assets/stem_rot.png',
+                title: 'စပါးဘက်တီးရီးယားရွက်ခြောက်ရောဂါ',
+                description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဘက်တီးရီးယားသတ်ဆေး ဖျန်းပါ။',
+                imagePath: 'assets/images/know_disease_8.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final knowledgeList = await dbService.getKnowledgeData();
+
+                  final diseaseItem = knowledgeList.firstWhere(
+                        (element) => element.id == 'know_008',
+                    orElse: () => KnowledgeModel(
+                      id: 'know_008',
+                      title: 'စပါးဘက်တီးရီးယားရွက်ခြောက်ရောဂါ',
+                      image: 'assets/images/know_disease_8.png',
+                      description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဘက်တီးရီးယားသတ်ဆေး ဖျန်းပါ။',
+                      tag: 'အပင်ရောဂါ',
+                      source: 'စိုက်ပျိုးရေး',
+                      readTime: '၅ မိနစ်စာဖတ်ရန်',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KnowledgeDetailScreen(article: diseaseItem),
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -92,20 +207,20 @@ class DiseaseRow extends StatelessWidget {
   final String title;
   final String description;
   final String imagePath;
+  final VoidCallback? onTap;
 
   const DiseaseRow({
     super.key,
     required this.title,
     required this.description,
     required this.imagePath,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // TODO: To disease details page
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 2.0),
@@ -129,19 +244,13 @@ class DiseaseRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-
-            // Middle, name of disease & description
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -153,8 +262,6 @@ class DiseaseRow extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Right Side Arrow Button
             const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black38),
           ],
         ),
