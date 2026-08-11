@@ -13,13 +13,17 @@ class KnowledgeDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text("ဆောင်းပါးဖတ်ရှုရန်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          "ဆောင်းပါးဖတ်ရှုရန်",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: AppBackground(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -40,7 +44,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🏷️ Tag & Meta Info
+                    // 🏷 Tag & Meta Info
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -52,17 +56,24 @@ class KnowledgeDetailScreen extends StatelessWidget {
                           ),
                           child: Text(
                             article.tag,
-                            style: TextStyle(color: AppColors.primaryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-
                         Row(
                           children: [
                             Icon(Icons.access_time_rounded, size: 14, color: Colors.grey.shade600),
                             const SizedBox(width: 6),
                             Text(
                               article.readTime.isNotEmpty ? article.readTime : "၅ မိနစ်စာဖတ်ရန်",
-                              style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -74,10 +85,10 @@ class KnowledgeDetailScreen extends StatelessWidget {
                     Text(
                       article.title,
                       style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A237E),
-                          height: 1.4
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A237E),
+                        height: 1.4,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -89,14 +100,14 @@ class KnowledgeDetailScreen extends StatelessWidget {
                       article.description,
                       style: const TextStyle(
                         fontSize: 16,
-                        height: 1.8, // စာပိုဒ်ဖတ်ရသက်သာစေရန် Line Height တိုးထားပါသည်
+                        height: 1.8,
                         color: Colors.black87,
                       ),
-                      textAlign: TextAlign.justify, // စာသားများကို ဘယ်ညာအညီညှိပေးရန်
+                      textAlign: TextAlign.justify,
                     ),
                     const SizedBox(height: 24),
 
-                    // 💡 Sub steps များ ဆွဲထုတ်ပြခြင်း
+                    // 💡 Sub steps များ ဆွဲထုတ်ပြခြင်း အပိုင်း
                     if (article.subSteps.isNotEmpty) ...[
                       Column(
                         children: article.subSteps.map((step) {
@@ -105,6 +116,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Sub Title
                                 Text(
                                   step.subTitle,
                                   style: const TextStyle(
@@ -113,19 +125,51 @@ class KnowledgeDetailScreen extends StatelessWidget {
                                     color: Colors.black87,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 12),
+
+                                // 💡 ပြင်ဆင်ထားသော Sub Image Container (ပုံမပြတ်ဘဲ အပြည့်အဝ ပေါ်ရန်)
                                 if (step.subImage.isNotEmpty) ...[
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.asset(
-                                      step.subImage,
-                                      width: double.infinity,
-                                      height: 160,
-                                      fit: BoxFit.cover,
+                                  Container(
+                                    width: double.infinity,
+                                    height: 200,
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: AppColors.primaryColor.withOpacity(0.15),
+                                        width: 1,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.02),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.asset(
+                                        step.subImage,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အပြည့်အဝ ပေါ်စေရန်
+                                        errorBuilder: (context, error, stackTrace) => Container(
+                                          color: Colors.grey.shade100,
+                                          child: Icon(
+                                            Icons.image_not_supported_rounded,
+                                            color: Colors.grey.shade400,
+                                            size: 40,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 12),
                                 ],
+
+                                // Sub Description
                                 Text(
                                   step.subDescription,
                                   style: TextStyle(

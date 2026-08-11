@@ -58,7 +58,7 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'စပါးစိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - မေလ မှ ဇွန်လ',
-                tip: 'စိုက်ခင်းကို ရေငွေ့ဓာတ် ထိန်းထားပါ၊ ပေါင်းမြက်များ နှိမ်နင်းပါ',
+                tip: 'စိုက်ခင်းကို ရေငွေ့ဓာတ်ထိန်းထားပါ၊ ပေါင်းမြက်များနှိမ်နင်းပါ။',
                 icon: '🌾',
                 onTap: () async {
                   // 💡 Database / Service ထဲမှ စပါး (Rice) အတွက် CropModel ဒေတာ ရယူခြင်း
@@ -67,7 +67,7 @@ class CropOverviewSection extends StatelessWidget {
 
                   // 'Rice' သို့မဟုတ် 'စပါး' နဲ့ ကိုက်ညီသော CropModel ကို ရှာဖွေခြင်း
                   final riceCrop = cropList.firstWhere(
-                        (element) => element.title.contains('စပါး') || element.title.contains('Rice'),
+                        (element) => element.id == 'crop_001',
                     orElse: () => CropModel(
                       id: 'crop_001',
                       title: 'စပါးစိုက်ပျိုးနည်း',
@@ -91,7 +91,7 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'ပြောင်းစိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - ဇွန်လ မှ ဇူလိုင်လ',
-                tip: 'ရေမဝပ်စေရန်နှင့် နေရောင်ခြည် လုံလောက်စွာရရှိစေရန်ဆောင်ရွက်ပါ',
+                tip: 'ရေမဝပ်စေရန်နှင့် နေရောင်ခြည်လုံလောက်စွာရရှိစေရန်ဆောင်ရွက်ပါ။',
                 icon: '🌽',
                 onTap: () async {
                   // 💡 1. Database/Service မှ Crop List ကို ရယူခြင်း
@@ -100,7 +100,7 @@ class CropOverviewSection extends StatelessWidget {
 
                   // 💡 2. 'ပြောင်းဖူး' သို့မဟုတ် 'Corn' ဟု ပါဝင်သော CropModel ကို ရှာဖွေခြင်း
                   final cornCrop = cropList.firstWhere(
-                        (element) => element.title.contains('ပြောင်းစိုက်ပျိုးနည်း') || element.title.contains('Corn'),
+                        (element) => element.id == 'crop_005',
                     orElse: () => CropModel(
                       id: 'crop_005',
                       title: 'ပြောင်းစိုက်ပျိုးနည်း',
@@ -125,14 +125,14 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'ခရမ်းချဉ်စိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - နိုဝင်ဘာလ မှ ဒီဇင်ဘာလ',
-                tip: 'မှန်မှန် ရေလောင်းပေးပါ၊ အပင်များ ယိုင်နဲ့မသွားစေရန် ထောက်မပေးပါ',
+                tip: 'မှန်မှန်ရေလောင်းပေးပါ၊ အပင်များ ယိုင်နဲ့မသွားစေရန်ထောက်မပေးပါ။',
                 icon: '🍅',
                 onTap: () async {
                   final dbService = DatabaseService();
                   final cropList = await dbService.getCropsData();
 
                   final tomatoCrop = cropList.firstWhere(
-                        (element) => element.title.contains('ခရမ်းချဉ်') || element.title.contains('Tomato'),
+                        (element) => element.id == 'crop_002',
                     orElse: () => CropModel(
                       id: 'crop_002',
                       title: 'ခရမ်းချဉ်စိုက်ပျိုးနည်း',

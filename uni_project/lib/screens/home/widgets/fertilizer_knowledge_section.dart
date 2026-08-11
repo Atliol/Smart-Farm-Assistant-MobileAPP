@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_project/screens/pesticides/fertilizer/fertilizer_detail_screen.dart';
 
+import '../../../models/fertilizer_model.dart';
+import '../../../services/database_service.dart';
 import '../../pesticides/fertilizer/fertilizer_list_screen.dart';
 
-class FertilizerKnowledgeSection extends StatelessWidget{
+class FertilizerKnowledgeSection extends StatelessWidget {
   const FertilizerKnowledgeSection({super.key});
 
   @override
@@ -11,7 +13,7 @@ class FertilizerKnowledgeSection extends StatelessWidget{
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //Title & View All
+        // Title & View All
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -34,7 +36,7 @@ class FertilizerKnowledgeSection extends StatelessWidget{
         ),
         const SizedBox(height: 8),
 
-        //Fertilizer List With White Screnn
+        // Fertilizer List With White Screen
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -49,53 +51,167 @@ class FertilizerKnowledgeSection extends StatelessWidget{
             ],
           ),
           child: Column(
-            children: const [
+            children: [
+              // 1. ကောမက်ဗိုက်တာကွန်ပေါင်း
               FertilizerRow(
-                title: 'Urea (46% N)',
-                tag: 'Nitrogen',
-                tagColor: Color(0xFFE3F2FD),
+                title: 'ကောမက်ဗိုက်တာကွန်ပေါင်း',
+                tag: 'အမြစ်အားကောင်း',
+                tagColor: const Color(0xFFE3F2FD),
                 tagTextColor: Colors.blue,
-                description: 'Help in leaf growth and green color.',
-                benefit: 'Promotes leaf growth',
+                description: 'အမြစ်ဆင်း အားကောင်းစေသည်။',
+                benefit: 'အထွက်နှုန်းတိုး',
                 benefitIcon: Icons.eco,
                 benefitIconColor: Colors.green,
-                imagePath: 'assets/urea.png',
+                imagePath: 'assets/images/fertilizer_1.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final fertilizerList = await dbService.getFertilizerData();
+
+                  final fertilizerItem = fertilizerList.firstWhere(
+                        (element) => element.id == 'fer_001',
+                    orElse: () => FertilizerModel(
+                      id: 'fer_001',
+                      title: 'ကောမက်ဗိုက်တာကွန်ပေါင်း',
+                      image: 'assets/images/fertilizer_1.png',
+                      description: 'Help in leaf growth and green color.',
+                      typeName: 'Fertilizer',
+                      benefits: 'Promotes leaf growth',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
+                      ),
+                    );
+                  }
+                },
               ),
-              Divider(height: 24),
+              const Divider(height: 24),
+
+              // 2. ကောမက်ပုလဲနက်
               FertilizerRow(
-                title: 'DAP (18-46-0)',
-                tag: 'Phosphorus',
-                tagColor: Color(0xFFFDF2E9),
-                tagTextColor: Colors.orange,
-                description: 'Good for root development.',
-                benefit: 'Supports strong root growth',
-                benefitIcon: Icons.account_tree_outlined,
-                benefitIconColor: Colors.teal,
-                imagePath: 'assets/dap.png',
-              ),
-              Divider(height: 24),
-              FertilizerRow(
-                title: 'Potash (MOP)',
-                tag: 'Potassium',
-                tagColor: Color(0xFFF3E5F5),
-                tagTextColor: Colors.purple,
-                description: 'Improves fruit quality and disease resistance.',
-                benefit: 'Enhances fruit quality',
-                benefitIcon: Icons.apple,
-                benefitIconColor: Colors.red,
-                imagePath: 'assets/potash.png',
-              ),
-              Divider(height: 24),
-              FertilizerRow(
-                title: 'Organic Compost',
-                tag: 'Organic',
-                tagColor: Color(0xFFE8F5E9),
-                tagTextColor: Colors.green,
-                description: 'Improves soil health and fertility.',
-                benefit: 'Imporves soil fertility',
-                benefitIcon: Icons.grass,
+                title: 'ကောမက်ပုလဲနက်',
+                tag: 'ကြာရှည်ခံ',
+                tagColor: const Color(0xFFE3F2FD),
+                tagTextColor: Colors.blue,
+                description: 'အပင်ကြီးထွားမှုကို မြန်ဆန်စေသည်။',
+                benefit: 'အာဟာရ ကြာရှည်ခံသည်',
+                benefitIcon: Icons.eco,
                 benefitIconColor: Colors.green,
-                imagePath: 'assets/organic.png',
+                imagePath: 'assets/images/fertilizer_2.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final fertilizerList = await dbService.getFertilizerData();
+
+                  final fertilizerItem = fertilizerList.firstWhere(
+                        (element) => element.id == 'fer_002',
+                    orElse: () => FertilizerModel(
+                      id: 'fer_002',
+                      title: 'ကောမက်ပုလဲနက်',
+                      image: 'assets/images/fertilizer_2.png',
+                      description: 'Help in leaf growth and green color.',
+                      typeName: 'Fertilizer',
+                      benefits: 'Promotes leaf growth',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
+                      ),
+                    );
+                  }
+                },
+              ),
+              const Divider(height: 24),
+
+              // 3. ကောမက်ပရီမို
+              FertilizerRow(
+                title: 'ကောမက်ပရီမို',
+                tag: 'အာဟာရစုံ',
+                tagColor: const Color(0xFFE3F2FD),
+                tagTextColor: Colors.blue,
+                description: 'ပန်းပွင့်/အသီး တိုးတက်ဖြစ်ထွန်းစေသည်။',
+                benefit: 'NPK အာဟာရဓာတ် မျှတစွာပါဝင်',
+                benefitIcon: Icons.eco,
+                benefitIconColor: Colors.green,
+                imagePath: 'assets/images/fertilizer_10.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final fertilizerList = await dbService.getFertilizerData();
+
+                  final fertilizerItem = fertilizerList.firstWhere(
+                        (element) => element.id == 'fer_010',
+                    orElse: () => FertilizerModel(
+                      id: 'fer_010',
+                      title: 'ကောမက်ပရီမို',
+                      image: 'assets/images/fertilizer_10.png',
+                      description: 'Help in leaf growth and green color.',
+                      typeName: 'Fertilizer',
+                      benefits: 'Promotes leaf growth',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
+                      ),
+                    );
+                  }
+                },
+              ),
+              const Divider(height: 24),
+
+              // 4. ကောမက် ဂျီ ၄၆
+              FertilizerRow(
+                title: 'ကောမက် ဂျီ ၄၆',
+                tag: 'အပင်ပွား',
+                tagColor: const Color(0xFFE3F2FD),
+                tagTextColor: Colors.blue,
+                description: 'အပင် သန်မာထုထည် ကြီးမားစေသည်။',
+                benefit: 'အပင်ပွားနှင့် အကိုင်းအခက်ထွက်ရှိ',
+                benefitIcon: Icons.eco,
+                benefitIconColor: Colors.green,
+                imagePath: 'assets/images/fertilizer_9.png',
+                onTap: () async {
+                  final dbService = DatabaseService();
+                  final fertilizerList = await dbService.getFertilizerData();
+
+                  final fertilizerItem = fertilizerList.firstWhere(
+                        (element) => element.id == 'fer_009',
+                    orElse: () => FertilizerModel(
+                      id: 'fer_009',
+                      title: 'ကောမက် ဂျီ ၄၆',
+                      image: 'assets/images/fertilizer_9.png',
+                      description: 'Help in leaf growth and green color.',
+                      typeName: 'Fertilizer',
+                      benefits: 'Promotes leaf growth',
+                      subSteps: [],
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -105,7 +221,7 @@ class FertilizerKnowledgeSection extends StatelessWidget{
   }
 }
 
-//Each Fertilizer of UI
+// Each Fertilizer UI Row Widget
 class FertilizerRow extends StatelessWidget {
   final String title;
   final String tag;
@@ -116,8 +232,9 @@ class FertilizerRow extends StatelessWidget {
   final IconData benefitIcon;
   final Color benefitIconColor;
   final String imagePath;
+  final VoidCallback? onTap;
 
-  const FertilizerRow ({
+  const FertilizerRow({
     super.key,
     required this.title,
     required this.tag,
@@ -128,21 +245,20 @@ class FertilizerRow extends StatelessWidget {
     required this.benefitIcon,
     required this.benefitIconColor,
     required this.imagePath,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        //TODO: To detail page of each fertilizer
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            //Left fertilizer bag photo
+            // Left fertilizer bag photo
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
@@ -162,12 +278,12 @@ class FertilizerRow extends StatelessWidget {
             ),
             const SizedBox(width: 16),
 
-            //Middle data part
+            // Middle data part
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //Type tag card
+                  // Type tag card
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
@@ -180,13 +296,13 @@ class FertilizerRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  //Name of fertilizer
+                  // Name of fertilizer
                   Text(
                     title,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   const SizedBox(height: 4),
-                  //Description of benefit
+                  // Description of benefit
                   Text(
                     description,
                     style: const TextStyle(fontSize: 13, color: Colors.black54),
@@ -194,7 +310,7 @@ class FertilizerRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  //Bottom circle benefit
+                  // Bottom circle benefit
                   Row(
                     children: [
                       CircleAvatar(
@@ -212,7 +328,7 @@ class FertilizerRow extends StatelessWidget {
                 ],
               ),
             ),
-            //Right Side Arrow
+            // Right Side Arrow
             const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black38),
           ],
         ),
@@ -220,21 +336,3 @@ class FertilizerRow extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
