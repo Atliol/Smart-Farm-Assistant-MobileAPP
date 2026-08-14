@@ -56,7 +56,7 @@ void main() async {
     // ၁။ Offline Database (Hive) နှိုးခြင်း
     await TrackerDbService.init();
     await DatabaseService.initHive();
-    
+
     // ၂။ Box ကို ဖွင့်လှစ်ခြင်း
     await HiveDbService.init();
 
@@ -89,7 +89,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final CallService _callService = CallService();
-  
+
   // 📞 Stream Subscriptions များကို ထိန်းချုပ်ရန် variable များ
   StreamSubscription<User?>? _authStateSubscription;
   StreamSubscription<QuerySnapshot>? _callSubscription;
@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
   void _setupCallListener() {
     // လက်ရှိ ရှိနေခဲ့သော subscription အဟောင်းများရှိပါက အရင်ပိတ်ပါ
     _authStateSubscription?.cancel();
-    
+
     // FirebaseAuth တွင် Current User ရှိမှသာ Listen လုပ်မည်
     _authStateSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       // User က Logout လုပ်သွားလျှင် Call Listen လုပ်နေမှုကို ရပ်တန့်မည်
@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
 
       // User အသစ်ဝင်လာပါက Call အဟောင်း Listeners များကို ရှင်းထုတ်ပြီး အသစ်ပြန်စမည်
       _callSubscription?.cancel();
-      
+
       // QuerySnapshot ကို လက်ခံရရှိမှာ ဖြစ်တဲ့အတွက် docs ထဲက data တွေကို ပတ်စစ်ပါမယ်
       _callSubscription = _callService.listenToCall(user.uid).listen((snapshot) {
         if (snapshot.docs.isNotEmpty) {

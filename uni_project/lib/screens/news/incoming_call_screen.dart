@@ -29,11 +29,11 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
         .doc(widget.call.callId)
         .snapshots()
         .listen((doc) {
-          if (!doc.exists && mounted) {
-            _stopRingtone();
-            Navigator.pop(context);
-          }
-        });
+      if (!doc.exists && mounted) {
+        _stopRingtone();
+        Navigator.pop(context);
+      }
+    });
 
     _playRingtone();
   }
@@ -65,8 +65,8 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
   @override
   Widget build(BuildContext context) {
     // ပုံထဲကလို နာမည်ပထမစာလုံးကို ယူဖို့ (ဥပမာ- Kyi Phyu ဆိုရင် 'K')
-    final String initialLetter = widget.call.callerName.isNotEmpty 
-        ? widget.call.callerName[0].toUpperCase() 
+    final String initialLetter = widget.call.callerName.isNotEmpty
+        ? widget.call.callerName[0].toUpperCase()
         : '?';
 
     return Scaffold(
@@ -113,18 +113,18 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                     child: CircleAvatar(
                       radius: 55,
                       backgroundColor: Colors.white.withOpacity(0.2),
-                      backgroundImage: widget.call.callerPic.isNotEmpty 
-                          ? NetworkImage(widget.call.callerPic) 
+                      backgroundImage: widget.call.callerPic.isNotEmpty
+                          ? NetworkImage(widget.call.callerPic)
                           : null,
-                      child: widget.call.callerPic.isEmpty 
+                      child: widget.call.callerPic.isEmpty
                           ? Text(
-                              initialLetter,
-                              style: const TextStyle(
-                                fontSize: 40, 
-                                color: Colors.white, 
-                                fontWeight: FontWeight.bold
-                              ),
-                            )
+                        initialLetter,
+                        style: const TextStyle(
+                            fontSize: 40,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),
+                      )
                           : null,
                     ),
                   ),
@@ -172,7 +172,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                       child: Icon(Icons.call_end, color: Colors.white, size: 32),
                     ),
                   ),
-                  
+
                   // Accept Button (ဖုန်းလက်ခံရန်)
                   GestureDetector(
                     onTap: () async {
@@ -180,7 +180,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                       _stopRingtone(); // ဖုန်းလက်ခံလိုက်ရင် ရင်တုန်းသံ ပိတ်မယ်
                       final navigatorContext = context;
                       await _callService.acceptCall(widget.call.callId);
-                      
+
                       if (!navigatorContext.mounted) return;
                       Navigator.pushReplacement(
                         navigatorContext,
@@ -199,9 +199,9 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                       radius: 35,
                       backgroundColor: Colors.green,
                       child: Icon(
-                        widget.call.isVideoCall ? Icons.videocam : Icons.call, 
-                        color: Colors.white, 
-                        size: 32
+                          widget.call.isVideoCall ? Icons.videocam : Icons.call,
+                          color: Colors.white,
+                          size: 32
                       ),
                     ),
                   ),

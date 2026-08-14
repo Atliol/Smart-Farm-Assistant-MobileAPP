@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:uni_project/screens/home/widgets/fertilizer_knowledge_section.dart';
 
+import 'package:uni_project/services/network_service.dart';
 import 'package:uni_project/screens/home/service/weather_service.dart';
 import 'package:uni_project/screens/home/widgets/crop_overview_section.dart';
 import 'package:uni_project/screens/home/widgets/disease_awareness_section.dart';
-import 'package:uni_project/screens/home/widgets/fertilizer_knowledge_section.dart';
 import 'package:uni_project/screens/home/widgets/quick_access_section.dart';
 import 'package:uni_project/screens/home/widgets/weather_card.dart';
 import 'package:uni_project/widgets/app_background.dart';
@@ -23,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final WeatherService _weatherService = WeatherService();
+  final NetworkService _networkService = NetworkService();
 
   Map<String, dynamic>? weatherData;
   bool isLoading = true;
@@ -35,51 +38,60 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadWeather() async {
-    try {
-      bool serviceEnabled =
-      await Geolocator.isLocationServiceEnabled();
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
 
+    try {
+      // ၁။ Internet Connection ရှိ/မရှိ စစ်ဆေးခြင်း
+      bool hasInternet = await _networkService.hasInternetConnection();
+      if (!hasInternet) {
+        setState(() {
+          errorMessage = 'အင်တာနက် လိုင်းမရှိပါ။ ကျေးဇူးပြု၍ စစ်ဆေးပေးပါ။';
+          isLoading = false;
+        });
+        return;
+      }
+
+      // ၂။ Location Service စစ်ဆေးခြင်း
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
-          errorMessage = 'Location Service is disabled';
+          errorMessage = 'Location Service ဖွင့်မထားပါ။ GPS ဖွင့်ပေးပါ။';
           isLoading = false;
         });
         return;
       }
 
-      LocationPermission permission =
-      await Geolocator.checkPermission();
-
+      // ၃။ Location Permission စစ်ဆေးခြင်း
+      LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        permission =
-        await Geolocator.requestPermission();
+        permission = await Geolocator.requestPermission();
       }
 
       if (permission == LocationPermission.denied) {
         setState(() {
-          errorMessage = 'Location Permission Denied';
+          errorMessage = 'Location Permission ငြင်းပယ်ထားပါသည်။';
           isLoading = false;
         });
         return;
       }
 
-      if (permission ==
-          LocationPermission.deniedForever) {
+      if (permission == LocationPermission.deniedForever) {
         setState(() {
-          errorMessage =
-          'Location Permission Permanently Denied';
+          errorMessage = 'Location Permission ပိတ်ထားပါသည်။ Setting တွင် ခွင့်ပြုပေးပါ။';
           isLoading = false;
         });
         return;
       }
 
-      Position position =
-      await Geolocator.getCurrentPosition(
+      // ၄။ Weather Data ရယူခြင်း
+      Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      final data =
-      await _weatherService.getWeatherByLocation(
+      final data = await _weatherService.getWeatherByLocation(
         position.latitude,
         position.longitude,
       );
@@ -89,8 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
       });
     } catch (e) {
+      // ဘာ Error ပဲတက်တက် စနစ်တကျဖမ်းပြီး မြန်မာလို အသုံးပြုသူကို ပြပေးမည်
+      String friendlyMessage = 'အချက်အလက်များ ရယူ၍ မရပါ။ ခဏစောင့်ပြီး အောက်သို့ ဆွဲချ (Refresh) ပြုလုပ်ပါ။';
+
+      String errStr = e.toString().toLowerCase();
+      if (errStr.contains('handshake') || errStr.contains('socket') || errStr.contains('connection')) {
+        friendlyMessage = 'အင်တာနက်မရှိပါ သို့မဟုတ် လိုင်းကျနေပါသည်။';
+      }
+
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = friendlyMessage;
         isLoading = false;
       });
     }
@@ -101,47 +121,120 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppBackground(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-              children: [
-                if (isLoading)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(),
+        child: RefreshIndicator(
+          onRefresh: loadWeather,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: ClampingScrollPhysics(),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Weather Card / Loading / Customized Error Card
+                  if (isLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (errorMessage != null)
+                    _buildErrorCard()
+                  else
+                    WeatherCard(
+                      weatherData: weatherData,
                     ),
-                  )
-                else
-                  WeatherCard(
-                    weatherData: weatherData,
+
+                  const SizedBox(height: 20),
+
+                  QuickAccessSection(
+                    onTabChanged: widget.onTabChanged,
                   ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                QuickAccessSection(
-                  onTabChanged: widget.onTabChanged,
-                ),
+                  const CropOverviewSection(),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                const CropOverviewSection(),
+                  const DiseaseAwarenessSection(),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                const DiseaseAwarenessSection(),
-
-                const SizedBox(height: 20),
-
-                const FertilizerKnowledgeSection(),
-              ],
+                  const FertilizerKnowledgeSection(),
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Error ပြသရန် လှပသည့် Card UI
+  Widget _buildErrorCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.wifi_off_rounded,
+            color: Colors.orangeAccent,
+            size: 36,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            errorMessage ?? 'အမှားတစ်ခု ဖြစ်ပေါ်နေပါသည်။',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade800,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 10),
+          InkWell(
+            onTap: loadWeather,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.green.shade600,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh, color: Colors.white, size: 14),
+                  SizedBox(width: 4),
+                  Text(
+                    'ပြန်လည်ကြိုးစားမည်',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

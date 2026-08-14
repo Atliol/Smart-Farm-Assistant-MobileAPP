@@ -21,8 +21,8 @@ class CallService {
       await _firestore.collection('calls').doc(call.callId).set(call.toMap());
 
       // Target Receiver ရဲ့ FCM Token ကို Firestore ထဲက သွားယူမယ်
-      DocumentSnapshot userDoc = 
-          await _firestore.collection('users').doc(call.receiverId).get();
+      DocumentSnapshot userDoc =
+      await _firestore.collection('users').doc(call.receiverId).get();
 
       if (userDoc.exists && userDoc.data() != null) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;

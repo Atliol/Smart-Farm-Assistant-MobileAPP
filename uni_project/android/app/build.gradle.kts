@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.dev.kl.uni_project"
-    compileSdk = 36
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = "28.2.13676358"
 
     compileOptions {

@@ -129,7 +129,7 @@ class _CallScreenState extends State<CallScreen> {
       body: Stack(
         children: [
           Center(child: _renderView()),
-          
+
           // User Name Display
           Positioned(
             top: 60,

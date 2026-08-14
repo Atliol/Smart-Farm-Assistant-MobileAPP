@@ -36,15 +36,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final ImagePicker _picker = ImagePicker();
 
   ImageProvider? _getImageFromBase64(String? base64String) {    if (base64String != null && base64String.isNotEmpty) {
-      try {
-        if (!base64String.startsWith('blob:')) {
-          return MemoryImage(base64Decode(base64String));
-        }
-      } catch (e) {
-        debugPrint("Invalid base64 string: $e");
+    try {
+      if (!base64String.startsWith('blob:')) {
+        return MemoryImage(base64Decode(base64String));
       }
+    } catch (e) {
+      debugPrint("Invalid base64 string: $e");
     }
-    return null;
+  }
+  return null;
   }
 
   Future<void> _startCall({required bool isVideo}) async {
@@ -89,7 +89,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       return;
     }
 
-        if (mounted) {
+    if (mounted) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -140,12 +140,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           .doc(roomId)
           .collection('messages')
           .add({
-            'senderId': _currentUserId,
-            'receiverId': widget.receiverId,
-            'message': base64Image,
-            'type': 'image',
-            'timestamp': FieldValue.serverTimestamp(),
-          });
+        'senderId': _currentUserId,
+        'receiverId': widget.receiverId,
+        'message': base64Image,
+        'type': 'image',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
     } catch (e) {
       debugPrint("Error converting or uploading image: $e");
       if (mounted) {
@@ -158,10 +158,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   // 🛠️ စာသားပြင်ဆင်ရန်အတွက် Dialog Method
   Future<void> _editMessage(
-    String messageId,
-    String oldMessage,
-    String roomId,
-  ) async {
+      String messageId,
+      String oldMessage,
+      String roomId,
+      ) async {
     final editController = TextEditingController(text: oldMessage);
     showDialog(
       context: context,
@@ -228,12 +228,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   // 📱 Long Press Options Dialog
   void _showMessageOptions(
-    String messageId,
-    String currentMessage,
-    String messageType,
-    bool isMe,
-    String roomId,
-  ) {
+      String messageId,
+      String currentMessage,
+      String messageType,
+      bool isMe,
+      String roomId,
+      ) {
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -354,15 +354,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ),
                           child: receiverPhotoUrl == null
                               ? Text(
-                                  widget.receiverName.isNotEmpty
-                                      ? widget.receiverName[0]
-                                      : 'က',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
+                            widget.receiverName.isNotEmpty
+                                ? widget.receiverName[0]
+                                : 'က',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                               : null,
                         ),
                         if (isOnline)
@@ -510,15 +510,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     ),
                                     child: receiverPhotoUrl == null
                                         ? Text(
-                                            widget.receiverName.isNotEmpty
-                                                ? widget.receiverName[0]
-                                                : 'က',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
+                                      widget.receiverName.isNotEmpty
+                                          ? widget.receiverName[0]
+                                          : 'က',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
                                         : null,
                                   ),
                                   const SizedBox(width: 8),
@@ -531,76 +531,76 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     children: [
                                       messageType == 'image'
                                           ? Container(
-                                              constraints: const BoxConstraints(
-                                                maxWidth: 240,
-                                                maxHeight: 240,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                                border: Border.all(
-                                                  color: Colors.grey.shade300,
-                                                ),
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: Image.memory(
-                                                  base64Decode(msg.message),
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder:
-                                                      (
-                                                        context,
-                                                        error,
-                                                        stackTrace,
-                                                      ) => const Icon(
-                                                        Icons.broken_image,
-                                                        size: 50,
-                                                      ),
-                                                ),
-                                              ),
-                                            )
-                                          : Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 10,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: isMe
-                                                    ? const Color(0xff0a196c)
-                                                    : Colors.white,
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      const Radius.circular(16),
-                                                  topRight:
-                                                      const Radius.circular(16),
-                                                  bottomLeft: Radius.circular(
-                                                    isMe ? 16 : 4,
-                                                  ),
-                                                  bottomRight: Radius.circular(
-                                                    isMe ? 4 : 16,
-                                                  ),
-                                                ),
-                                                boxShadow: [
-                                                  const BoxShadow(
-                                                    color: Color.fromRGBO(0, 0, 0, 0.03),
-                                                    blurRadius: 4,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Text(
-                                                msg.message,
-                                                style: TextStyle(
-                                                  color: isMe
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                                  fontSize: 15,
-                                                  height: 1.3,
-                                                ),
-                                              ),
+                                        constraints: const BoxConstraints(
+                                          maxWidth: 240,
+                                          maxHeight: 240,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(16),
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(15),
+                                          child: Image.memory(
+                                            base64Decode(msg.message),
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                                ) => const Icon(
+                                              Icons.broken_image,
+                                              size: 50,
                                             ),
+                                          ),
+                                        ),
+                                      )
+                                          : Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 10,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isMe
+                                              ? const Color(0xff0a196c)
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft:
+                                            const Radius.circular(16),
+                                            topRight:
+                                            const Radius.circular(16),
+                                            bottomLeft: Radius.circular(
+                                              isMe ? 16 : 4,
+                                            ),
+                                            bottomRight: Radius.circular(
+                                              isMe ? 4 : 16,
+                                            ),
+                                          ),
+                                          boxShadow: [
+                                            const BoxShadow(
+                                              color: Color.fromRGBO(0, 0, 0, 0.03),
+                                              blurRadius: 4,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          msg.message,
+                                          style: TextStyle(
+                                            color: isMe
+                                                ? Colors.white
+                                                : Colors.black87,
+                                            fontSize: 15,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                      ),
                                       const SizedBox(height: 4),
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -611,8 +611,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                               if (rawData['timestamp'] !=
                                                   null) {
                                                 Timestamp timestamp =
-                                                    rawData['timestamp']
-                                                        as Timestamp;
+                                                rawData['timestamp']
+                                                as Timestamp;
                                                 DateTime dateTime = timestamp
                                                     .toDate();
                                                 formattedTime = DateFormat(
@@ -751,4 +751,3 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 }
-
