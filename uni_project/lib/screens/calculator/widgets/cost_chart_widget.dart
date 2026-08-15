@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/cost_calculator_model.dart';
 
 class CostChartWidget extends StatelessWidget {
@@ -39,7 +40,7 @@ class CostChartWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF00796B),
+                color: AppColors.primaryColor,
               ),
             ),
             const SizedBox(height: 16),
@@ -57,7 +58,7 @@ class CostChartWidget extends StatelessWidget {
                             title: fertPercentage > 0
                                 ? '${fertPercentage.toStringAsFixed(0)}%'
                                 : '',
-                            color: const Color(0xFF00796B),
+                            color:AppColors.primaryColor,
                             radius: 45,
                             titleStyle: const TextStyle(
                               color: Colors.white,
@@ -96,7 +97,7 @@ class CostChartWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildLegendItem(
-                  color: const Color(0xFF00796B),
+                  color: AppColors.primaryColor,
                   label: 'မြေဩဇာ စရိတ်',
                 ),
                 const SizedBox(width: 20),

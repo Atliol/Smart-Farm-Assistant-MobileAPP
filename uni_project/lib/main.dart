@@ -1,4 +1,4 @@
-import 'dart:async'; // 👈 StreamSubscription သုံးရန် ထည့်သွင်းထားပါသည်
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,35 +48,47 @@ void _routeIncomingCall(Map<String, dynamic> data) {
   });
 }
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ၁။ Offline Database (Hive) များ စတင်နှိုးခြင်း (ဒီအဆင့် မပျက်စီးရပါ)
   try {
-    // ၁။ Offline Database (Hive) နှိုးခြင်း
     await TrackerDbService.init();
     await DatabaseService.initHive();
-
-    // ၂။ Box ကို ဖွင့်လှစ်ခြင်း
     await HiveDbService.init();
+  } catch (e) {
+    debugPrint("Local DB Initialization Error: $e");
+    // Local DB တောင် ပွင့်မရပါကမှ ErrorApp ပြမည်
+    runApp(ErrorApp(errorMessage: "Local Storage Error: $e"));
+    return;
+  }
 
-    // ၃။ Firebase တည်ဆောက်ခြင်း
+  // ၂။ Firebase နှင့် Push Notification (Internet မရှိလည်း App ပွင့်စေရန် သီးသန့် try-catch ထားခြင်း)
+  try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
+    // Cloud Firestore အတွက် Offline Persistence ကို စနစ်တကျ ဖွင့်ထားပေးခြင်း
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
+
     PushNotificationService.onNotificationOpened = _routeIncomingCall;
 
-    // ၄။ Push Notification (FCM Token) ရယူခြင်း
-    await PushNotificationService().initNotification();
-
+    // Push Notification Service ကို သီးသန့် try-catch စစ်ခြင်း
+    try {
+      await PushNotificationService().initNotification();
+    } catch (e) {
+      debugPrint("Push Notification Init Failed (Possibly Offline): $e");
+    }
   } catch (e) {
-    debugPrint("Initialization Error: $e");
-    final String errorMsg = e.toString();
-    runApp(ErrorApp(errorMessage: errorMsg));
-    return;
+    // Firebase Initialize မဖြစ်သွားခဲ့ရင်တောင် (ဥပမာ အော့ဖ်လိုင်း ဖြစ်နေ၍) App ကို ပိတ်မသွားစေဘဲ Log သာ ထုတ်မည်
+    debugPrint("Firebase Initialization Warning (Offline Mode Active): $e");
   }
 
+  // အော့ဖ်လိုင်းဖြစ်နေလည်း မူလ App ကို ပုံမှန်အတိုင်း Run မည်
   runApp(const MyApp());
 }
 
@@ -97,49 +109,57 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // App စဖွင့်သည်နှင့် Incoming Call ရှိမရှိ Listen စတင်ပြုလုပ်မည်
     _setupCallListener();
   }
 
   void _setupCallListener() {
-    // လက်ရှိ ရှိနေခဲ့သော subscription အဟောင်းများရှိပါက အရင်ပိတ်ပါ
     _authStateSubscription?.cancel();
 
-    // FirebaseAuth တွင် Current User ရှိမှသာ Listen လုပ်မည်
-    _authStateSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
-      // User က Logout လုပ်သွားလျှင် Call Listen လုပ်နေမှုကို ရပ်တန့်မည်
-      if (user == null) {
-        _callSubscription?.cancel();
-        _callSubscription = null;
-        return;
-      }
-
-      // User အသစ်ဝင်လာပါက Call အဟောင်း Listeners များကို ရှင်းထုတ်ပြီး အသစ်ပြန်စမည်
-      _callSubscription?.cancel();
-
-      // QuerySnapshot ကို လက်ခံရရှိမှာ ဖြစ်တဲ့အတွက် docs ထဲက data တွေကို ပတ်စစ်ပါမယ်
-      _callSubscription = _callService.listenToCall(user.uid).listen((snapshot) {
-        if (snapshot.docs.isNotEmpty) {
-          for (var doc in snapshot.docs) {
-            if (doc.exists && doc.data() != null) {
-              final data = doc.data() as Map<String, dynamic>;
-              final call = CallModel.fromMap(data);
-
-              // 'dialing' status ဖြင့် Call အသစ် ရောက်လာပါက Incoming Call Screen သို့ ပို့ပေးမည်
-              if (call.status == 'dialing') {
-                _routeIncomingCall(data);
-                break; // Screen ပွင့်သွားရင် Loop ကို ရပ်လိုက်မယ်
-              }
-            }
+    try {
+      _authStateSubscription = FirebaseAuth.instance.authStateChanges().listen(
+            (user) {
+          if (user == null) {
+            _callSubscription?.cancel();
+            _callSubscription = null;
+            return;
           }
-        }
-      });
-    });
+
+          _callSubscription?.cancel();
+
+          // Firestore Listener တွင် error handle လုပ်ရန် onError ထည့်သွင်းထားပါသည်
+          _callSubscription = _callService.listenToCall(user.uid).listen(
+                (snapshot) {
+              if (snapshot.docs.isNotEmpty) {
+                for (var doc in snapshot.docs) {
+                  if (doc.exists && doc.data() != null) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final call = CallModel.fromMap(data);
+
+                    if (call.status == 'dialing') {
+                      _routeIncomingCall(data);
+                      break;
+                    }
+                  }
+                }
+              }
+            },
+            onError: (error) {
+              // Internet မရှိသည့်အခါ သို့မဟုတ် Connection ဖြတ်တောက်ချိန်တွင် တက်လာသည့် Error ကို ယာယီ ငြိမ်စေရန်
+              debugPrint("Call Listener Error (Offline Mode): $error");
+            },
+          );
+        },
+        onError: (error) {
+          debugPrint("Auth State Error: $error");
+        },
+      );
+    } catch (e) {
+      debugPrint("Error setting up Firebase listeners: $e");
+    }
   }
 
   @override
   void dispose() {
-    // 🧹 App State သေဆုံးသွားပါက Stream အားလုံးကို Cancel လုပ်ပြီး Memory ရှင်းလင်းခြင်း
     _authStateSubscription?.cancel();
     _callSubscription?.cancel();
     super.dispose();
@@ -149,7 +169,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shwe Lel Yar',
-      navigatorKey: navigatorKey, // Global Navigator Key ကို တပ်ဆင်ခြင်း
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

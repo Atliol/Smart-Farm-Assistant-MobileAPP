@@ -23,7 +23,8 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
     _loadData();
   }
 
-  void _loadData() {
+  // ဒေတာများ ပြန်လည် ရယူရန် Function (Future ပုံစံဖြင့် RefreshIndicator နှင့် ချိတ်ဆက်ရန်)
+  Future<void> _loadData() async {
     setState(() {
       _priceFuture = _priceService.fetchDailyPrices(
         city: _selectedCity,
@@ -34,7 +35,20 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
 
   String _getFormattedDate() {
     final now = DateTime.now();
-    final months = ['ဇန်နဝါရီ', 'ဖေဖော်ဝါရီ', 'မတ်', 'ဧပြီ', 'မေ', 'ဇွန်', 'ဇူလိုင်', 'သြဂုတ်', 'စက်တင်ဘာ', 'အောက်တိုဘာ', 'နိုဝင်ဘာ', 'ဒီဇင်ဘာ'];
+    final months = [
+      'ဇန်နဝါရီ',
+      'ဖေဖော်ဝါရီ',
+      'မတ်',
+      'ဧပြီ',
+      'မေ',
+      'ဇွန်',
+      'ဇူလိုင်',
+      'သြဂုတ်',
+      'စက်တင်ဘာ',
+      'အောက်တိုဘာ',
+      'နိုဝင်ဘာ',
+      'ဒီဇင်ဘာ'
+    ];
     return "${months[now.month - 1]} ${now.day}";
   }
 
@@ -63,7 +77,8 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "နေ့စဉ် သီးနှံစျေးနှုန်းများ",
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -74,7 +89,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
       ),
       body: Column(
         children: [
-          // 💡 Top Selector Bar (အချိုးအစား ညီတူညီမျှ ပြင်ဆင်ထားသော UI)
+          // 💡 Top Selector Bar
           Container(
             color: const Color(0xFF00897B),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -83,7 +98,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                 // 📅 Date Box
                 Expanded(
                   child: Container(
-                    height: 40, // 💡 အမြင့် တူညီအောင် ညှိထားပါသည်
+                    height: 40,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
@@ -92,11 +107,15 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.calendar_today_outlined, color: Colors.white, size: 16),
+                        const Icon(Icons.calendar_today_outlined,
+                            color: Colors.white, size: 16),
                         const SizedBox(width: 8),
                         Text(
                           _getFormattedDate(),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
                         ),
                       ],
                     ),
@@ -107,7 +126,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                 // 🏙️ City Dropdown Box
                 Expanded(
                   child: Container(
-                    height: 40, // 💡 အမြင့် တူညီအောင် ညှိထားပါသည်
+                    height: 40,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
@@ -118,8 +137,12 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                         value: _selectedCity,
                         isExpanded: true,
                         dropdownColor: const Color(0xFF00897B),
-                        icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        icon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
                         onChanged: (String? newValue) {
                           if (newValue != null) {
                             setState(() {
@@ -128,11 +151,13 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                             _loadData();
                           }
                         },
-                        items: PriceService.cities.map<DropdownMenuItem<String>>((String value) {
+                        items: PriceService.cities
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             alignment: Alignment.center,
-                            child: Text(value, style: const TextStyle(color: Colors.white)),
+                            child: Text(value,
+                                style: const TextStyle(color: Colors.white)),
                           );
                         }).toList(),
                       ),
@@ -149,108 +174,210 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: const Row(
               children: [
-                Expanded(flex: 4, child: Text("အမျိုးအစား", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                Expanded(flex: 2, child: Text("ယူနစ်", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                Expanded(flex: 3, child: Text("စျေးနှုန်း", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                Expanded(
+                    flex: 4,
+                    child: Text("အမျိုးအစား",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold))),
+                Expanded(
+                    flex: 2,
+                    child: Text("ယူနစ်",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold))),
+                Expanded(
+                    flex: 3,
+                    child: Text("စျေးနှုန်း",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold))),
               ],
             ),
           ),
 
-          // Price Data View
+          // Price Data View with RefreshIndicator
           Expanded(
-            child: FutureBuilder<List<CropPriceModel>>(
-              future: _priceFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return const Center(child: Text("ဒေတာ ရယူရာတွင် အမှားတစ်ခု ရှိနေပါသည်"));
-                }
-
-                final prices = snapshot.data ?? [];
-
-                if (prices.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "စျေးနှုန်းများမရှိသေးပါ",
-                      style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.bold),
-                    ),
-                  );
-                }
-
-                Map<String, List<CropPriceModel>> groupedPrices = {};
-                for (var price in prices) {
-                  if (!groupedPrices.containsKey(price.category)) {
-                    groupedPrices[price.category] = [];
+            child: RefreshIndicator(
+              color: const Color(0xFF00897B),
+              onRefresh: _loadData,
+              child: FutureBuilder<List<CropPriceModel>>(
+                future: _priceFuture,
+                builder: (context, snapshot) {
+                  // Loading State
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF00897B),
+                      ),
+                    );
                   }
-                  groupedPrices[price.category]!.add(price);
-                }
 
-                return ListView.builder(
-                  itemCount: groupedPrices.keys.length,
-                  itemBuilder: (context, index) {
-                    String category = groupedPrices.keys.elementAt(index);
-                    List<CropPriceModel> categoryItems = groupedPrices[category]!;
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  // 🌐 Error State (အင်တာနက်မရှိ/လိုင်းကျသည့်အခါ ပြသမည့် UI)
+                  if (snapshot.hasError) {
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          color: const Color(0xFFECEFF1),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.2),
+                        const Icon(
+                          Icons.wifi_off_rounded,
+                          size: 70,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 16),
+                        const Center(
                           child: Text(
-                            "$category အမျိုးအစားများ",
-                            style: const TextStyle(
-                              color: Color(0xFF00897B),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                            "အင်တာနက် ချိတ်ဆက်မှု မရှိပါ သို့မဟုတ်\nဒေတာ ရယူရာတွင် အမှားတစ်ခု ရှိနေပါသည်။",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              height: 1.4,
                             ),
                           ),
                         ),
-                        ...categoryItems.map((item) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: ElevatedButton.icon(
+                            onPressed: _loadData,
+                            icon: const Icon(Icons.refresh, color: Colors.white),
+                            label: const Text(
+                              "ပြန်လည်ကြိုးစားမည်",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00897B),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text(
-                                  item.cropName,
-                                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  item.unit,
-                                  style: const TextStyle(fontSize: 13, color: Colors.black54),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  item.price,
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
+                        ),
                       ],
                     );
-                  },
-                );
-              },
+                  }
+
+                  final prices = snapshot.data ?? [];
+
+                  // Empty State (ဒေတာမရှိသည့်အခါ ပြသမည့် UI)
+                  if (prices.isEmpty) {
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.25),
+                        const Icon(
+                          Icons.find_in_page_outlined,
+                          size: 65,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 12),
+                        const Center(
+                          child: Text(
+                            "စျေးနှုန်းများ မရှိသေးပါ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  // Data Processing / Grouping
+                  Map<String, List<CropPriceModel>> groupedPrices = {};
+                  for (var price in prices) {
+                    if (!groupedPrices.containsKey(price.category)) {
+                      groupedPrices[price.category] = [];
+                    }
+                    groupedPrices[price.category]!.add(price);
+                  }
+
+                  return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: groupedPrices.keys.length,
+                    itemBuilder: (context, index) {
+                      String category = groupedPrices.keys.elementAt(index);
+                      List<CropPriceModel> categoryItems =
+                      groupedPrices[category]!;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            color: const Color(0xFFECEFF1),
+                            child: Text(
+                              "$category အမျိုးအစားများ",
+                              style: const TextStyle(
+                                color: Color(0xFF00897B),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          ...categoryItems.map((item) => Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey.shade200),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    item.cropName,
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black87),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    item.unit,
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black54),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    item.price,
+                                    textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black87),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],

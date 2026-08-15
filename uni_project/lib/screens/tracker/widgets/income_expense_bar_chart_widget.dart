@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/transaction_model.dart';
 
 class IncomeExpenseBarChartWidget extends StatelessWidget {
@@ -51,17 +52,17 @@ class IncomeExpenseBarChartWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Income vs. Expense',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'ဝင်ငွေ Vs ထွက်ငွေ',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
             ),
             const SizedBox(height: 12),
             // Legend Indicators
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildLegend(const Color(0xFF00392B), 'Income'),
+                _buildLegend(Colors.green.shade700, 'ဝင်ငွေ'),
                 const SizedBox(width: 16),
-                _buildLegend(const Color(0xFF80CBC4), 'Expense'),
+                _buildLegend(Colors.red.shade700, 'ထွက်ငွေ'),
               ],
             ),
             const SizedBox(height: 20),
@@ -128,13 +129,13 @@ class IncomeExpenseBarChartWidget extends StatelessWidget {
                       barRods: [
                         BarChartRodData(
                           toY: monthlyIncomes[index],
-                          color: const Color(0xFF00392B),
+                          color: Colors.green.shade700,
                           width: 10,
                           borderRadius: BorderRadius.circular(3),
                         ),
                         BarChartRodData(
                           toY: monthlyExpenses[index],
-                          color: const Color(0xFF80CBC4),
+                          color: Colors.red.shade700,
                           width: 10,
                           borderRadius: BorderRadius.circular(3),
                         ),

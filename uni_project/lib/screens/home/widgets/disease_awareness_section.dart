@@ -61,7 +61,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
             children: [
               DiseaseRow(
                 title: 'စပါးဂုတ်ကျိုးရောဂါ',
-                description: 'ရောဂါဒဏ်ခံနိုင်သော စပါးမျိုးများကို ရွေးချယ်စိုက်ပျိုးပါ။',
+                description: 'ရောဂါဒဏ်ခံမျိုးများ ရွေးစိုက်ပါ။',
                 imagePath: 'assets/images/know_disease_12.png',
                 onTap: () async {
                   final dbService = DatabaseService();
@@ -96,7 +96,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
 
               DiseaseRow(
                 title: 'စပါးရွက်ဖုံးပုတ်ရောဂါ',
-                description: 'ပိုတက်ရှ်မြေသြဇာ ထည့်ပါ။ မှိုသတ်ဆေးဖျန်းပါ။',
+                description: 'ပိုတက်ရှ်ထည့်ပါ၊ မှိုဆေးဖျန်းပါ။',
                 imagePath: 'assets/images/know_disease_14.png',
                 onTap: () async {
                   final dbService = DatabaseService();
@@ -130,7 +130,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
 
               DiseaseRow(
                 title: 'စပါးဘက်တီးရီးယားရွက်စင်းရောဂါ',
-                description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဆေးဖျန်းပါ။',
+                description: 'နိုက်ထရိုဂျင်လျှော့ပါ၊ ကော့ပါးဆေးဖျန်းပါ။',
                 imagePath: 'assets/images/know_disease_15.png',
                 onTap: () async {
                   final dbService = DatabaseService();
@@ -164,7 +164,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
 
               DiseaseRow(
                 title: 'စပါးဘက်တီးရီးယားရွက်ခြောက်ရောဂါ',
-                description: 'နိုက်ထရိုဂျင် လျှော့သုံးပါ။ ကော့ပါးပါသော ဘက်တီးရီးယားသတ်ဆေး ဖျန်းပါ။',
+                description: 'နိုက်ထရိုဂျင်လျှော့ပါ၊ ဘက်တီးရီးယားဆေးဖျန်းပါ။',
                 imagePath: 'assets/images/know_disease_8.png',
                 onTap: () async {
                   final dbService = DatabaseService();

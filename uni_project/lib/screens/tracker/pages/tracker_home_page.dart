@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/transaction_model.dart';
 import '../../../services/tracker_db_service.dart';
 import '../widgets/dashboard_card_widget.dart';
@@ -119,7 +120,7 @@ class _TrackerHomePageState extends State<TrackerHomePage> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00796B),
+                    backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () async {
@@ -227,7 +228,7 @@ class _TrackerHomePageState extends State<TrackerHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: AppColors.primaryColor,
         onPressed: _showAddTransactionDialog,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: const Text('စာရင်းသစ်', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),

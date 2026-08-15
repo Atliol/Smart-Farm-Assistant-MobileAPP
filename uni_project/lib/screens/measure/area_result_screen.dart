@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
 import '../../constants/app_colors.dart';
 import '../../models/land_area_model.dart';
 import '../../services/land_api_service.dart';
-import 'saved_land_screen.dart';
+import 'saved_land_screen.dart'; // SavedLandScreen ကို Import ပြန်လုပ်ထားပါသည်
 
 class AreaResultScreen extends StatefulWidget {
   final List<LatLng> points;
@@ -64,7 +64,15 @@ class _AreaResultScreenState extends State<AreaResultScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("'${savedLand.title}' အား စနစ်တကျသိမ်းဆည်းပြီးပါပြီ။")),
         );
-        _navigateToSavedLandScreen();
+
+        // SavedLandScreen သို့ တိုက်ရိုက်သွားရောက်ပြီး တိုင်းတာခဲ့သည့် Screen များကို မူလလမ်းကြောင်းအထိ Clear လုပ်မည်
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SavedLandScreen(),
+          ),
+              (route) => route.isFirst, // Home Screen (သို့) မူလ Root Page သို့ရောက်သည်အထိ အလယ်က Screen များကို ရှင်းထုတ်ပါသည်
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("ဆာဗာသို့ သိမ်းဆည်းရန် မအောင်မြင်ပါ။ နောက်မှ ပြန်ကြိုးစားပါ။")),

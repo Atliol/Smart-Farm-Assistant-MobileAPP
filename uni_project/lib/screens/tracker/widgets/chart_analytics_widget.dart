@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../constants/app_colors.dart';
+
 class ChartAnalyticsWidget extends StatelessWidget {
   final double medicineExpense;
   final double laborExpense;
@@ -34,14 +36,14 @@ class ChartAnalyticsWidget extends StatelessWidget {
             // Header Title
             const Row(
               children: [
-                Icon(Icons.pie_chart_outline_rounded, color: Color(0xFF00796B), size: 20),
+                Icon(Icons.pie_chart_outline_rounded, color: AppColors.primaryColor, size: 20),
                 SizedBox(width: 8),
                 Text(
                   'အသုံးစရိတ် အမျိုးအစားအလိုက် (Pie Chart)',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: Color(0xFF00796B),
+                    color: AppColors.primaryColor,
                   ),
                 ),
               ],
@@ -133,7 +135,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
               runSpacing: 8,
               alignment: WrapAlignment.center,
               children: [
-                _buildLegendItem('ဆေးဝါး', Colors.teal, medicineExpense),
+                _buildLegendItem('ဆေးဝါး', AppColors.primaryColor, medicineExpense),
                 _buildLegendItem('အလုပ်သမား', Colors.orange, laborExpense),
                 _buildLegendItem('Transportation', Colors.blue, transportExpense),
                 _buildLegendItem('အခြား', Colors.purple, otherExpense),

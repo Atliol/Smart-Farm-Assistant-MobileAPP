@@ -17,7 +17,7 @@ class CropOverviewSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'စိုက်ပျိုးနည်းပညာများ',
+              'သီးနှံစိုက်ပျိုးနည်းများ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'စပါးစိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - မေလ မှ ဇွန်လ',
-                tip: 'စိုက်ခင်းကို ရေငွေ့ဓာတ်ထိန်းထားပါ၊ ပေါင်းမြက်များနှိမ်နင်းပါ။',
+                tip: 'ရေထိန်းပါ၊ ပေါင်းနှိမ်နင်းပါ။',
                 icon: '🌾',
                 onTap: () async {
                   // 💡 Database / Service ထဲမှ စပါး (Rice) အတွက် CropModel ဒေတာ ရယူခြင်း
@@ -91,7 +91,7 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'ပြောင်းစိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - ဇွန်လ မှ ဇူလိုင်လ',
-                tip: 'ရေမဝပ်စေရန်နှင့် နေရောင်ခြည်လုံလောက်စွာရရှိစေရန်ဆောင်ရွက်ပါ။',
+                tip: 'ရေမဝပ်စေရ၊ နေရောင်ပြပါ။',
                 icon: '🌽',
                 onTap: () async {
                   // 💡 1. Database/Service မှ Crop List ကို ရယူခြင်း
@@ -125,7 +125,7 @@ class CropOverviewSection extends StatelessWidget {
               CropStatusRow(
                 cropName: 'ခရမ်းချဉ်စိုက်ပျိုးနည်း',
                 plantingTime: 'အကောင်းဆုံး စိုက်ပျိုးချိန် - နိုဝင်ဘာလ မှ ဒီဇင်ဘာလ',
-                tip: 'မှန်မှန်ရေလောင်းပေးပါ၊ အပင်များ ယိုင်နဲ့မသွားစေရန်ထောက်မပေးပါ။',
+                tip: 'ရေမှန်မှန်လောင်းပါ၊ အပင်ထောက်ပေးပါ။',
                 icon: '🍅',
                 onTap: () async {
                   final dbService = DatabaseService();

@@ -21,12 +21,20 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
     _loadLandData();
   }
 
-
   void _loadLandData() {
     if (!mounted) return;
     setState(() {
       _landsFuture = LandApiService().getSavedLands();
     });
+  }
+
+  // MeasureMapScreen သို့ သွားရောက်သည့် Helper Function
+  Future<void> _navigateToMeasureScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MeasureMapScreen()),
+    );
+    _loadLandData();
   }
 
   Future<void> _editLandTitle(String id, String currentTitle) async {
@@ -115,7 +123,7 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Saved Land", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text("မြေဧရိယာ တိုင်းတာခြင်း", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -125,18 +133,6 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MeasureMapScreen()),
-              );
-              _loadLandData();
-            },
-          ),
-        ],
       ),
       body: RefreshIndicator(
         color: AppColors.primaryColor,
@@ -162,10 +158,34 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.25),
                   Icon(Icons.landscape, size: 80, color: Colors.grey.shade300),
                   const SizedBox(height: 16),
-                  const Center(child: Text("သိမ်းဆည်းထားသော မြေကွက်များ မရှိသေးပါ\n မြေကွက်သိမ်းဆည်းရန် အပေါင်းကိုနိပ်ပါ", style: TextStyle(color: Colors.grey))),
+                  const Center(
+                    child: Text(
+                      "သိမ်းဆည်းထားသော မြေကွက်များ မရှိသေးပါ",
+                      style: TextStyle(color: Colors.grey, fontSize: 15),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: _navigateToMeasureScreen,
+                      icon: const Icon(Icons.add, color: Colors.white),
+                      label: const Text(
+                        "မြေကွက်အသစ် တိုင်းတာမည်",
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        elevation: 2,
+                      ),
+                    ),
+                  ),
                 ],
               );
             }
@@ -225,6 +245,20 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
             );
           },
         ),
+      ),
+      floatingActionButton: FutureBuilder<List<LandAreaModel>>(
+        future: _landsFuture,
+        builder: (context, snapshot) {
+          // ဒေတာ ရှိမှသာ FloatingActionButton ကို ပြပေးမည်ဖြစ်သည်
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return FloatingActionButton(
+              backgroundColor: AppColors.primaryColor,
+              onPressed: _navigateToMeasureScreen,
+              child: const Icon(Icons.add, color: Colors.white),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

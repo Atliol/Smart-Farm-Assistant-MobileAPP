@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../tracker/pages/tracker_home_page.dart';
 import '../tracker/pages/tracker_analytics_page.dart';
 
@@ -24,10 +25,10 @@ class _TrackerScreenState extends State<TrackerScreen> {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: const Text(
-          'စိုက်ပျိုးမွေးမြူရေး Money Tracker 🌾',
+          'ဝင်ငွေ/ထွက်ငွေ တွက်ချက်ခြင်း',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -43,7 +44,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: const Color(0xFF00796B),
+        selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const [

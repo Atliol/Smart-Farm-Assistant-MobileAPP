@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/cost_calculator_model.dart';
 import '../widgets/cost_chart_widget.dart';
 import '../widgets/result_card_widget.dart';
@@ -144,7 +145,7 @@ class CalculatorResultPage extends StatelessWidget {
           Center(
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00796B),
+                backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.white,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),

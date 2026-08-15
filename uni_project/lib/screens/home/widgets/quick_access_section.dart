@@ -23,7 +23,40 @@ class QuickAccessSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 🟢 Measure
+            Expanded(
+              child: QuickAccessCard(
+                icon: Icons.account_balance_wallet_outlined,
+                label: 'မှတ်တမ်းစနစ်',
+                color: Colors.teal.shade700,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TrackerScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+
+            Expanded(
+              child: QuickAccessCard(
+                icon: Icons.calculate_rounded,
+                label: 'တွက်ချက်ရန်',
+                color: Colors.orange.shade700,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CalculatorScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+
             Expanded(
               child: QuickAccessCard(
                 icon: Icons.square_foot,
@@ -56,44 +89,8 @@ class QuickAccessSection extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(width: 10),
-
-            // 🟡 နေ့စဉ်စျေးနှုန်းများ (AI Assistant နေရာတွင် အစားထိုးထားပါသည်)
-            Expanded(
-              child: QuickAccessCard(
-                icon: Icons.account_balance_wallet_outlined, // 💡 စျေးနှုန်းနှင့် လိုက်ဖက်သော Icon ပြောင်းထားပါသည်
-                label: 'မှတ်တမ်းစနစ်',            // 💡 စာသား ပြောင်းထားပါသည်
-                color: Colors.teal.shade700,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TrackerScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(width: 10),
-
-            // 🟠 Calendar
-            Expanded(
-              child: QuickAccessCard(
-                icon: Icons.calculate_rounded,
-                label: 'တွက်ချက်ရန်',
-                color: Colors.orange.shade700,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CalculatorScreen(),
-                    ),
-                  );
-                },
-              ),
-            ),
           ],
-        )
+        ),
       ],
     );
   }

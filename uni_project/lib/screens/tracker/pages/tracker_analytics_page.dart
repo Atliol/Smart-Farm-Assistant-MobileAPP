@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/transaction_model.dart';
 import '../../../services/tracker_db_service.dart';
 import '../widgets/chart_analytics_widget.dart';
@@ -84,11 +85,11 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.calendar_month, color: Color(0xFF00796B), size: 20),
+                        Icon(Icons.calendar_month, color: AppColors.primaryColor, size: 20),
                         SizedBox(width: 8),
                         Text(
                           'လချုပ် ကြည့်ရှုရန် ရွေးချယ်ပါ',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF00796B)),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.primaryColor),
                         ),
                       ],
                     ),
@@ -101,10 +102,11 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
                             decoration: InputDecoration(
                               labelText: 'လ',
                               filled: true,
-                              fillColor: Colors.grey.shade50,
+                              fillColor: Colors.white,
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
-                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.primaryColor)),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.primaryColor)),
                             ),
                             items: List.generate(12, (index) {
                               return DropdownMenuItem(value: index + 1, child: Text(_months[index], style: const TextStyle(fontSize: 14)));
@@ -121,10 +123,11 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
                             decoration: InputDecoration(
                               labelText: 'နှစ်',
                               filled: true,
-                              fillColor: Colors.grey.shade50,
+                              fillColor: Colors.white,
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
-                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.primaryColor)),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.primaryColor)),
                             ),
                             items: [2024, 2025, 2026, 2027]
                                 .map((year) => DropdownMenuItem(value: year, child: Text('$year', style: const TextStyle(fontSize: 14))))
@@ -154,7 +157,7 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
                 children: [
                   Text(
                     '${_months[_selectedMonth - 1]} $_selectedYear - လချုပ် အစီရင်ခံစာ',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF00796B)),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.primaryColor),
                   ),
                   const Divider(height: 24),
                   Row(

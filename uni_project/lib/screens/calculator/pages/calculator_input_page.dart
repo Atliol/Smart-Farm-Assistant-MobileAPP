@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../constants/app_colors.dart';
+
 class CalculatorInputPage extends StatelessWidget {
   final TextEditingController acresController;
   final TextEditingController ureaPriceController;
@@ -56,7 +58,7 @@ class CalculatorInputPage extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.calculate_outlined, color: primaryColor, size: 32),
+                const Icon(Icons.calculate_outlined, color: AppColors.primaryColor, size: 32),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -66,7 +68,7 @@ class CalculatorInputPage extends StatelessWidget {
                         'စိုက်ပျိုးစရိတ်နှင့် အမြတ် ခန့်မှန်းရန်',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: AppColors.primaryColor,
                           fontSize: 14,
                         ),
                       ),
@@ -181,7 +183,7 @@ class CalculatorInputPage extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
+                        backgroundColor: AppColors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -214,7 +216,7 @@ class CalculatorInputPage extends StatelessWidget {
       style: const TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF00796B),
+        color: AppColors.primaryColor,
       ),
     );
   }
@@ -227,7 +229,7 @@ class CalculatorInputPage extends StatelessWidget {
     return InputDecoration(
       labelText: label,
       suffixText: suffixText,
-      prefixIcon: Icon(icon, color: const Color(0xFF00796B), size: 20),
+      prefixIcon: Icon(icon, color: AppColors.primaryColor, size: 20),
       filled: true,
       fillColor: Colors.grey.shade50,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

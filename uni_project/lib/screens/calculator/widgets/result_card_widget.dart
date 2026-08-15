@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../constants/app_colors.dart';
 import '../../../models/cost_calculator_model.dart';
 
 class ResultCardWidget extends StatelessWidget {
@@ -48,11 +49,11 @@ class ResultCardWidget extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF00796B),
+                      color: AppColors.primaryColor,
                     ),
                   ),
                 ),
-                Icon(Icons.assessment_outlined, color: Colors.teal.shade700, size: 22),
+                Icon(Icons.assessment_outlined, color: AppColors.primaryColor, size: 22),
               ],
             ),
             const Divider(height: 20),

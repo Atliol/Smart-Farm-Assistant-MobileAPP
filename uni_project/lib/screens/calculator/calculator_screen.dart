@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../../models/cost_calculator_model.dart';
 import '../../services/cost_calculator_service.dart';
 import 'pages/calculator_input_page.dart';
@@ -121,7 +122,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           'စိုက်ပျိုးစရိတ် တွက်ချက်ခြင်း',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -147,7 +148,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: const Color(0xFF00796B),
+        selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         items: const [
