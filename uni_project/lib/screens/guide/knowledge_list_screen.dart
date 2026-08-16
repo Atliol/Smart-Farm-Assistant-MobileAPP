@@ -6,7 +6,7 @@ import '../../widgets/app_background.dart';
 import 'knowledge_detail_screen.dart';
 
 class KnowledgeListScreen extends StatefulWidget {
-  // 💡 View All မှ လှမ်းပို့လိုက်သော Tag (ဥပမာ - "အပင်ရောဂါ") ကို လက်ခံရန်
+  
   final String? initialTag;
 
   const KnowledgeListScreen({super.key, this.initialTag});
@@ -18,13 +18,13 @@ class KnowledgeListScreen extends StatefulWidget {
 class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
   final DatabaseService _dbService = DatabaseService();
 
-  // Selected Tag state tracker
+  
   late String _selectedTag;
 
   @override
   void initState() {
     super.initState();
-    // 💡 လှမ်းပို့ထားသော initialTag ရှိပါက ထို Tag ကို Auto-select လုပ်မည်၊ မရှိပါက "အားလုံး" ဟု သတ်မှတ်မည်
+    
     _selectedTag = widget.initialTag ?? "အားလုံး";
   }
 
@@ -61,7 +61,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
 
             final allArticles = snapshot.data!;
 
-            // 💡 1. JSON Data များထဲမှ ရှိသမျှ Tag များကို Dynamic ဆွဲထုတ်ခြင်း
+            
             final Set<String> dynamicTags = {"အားလုံး"};
             for (var article in allArticles) {
               if (article.tag.trim().isNotEmpty) {
@@ -69,21 +69,21 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
               }
             }
 
-            // 💡 မကိန်းဂဏန်း/မရှိသော Tag ကို လှမ်းပို့လိုက်မိပါကလည်း dynamicTags ထဲသို့ ထည့်ပေးခြင်း
+            
             if (widget.initialTag != null && widget.initialTag!.trim().isNotEmpty) {
               dynamicTags.add(widget.initialTag!.trim());
             }
 
             final tagList = dynamicTags.toList();
 
-            // 💡 2. Selected Tag ပေါ်မူတည်၍ Data List စစ်ထုတ်ခြင်း
+            
             final filteredArticles = _selectedTag == "အားလုံး"
                 ? allArticles
                 : allArticles.where((article) => article.tag.trim() == _selectedTag).toList();
 
             return Column(
               children: [
-                // 🏷️ Dynamic Filter Tag Buttons (AppBar အောက်ခြေ Filter Bar)
+                
                 Container(
                   height: 56,
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -127,7 +127,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
                   ),
                 ),
 
-                // 📝 Selected Tag အလိုက် ပြသပေးမည့် Article List
+                
                 Expanded(
                   child: filteredArticles.isEmpty
                       ? Center(
@@ -166,7 +166,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 📷 ပုံအကြီး
+                              
                               ClipRRect(
                                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                                 child: Image.asset(
@@ -187,7 +187,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // 🏷️ Category Tag Badge
+                                    
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
@@ -204,7 +204,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    // 📝 Title
+                                    
                                     Text(
                                       article.title,
                                       style: const TextStyle(
@@ -219,7 +219,7 @@ class _KnowledgeListScreenState extends State<KnowledgeListScreen> {
                                     const Divider(height: 1),
                                     const SizedBox(height: 10),
 
-                                    // 🕒 Source & Read Time Row
+                                    
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [

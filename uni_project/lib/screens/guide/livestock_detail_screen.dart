@@ -24,7 +24,7 @@ class LivestockDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📷 Banner Image
+              
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
@@ -40,7 +40,7 @@ class LivestockDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 🌟 🚜 မွေးမြူရေးဆိုင်ရာ အချက်အလက်ကတ်ပြားများ (Farm Metric Grid)
+              
               Row(
                 children: [
                   _buildFarmMetricCard(
@@ -70,14 +70,14 @@ class LivestockDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 📝 Main Title
+              
               Text(
                 livestock.title,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
               ),
               const SizedBox(height: 10),
 
-              // 📖 Description
+              
               Text(
                 livestock.description,
                 style: const TextStyle(fontSize: 15, height: 1.6, color: Colors.black87),
@@ -87,7 +87,7 @@ class LivestockDetailScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 16),
 
-              // 💡 Sub steps မွေးမြူနည်းအဆင့်ဆင့်
+              
               if (livestock.subSteps.isNotEmpty) ...[
                 Text(
                   "စနစ်တကျ မွေးမြူနည်း အဆင့်ဆင့်",
@@ -131,7 +131,7 @@ class LivestockDetailScreen extends StatelessWidget {
     );
   }
 
-  // 💡 မွေးမြူရေး အချက်အလက်ပြ ကတ်ပြားငယ်
+  
   Widget _buildFarmMetricCard(BuildContext context, {required String label, required String value, required IconData icon, required Color color}) {
     return Expanded(
       child: Container(

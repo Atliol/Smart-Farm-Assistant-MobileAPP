@@ -28,7 +28,7 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
     });
   }
 
-  // MeasureMapScreen သို့ သွားရောက်သည့် Helper Function
+  
   Future<void> _navigateToMeasureScreen() async {
     await Navigator.push(
       context,
@@ -249,7 +249,7 @@ class _SavedLandScreenState extends State<SavedLandScreen> {
       floatingActionButton: FutureBuilder<List<LandAreaModel>>(
         future: _landsFuture,
         builder: (context, snapshot) {
-          // ဒေတာ ရှိမှသာ FloatingActionButton ကို ပြပေးမည်ဖြစ်သည်
+          
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return FloatingActionButton(
               backgroundColor: AppColors.primaryColor,

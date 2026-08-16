@@ -58,7 +58,6 @@ class TransactionModel extends HiveObject {
   }
 }
 
-// ⚠️ ဒီ Adapter class မရှိသေးပါက အနီရောင် တက်နေပါလိမ့်မည်
 class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
   @override
   final int typeId = 0;

@@ -56,7 +56,7 @@ class HerbicideListScreen extends StatelessWidget {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 16),
-                    clipBehavior: Clip.antiAlias, // Corner radius နဲ့ background ညီညွတ်စေရန်
+                    clipBehavior: Clip.antiAlias, 
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -71,13 +71,13 @@ class HerbicideListScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 💡 ပုံပြတ်မသွားဘဲ အပြည့်အဝ ပေါ်စေရန် ပြင်ဆင်ထားသော Image Container Section
+                        
                         Container(
                           width: double.infinity,
                           height: 180,
                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                            color: Colors.grey.shade50, 
                             border: Border(
                               bottom: BorderSide(color: Colors.orange.shade100, width: 1),
                             ),
@@ -87,7 +87,7 @@ class HerbicideListScreen extends StatelessWidget {
                               item.image,
                               width: double.infinity,
                               height: double.infinity,
-                              fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အပြည့်ပေါ်စေရန်
+                              fit: BoxFit.contain, 
                               errorBuilder: (context, error, stackTrace) => Container(
                                 width: double.infinity,
                                 height: 180,
@@ -102,7 +102,7 @@ class HerbicideListScreen extends StatelessWidget {
                           ),
                         ),
 
-                        // အချက်အလက်များ ဖော်ပြသည့် အပိုင်း
+                        
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(

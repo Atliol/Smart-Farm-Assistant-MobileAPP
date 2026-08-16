@@ -28,7 +28,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🛡️ Header Section
               Center(
                 child: Column(
                   children: [
@@ -62,7 +61,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // 📍 Section 1: Location & Data
               _buildPolicyCard(
                 icon: Icons.location_on_rounded,
                 title: 'တည်နေရာနှင့် အချက်အလက်များ',
@@ -70,7 +68,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'ကျွန်ုပ်တို့သည် စိုက်ပျိုးမြေတိုင်းတာခြင်းနှင့် မိုးလေဝသခန့်မှန်းချက်များကို တိကျစွာ ထုတ်ပြန်ပေးနိုင်ရန်အတွက်သာ သင်၏ တည်နေရာ (Location) အချက်အလက်ကို အသုံးပြုပါသည်။',
               ),
 
-              // 📱 Section 2: Offline Storage
               _buildPolicyCard(
                 icon: Icons.phonelink_lock_rounded,
                 title: 'အချက်အလက်များ သိမ်းဆည်းမှု',
@@ -78,7 +75,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'သင်တိုင်းတာထားသော မြေနေရာမှတ်တမ်းများနှင့် ကိုယ်ရေးအချက်အလက်များကို သင့်ဖုန်းအတွင်း၌သာ (Offline) သိမ်းဆည်းပေးထားပါသည်။ မည်သည့် Server ပေါ်သို့မျှ ပေးပို့ခြင်း မပြုလုပ်ပါ။',
               ),
 
-              // 🚫 Section 3: Third-party Sharing
               _buildPolicyCard(
                 icon: Icons.block_rounded,
                 title: 'အချက်အလက် မျှဝေခြင်း',
@@ -86,7 +82,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'ရွှေလယ်ယာသည် သင်၏ အချက်အလက်များကို မည်သည့် တတိယအဖွဲ့အစည်း (Third-party) ထံသို့မျှ ရောင်းချခြင်း သို့မဟုတ် မျှဝေခြင်း လုံးဝပြုလုပ်မည် မဟုတ်ပါ။',
               ),
 
-              // ⚙️ Section 4: User Control
               _buildPolicyCard(
                 icon: Icons.settings_suggest_rounded,
                 title: 'ထိန်းချုပ်နိုင်မှု',
@@ -109,7 +104,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  // 💡 စနစ်တကျ Card ပုံစံဖြင့် တည်ဆောက်ထားသော Widget
   Widget _buildPolicyCard({
     required IconData icon,
     required String title,

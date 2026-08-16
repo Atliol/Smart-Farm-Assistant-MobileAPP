@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/app_background.dart';
-// 🆕 ပိုးသတ်ဆေးအတွက် သီးခြားဆောက်ထားသော List Screen အား Import လုပ်ပါ
+
 import 'fertilizer/fertilizer_list_screen.dart';
 import 'fungicide/fungicide_list_screen.dart';
 import 'herbicide/herbicide_list_screen.dart';
@@ -13,20 +13,20 @@ class PesticidesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // 💡 targetScreen နေရာတွင် အင်းဆက်ပိုးသတ်ဆေးအတွက် သီးခြားခွဲထုတ်ထားသော ကဏ္ဍကို ချိတ်ဆက်ပေးလိုက်ပါသည်
+    
     final List<Map<String, dynamic>> categories = [
       {
         'title': 'ပိုးသတ်ဆေး',
-        'subtitle': 'ပိုးမွှားနှင့် ဖျက်ဆီးတတ်သော အင်းဆက်များ ကာကွယ်ရန်',
+        'subtitle': 'ပိုးမွှားန္တရာယ် ကာကွယ်ရန်',
         'icon': Icons.bug_report_rounded,
         'color': const Color(0xFFFFEBEE),
         'iconColor': Colors.red.shade700,
-        // 💡 ၎င်းနှင့် သက်ဆိုင်ရာ သီးခြား List Screen Widget ကို တိုက်ရိုက်ခေါ်သုံးလိုက်ပါသည်
+        
         'targetScreen': InsecticideListScreen(),
       },
       {
         'title': 'မှိုသတ်ဆေး/ကာကွယ်ဆေး',
-        'subtitle': 'မှိုရောဂါ၊ ဘက်တီးရီးယားနှင့် အပင်ရောဂါများအတွက်',
+        'subtitle': 'မှိုနှင့်ဘက်တီးရီးယား နှိမ်နင်းရန်',
         'icon': Icons.healing_rounded,
         'color': const Color(0xFFE8F8F5),
         'iconColor': Colors.teal.shade700,
@@ -34,7 +34,7 @@ class PesticidesScreen extends StatelessWidget {
       },
       {
         'title': 'ပေါင်းသတ်ဆေး',
-        'subtitle': 'မလိုလားအပ်သော ပေါင်းမြက်များ နှိမ်နင်းရန်',
+        'subtitle': 'စိုက်ခင်းအတွင်း ပေါင်းရှင်းရန်',
         'icon': Icons.grass_rounded,
         'color': const Color(0xFFFFF3E0),
         'iconColor': Colors.orange.shade800,
@@ -42,7 +42,7 @@ class PesticidesScreen extends StatelessWidget {
       },
       {
         'title': 'ဓာတ်မြေသြဇာ',
-        'subtitle': 'အပင်ထွားကြိုင်းပြီး အထွက်နှုန်းတိုးစေရန်',
+        'subtitle': 'အပင်အာဟာရဖြည့်တင်းရန်',
         'icon': Icons.opacity_rounded,
         'color': const Color(0xFFE8F5E9),
         'iconColor': Colors.green.shade700,

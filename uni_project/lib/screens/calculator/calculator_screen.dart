@@ -15,7 +15,6 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   int _currentIndex = 0;
 
-  // Initial Controller Values
   final _acresController = TextEditingController(text: '1');
   final _ureaPriceController = TextEditingController(text: '120000');
   final _tspPriceController = TextEditingController(text: '110000');
@@ -26,7 +25,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String _selectedCrop = 'စပါး';
   CalculationResult? _result;
 
-  // သီးနှံအလိုက် ၁ ဧက ခန့်မှန်းအထွက်နှုန်း (တင်း/အိတ်)
   double _getExpectedYieldForCrop(String crop) {
     switch (crop) {
       case 'စပါး':
@@ -64,7 +62,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         expectedYieldBags: _getExpectedYieldForCrop(_selectedCrop),
         marketPricePerBag: cropPrice,
       );
-      _currentIndex = 1; // တွက်ချက်ပြီးလျှင် Results စာမျက်နှာသို့ ရွှေ့မည်
+      _currentIndex = 1;
     });
   }
 
@@ -78,7 +76,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       _cropPriceController.text = '20000';
       _selectedCrop = 'စပါး';
       _result = null;
-      _currentIndex = 0; // Input စာမျက်နှာသို့ ပြန်သွားမည်
+      _currentIndex = 0;
     });
   }
 
@@ -134,7 +132,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          // ဘာမှ မတွက်ရသေးဘဲ Results Tab ကို နှိပ်ပါက သတိပေးရန်
           if (index == 1 && _result == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

@@ -70,7 +70,7 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Month & Year Selector Card
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -145,7 +145,7 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Monthly Summary Box
+            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -175,7 +175,7 @@ class _TrackerAnalyticsPageState extends State<TrackerAnalyticsPage> {
             ),
             const SizedBox(height: 20),
 
-            // Charts Section
+            
             IncomeExpenseBarChartWidget(
               allItems: _allItems,
               selectedYear: _selectedYear,

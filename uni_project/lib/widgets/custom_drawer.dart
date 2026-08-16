@@ -19,7 +19,7 @@ class CustomDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            // Drawer Header
+            
             const DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primaryColor),
               child: Row(
@@ -45,12 +45,12 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
 
-            // Drawer Items (💡 Screen များနှင့် ချိတ်ဆက်ပြီးပါပြီ)
+            
             ListTile(
               leading: const Icon(Icons.help, color: AppColors.primaryColor),
               title: const Text('အသုံးပြုနည်း လမ်းညွှန်'),
               onTap: () {
-                Navigator.pop(context); // Drawer ကို အရင်ပိတ်မည်
+                Navigator.pop(context); 
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const UserGuideScreen()),

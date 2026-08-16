@@ -7,7 +7,7 @@ class WeatherService {
   static const String baseUrl =
       'https://api.openweathermap.org/data/2.5/weather';
 
-  /// City Name နဲ့ Weather
+
   Future<Map<String, dynamic>> getWeather(
       String city,
       ) async {
@@ -24,7 +24,7 @@ class WeatherService {
     throw Exception('Failed to load weather');
   }
 
-  /// GPS Location နဲ့ Weather
+
   Future<Map<String, dynamic>> getWeatherByLocation(
       double latitude,
       double longitude,
@@ -43,7 +43,6 @@ class WeatherService {
   }
 
 
-  /// iconCode မှာ 'd' ပါရင် နေ့ဘက် (Day)၊ 'n' ပါရင် ညဘက် (Night)
   static String getBackgroundUrl(String condition, {String iconCode = 'n'}) {
     bool isNight = iconCode.contains('d');
 
@@ -94,7 +93,6 @@ class WeatherService {
     }
   }
 
-  /// Weather Icon URL
   static String getWeatherIcon(
       String iconCode,
       ) {

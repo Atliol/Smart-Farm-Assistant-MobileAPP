@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class CloudNotificationService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  /// အသုံးပြုသူထံ အကြောင်းကြားစာ ပြသရန် သင့်တော်မှု ရှိ/မရှိ စစ်ဆေးသည့် ဖန်ရှင်
+  
   static bool shouldShowToUser(Map<String, dynamic> notification, String currentUid) {
     if (currentUid.isEmpty) return false;
 
@@ -48,16 +48,16 @@ class CloudNotificationService {
     return false;
   }
 
-  /// Firestore ထဲသို့ အကြောင်းကြားစာ (Notification) ပို့ပေးသည့် ဖန်ရှင်
+  
   static Future<void> sendNotification({
-    required String receiverId, // ပို့စ်/ဓာတ်ပုံ ပိုင်ရှင်၏ UID
-    required String type,       // 'post_like', 'image_like', 'post_comment', 'image_comment'
+    required String receiverId, 
+    required String type,       
     required String postId,
-    String? additionalText,     // ကွန်မန့်စာသား စသည်ဖြင့်
+    String? additionalText,     
   }) async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
-    // မိမိကိုယ်တိုင် ပြုလုပ်သော အက်ရှင် သို့မဟုတ် User Login မဝင်ထားလျှင် Noti မပို့ပါ
+    
     if (currentUser == null || currentUser.uid == receiverId) return;
 
     try {

@@ -25,7 +25,6 @@ class PostModel {
     this.createdAt,
   });
 
-  // 💡 Firebase (Firestore) ကလာတဲ့ Data ကို PostModel Object ပြောင်းပေးသည့် နေရာ
   factory PostModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
@@ -36,14 +35,13 @@ class PostModel {
       authorName: data['authorName'] ?? '',
       title: data['title'] ?? '',
       content: data['content'] ?? '',
-      imageUrl: data['imageUrl'], // 👈 Firestore ထဲက imageUrl ကို ဖတ်ယူခြင်း
+      imageUrl: data['imageUrl'],
       commentsCount: data['commentsCount'] ?? 0,
       likedBy: data['likedBy'] ?? [],
       createdAt: data['createdAt'] as Timestamp?,
     );
   }
 
-  // 💡 PostModel Object ကနေ Firestore ထဲ ဒေတာပြန်သိမ်းချင်ရင် သုံးနိုင်မည့် မက်သတ် (Optional)
   Map<String, dynamic> toFirestore() {
     return {
       'userId': userId,
@@ -51,7 +49,7 @@ class PostModel {
       'authorName': authorName,
       'title': title,
       'content': content,
-      'imageUrl': imageUrl, // 👈 ပုံရှိရင် URL သိမ်းပြီး၊ မရှိရင် null အနေနဲ့ သိမ်းပါမယ်
+      'imageUrl': imageUrl,
       'commentsCount': commentsCount,
       'likedBy': likedBy,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../../services/database_service.dart';
 import '../../models/aquaculture_model.dart';
 import '../../widgets/app_background.dart';
@@ -15,7 +16,7 @@ class AquacultureListScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text("ရေလုပ်ငန်းနည်းပညာများ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: Colors.teal.shade700, // ရေလုပ်ငန်းအလှသုံး သစ်လွင်သော Teal ရောင်
+        backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -63,7 +64,7 @@ class AquacultureListScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          // 📷 Circular Image with Teal Border
+                          
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -84,12 +85,12 @@ class AquacultureListScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // 📝 Metadata Text
+                          
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // 🏷️ Water Type Badge
+                                
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
@@ -113,7 +114,7 @@ class AquacultureListScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 6),
-                                // 🕒 Duration Icon/Text
+                                
                                 Row(
                                   children: [
                                     Icon(Icons.calendar_month, size: 12, color: Colors.teal.shade400),

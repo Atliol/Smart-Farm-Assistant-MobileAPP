@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; // 💡 'Import' မှ 'import' သို့ ပြောင်းပါ
+import 'package:flutter/material.dart'; 
 import '../../constants/app_colors.dart';
 import '../../models/crop_model.dart';
 import '../../widgets/app_background.dart';
@@ -31,7 +31,7 @@ class CropDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📷 ပင်မ Crop Image
+              
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
@@ -53,7 +53,7 @@ class CropDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              //📝 ပင်မ Title
+              
               Text(
                 crop.title,
                 style: const TextStyle(
@@ -64,7 +64,7 @@ class CropDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              //📖 ပင်မ Description
+              
               Text(
                 crop.description,
                 style: const TextStyle(
@@ -78,7 +78,7 @@ class CropDetailScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 16),
 
-              // 💡 🌟 Condition အရ sub_steps ထဲမှာ Data ရှိမှသာ အောက်ပါ UI ပိုင်းကို ဆွဲမည်
+              
               if (crop.subSteps.isNotEmpty) ...[
                 const Text(
                   "အသေးစိတ် လမ်းညွှန်ချက်များ",
@@ -90,7 +90,7 @@ class CropDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Sub Steps များကို ဒေတာရှိသလောက် အစီအစဉ်လိုက် Dynamic ဆွဲထုတ်ပြခြင်း
+                
                 Column(
                   children: crop.subSteps.map((step) {
                     return Padding(
@@ -98,7 +98,7 @@ class CropDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 1. Sub Title
+                          
                           Text(
                             step.subTitle,
                             style: const TextStyle(
@@ -109,7 +109,7 @@ class CropDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
 
-                          // 2. Sub Image
+                          
                           if (step.subImage.isNotEmpty) ...[
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
@@ -125,7 +125,7 @@ class CropDetailScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                           ],
 
-                          // 3. Sub Text / Description
+                          
                           Text(
                             step.subDescription,
                             style: TextStyle(

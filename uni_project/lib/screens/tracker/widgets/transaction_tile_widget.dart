@@ -29,7 +29,7 @@ class TransactionTileWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Row(
           children: [
-            // Icon section
+            
             CircleAvatar(
               backgroundColor: isExpense ? Colors.red.shade50 : Colors.green.shade50,
               child: Icon(
@@ -40,7 +40,7 @@ class TransactionTileWidget extends StatelessWidget {
             ),
             const SizedBox(width: 12),
 
-            // Title & Date section (Expanded သုံးထားသဖြင့် overflow မဖြစ်ပါ)
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +81,7 @@ class TransactionTileWidget extends StatelessWidget {
 
             const SizedBox(width: 8),
 
-            // Amount & Delete Button section
+            
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [

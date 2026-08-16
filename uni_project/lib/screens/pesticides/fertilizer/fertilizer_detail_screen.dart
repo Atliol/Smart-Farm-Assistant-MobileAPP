@@ -26,13 +26,13 @@ class FertilizerDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 💡 ပုံမပြတ်ဘဲ အပြည့်အဝ ပေါ်စေရန် ပြင်ဆင်ထားသော Image Container Section
+              
               Container(
                 width: double.infinity,
                 height: 250,
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                  color: Colors.grey.shade50, 
                   border: Border(
                     bottom: BorderSide(color: Colors.green.shade100, width: 1),
                   ),
@@ -42,7 +42,7 @@ class FertilizerDetailScreen extends StatelessWidget {
                     data.image,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အထက်အောက်/ဘေးအပြည့်ပေါ်စေရန်
+                    fit: BoxFit.contain, 
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: double.infinity,
                       height: 250,
@@ -57,13 +57,13 @@ class FertilizerDetailScreen extends StatelessWidget {
                 ),
               ),
 
-              // အချက်အလက်များ ဖော်ပြသည့် အပိုင်း
+              
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ခေါင်းစဉ် (မြေသြဇာအမည်)
+                    
                     Text(
                       data.title,
                       style: TextStyle(
@@ -74,7 +74,7 @@ class FertilizerDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    // အမျိုးအစား
+                    
                     Text(
                       "အမျိုးအစား - ${data.typeName}",
                       style: TextStyle(
@@ -85,7 +85,7 @@ class FertilizerDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
 
-                    // အားသာချက်
+                    
                     Text(
                       "အားသာချက် - ${data.benefits}",
                       style: TextStyle(
@@ -98,7 +98,7 @@ class FertilizerDetailScreen extends StatelessWidget {
                     const Divider(),
                     const SizedBox(height: 12),
 
-                    // အချက်အလက်များ
+                    
                     const Text(
                       "မြေသြဇာဆိုင်ရာ အချက်အလက်များ",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -111,7 +111,7 @@ class FertilizerDetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // အဆင့်ဆင့် အသုံးပြုပုံများ (ရှိခဲ့ပါက)
+                    
                     if (data.subSteps.isNotEmpty) ...[
                       const Text(
                         "စနစ်တကျကျွေးရမည့် အဆင့်ဆင့်အချိန်အခါ",

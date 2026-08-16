@@ -13,7 +13,7 @@ class TrackerScreen extends StatefulWidget {
 class _TrackerScreenState extends State<TrackerScreen> {
   int _currentIndex = 0;
 
-  // ပြသမည့် စာမျက်နှာများ စာရင်း
+  
   final List<Widget> _pages = [
     const TrackerHomePage(),
     const TrackerAnalyticsPage(),

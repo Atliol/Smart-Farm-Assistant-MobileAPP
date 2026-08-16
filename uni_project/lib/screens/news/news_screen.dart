@@ -23,11 +23,13 @@ class _NewsScreenState extends State<NewsScreen> {
           }
 
           final user = snapshot.data;
+
+          
           if (user != null) {
-            // 🆕 ကျွန်တော် ထပ်ထည့်ခဲ့တဲ့ Scaffold/AppBar ကြီးကို ဖြုတ်ပြီး မူလအတိုင်း ပြန်ပြောင်းထားပါတယ်။
-            return const NewsFeedView(); 
+            return const NewsFeedView();
           }
 
+          
           return AuthPromptScreen(
             onLoginSuccess: () {
               setState(() {});

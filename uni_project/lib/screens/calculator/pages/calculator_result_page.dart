@@ -15,7 +15,6 @@ class CalculatorResultPage extends StatelessWidget {
     required this.onReset,
   });
 
-  // ဂဏန်းများကို ၁,၀၀၀,၀၀၀ ပုံစံ ကော်မာခြားပေးသည့် Helper
   String _formatCurrency(double amount) {
     final formatter = NumberFormat('#,##0', 'en_US');
     return formatter.format(amount);
@@ -23,7 +22,6 @@ class CalculatorResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ၁။ တွက်ချက်ထားသော ရလဒ် မရှိသေးပါက ပြသမည့် Empty State
     if (result == null) {
       return Center(
         child: Padding(
@@ -77,7 +75,6 @@ class CalculatorResultPage extends StatelessWidget {
       );
     }
 
-    // ၂။ ရလဒ် ရှိပါက အရှုံး/အမြတ် အရောင် သတ်မှတ်ခြင်း
     final isProfit = result!.netProfit >= 0;
     final statusColor = isProfit ? const Color(0xFF2E7D32) : Colors.red.shade700;
     final statusBgColor = isProfit ? const Color(0xFFE8F5E9) : Colors.red.shade50;
@@ -87,7 +84,6 @@ class CalculatorResultPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Quick Profit Summary Banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -133,15 +129,12 @@ class CalculatorResultPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Detailed Results Card
           ResultCardWidget(result: result!),
           const SizedBox(height: 16),
 
-          // Cost Breakdowns Chart
           CostChartWidget(result: result!),
           const SizedBox(height: 24),
 
-          // Recalculate Button
           Center(
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(

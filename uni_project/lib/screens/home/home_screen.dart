@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      // ၁။ Internet Connection ရှိ/မရှိ စစ်ဆေးခြင်း
+      
       bool hasInternet = await _networkService.hasInternetConnection();
       if (!hasInternet) {
         setState(() {
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // ၂။ Location Service စစ်ဆေးခြင်း
+      
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // ၃။ Location Permission စစ်ဆေးခြင်း
+      
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // ၄။ Weather Data ရယူခြင်း
+      
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
       });
     } catch (e) {
-      // ဘာ Error ပဲတက်တက် စနစ်တကျဖမ်းပြီး မြန်မာလို အသုံးပြုသူကို ပြပေးမည်
+      
       String friendlyMessage = 'အချက်အလက်များ ရယူ၍ မရပါ။ ခဏစောင့်ပြီး အောက်သို့ ဆွဲချ (Refresh) ပြုလုပ်ပါ။';
 
       String errStr = e.toString().toLowerCase();
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Weather Card / Loading / Customized Error Card
+                  
                   if (isLoading)
                     const Center(
                       child: Padding(
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Error ပြသရန် လှပသည့် Card UI
+  
   Widget _buildErrorCard() {
     return Container(
       width: double.infinity,

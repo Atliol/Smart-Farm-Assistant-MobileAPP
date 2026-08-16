@@ -1,13 +1,13 @@
 class WeatherForecastModel {
-  final String date;          // ရက်စွဲ (ဥပမာ - ဇူလိုင် ၂၃)
-  final String dayName;       // နေ့အမည် (ဥပမာ - ကြာသပတေး)
-  final String condition;     // ရာသီဥတုအခြေအနေ
-  final String iconCode;      // Icon အမျိုးအစား
-  final int maxTemp;          // အမြင့်ဆုံး အပူချိန်
-  final int minTemp;          // အနိမ့်ဆုံး အပူချိန်
-  final int humidity;         // စိုထိုင်းဆ %
-  final double rainChance;    // မိုးရွာရန် ရာခိုင်နှုန်း %
-  final String windSpeed;     // လေတိုက်နှုန်း
+  final String date;
+  final String dayName;
+  final String condition;
+  final String iconCode;
+  final int maxTemp;
+  final int minTemp;
+  final int humidity;
+  final double rainChance;
+  final String windSpeed;
 
   WeatherForecastModel({
     required this.date,

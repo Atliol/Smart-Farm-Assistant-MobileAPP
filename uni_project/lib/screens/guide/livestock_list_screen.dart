@@ -63,7 +63,7 @@ class LivestockListScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          // 📷 Circular Image with Livestock Border
+                          
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -84,12 +84,12 @@ class LivestockListScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // 📝 Info Text
+                          
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // 🏷️ Type Badge
+                                
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class LivestockListScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 6),
-                                // 🕒 Feed System
+                                
                                 Row(
                                   children: [
                                     Icon(Icons.restaurant, size: 12, color: Colors.amber.shade600),

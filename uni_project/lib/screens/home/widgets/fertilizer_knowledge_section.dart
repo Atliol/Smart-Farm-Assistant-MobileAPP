@@ -13,7 +13,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title & View All
+        
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -36,7 +36,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
-        // Fertilizer List With White Screen
+        
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // 1. ကောမက်ဗိုက်တာကွန်ပေါင်း
+              
               FertilizerRow(
                 title: 'ကောမက်ဗိုက်တာကွန်ပေါင်း',
                 tag: 'အမြစ်အားကောင်း',
@@ -84,7 +84,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        
                         builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
                       ),
                     );
@@ -93,7 +93,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
               ),
               const Divider(height: 24),
 
-              // 2. ကောမက်ပုလဲနက်
+              
               FertilizerRow(
                 title: 'ကောမက်ပုလဲနက်',
                 tag: 'ကြာရှည်ခံ',
@@ -125,7 +125,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        
                         builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
                       ),
                     );
@@ -134,13 +134,13 @@ class FertilizerKnowledgeSection extends StatelessWidget {
               ),
               const Divider(height: 24),
 
-              // 3. ကောမက်ပရီမို
+              
               FertilizerRow(
                 title: 'ကောမက်ပရီမို',
                 tag: 'အာဟာရစုံ',
                 tagColor: const Color(0xFFE3F2FD),
                 tagTextColor: Colors.blue,
-                description: 'ပန်းပွင့်/အသီး တိုးတက်ဖြစ်ထွန်းစေသည်။',
+                description: 'အသီး/အပွင့် ဖြစ်ထွန်းစေသည်။',
                 benefit: 'NPK အာဟာရဓာတ် မျှတစွာပါဝင်',
                 benefitIcon: Icons.eco,
                 benefitIconColor: Colors.green,
@@ -166,7 +166,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        // 💡 KnowledgeDetailScreen မှ FertilizerDetailScreen သို့ ပြင်ထားပါသည်
+                        
                         builder: (context) => FertilizerDetailScreen(data: fertilizerItem),
                       ),
                     );
@@ -175,7 +175,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
               ),
               const Divider(height: 24),
 
-              // 4. ကောမက် ဂျီ ၄၆
+              
               FertilizerRow(
                 title: 'ကောမက် ဂျီ ၄၆',
                 tag: 'အပင်ပွား',
@@ -221,7 +221,7 @@ class FertilizerKnowledgeSection extends StatelessWidget {
   }
 }
 
-// Each Fertilizer UI Row Widget
+
 class FertilizerRow extends StatelessWidget {
   final String title;
   final String tag;
@@ -258,7 +258,7 @@ class FertilizerRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left fertilizer bag photo
+            
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
@@ -278,12 +278,12 @@ class FertilizerRow extends StatelessWidget {
             ),
             const SizedBox(width: 16),
 
-            // Middle data part
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Type tag card
+                  
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
@@ -296,13 +296,13 @@ class FertilizerRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Name of fertilizer
+                  
                   Text(
                     title,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   const SizedBox(height: 4),
-                  // Description of benefit
+                  
                   Text(
                     description,
                     style: const TextStyle(fontSize: 13, color: Colors.black54),
@@ -310,7 +310,7 @@ class FertilizerRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  // Bottom circle benefit
+                  
                   Row(
                     children: [
                       CircleAvatar(
@@ -328,7 +328,7 @@ class FertilizerRow extends StatelessWidget {
                 ],
               ),
             ),
-            // Right Side Arrow
+            
             const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black38),
           ],
         ),

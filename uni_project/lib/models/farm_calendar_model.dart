@@ -17,7 +17,6 @@ class FarmCalendarModel {
     this.imagePath,
   });
 
-  // 💡 Hive ထဲကနေ ပြန်ဖတ်တဲ့အခါ သုံးမယ့် fromMap
   factory FarmCalendarModel.fromMap(Map<dynamic, dynamic> map) {
     return FarmCalendarModel(
       id: map['id']?.toString() ?? '',
@@ -34,7 +33,6 @@ class FarmCalendarModel {
     );
   }
 
-  // 💡 Hive ထဲကို သိမ်းတဲ့အခါ ပြောင်းလဲမယ့် toMap
   Map<String, dynamic> toMap() {
     return {
       'id': id,

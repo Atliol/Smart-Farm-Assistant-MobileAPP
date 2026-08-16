@@ -68,7 +68,7 @@ class _MeasureMapScreenState extends State<MeasureMapScreen> {
 
       _mapController.move(
         LatLng(position.latitude, position.longitude),
-        18.5, // 💡 လက်ရှိနေရာရောက်ရင် Point ချရလွယ်အောင် Zoom Level ကို ပိုမိုနီးကပ်အောင် မြှင့်ထားပါတယ်
+        18.5,
       );
 
     } catch (e) {

@@ -28,7 +28,6 @@ class SuggestionChip extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // 💡 စာသားကို Expanded နဲ့ အုပ်ပေးလိုက်ရင် Overflow မဖြစ်တော့ပါဘူး
               Expanded(
                 child: Text(
                   text,
@@ -37,8 +36,8 @@ class SuggestionChip extends StatelessWidget {
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.w500,
                   ),
-                  maxLines: 2, // 💡 လိုအပ်ပါက ၂ ကြောင်းထိ ဆင်းခွင့်ပြုမည်
-                  overflow: TextOverflow.ellipsis, // ရှည်လွန်းရင် ... ပြမည်
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 8),

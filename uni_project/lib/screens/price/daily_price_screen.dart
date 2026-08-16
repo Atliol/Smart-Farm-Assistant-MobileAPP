@@ -23,7 +23,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
     _loadData();
   }
 
-  // ဒေတာများ ပြန်လည် ရယူရန် Function (Future ပုံစံဖြင့် RefreshIndicator နှင့် ချိတ်ဆက်ရန်)
+  
   Future<void> _loadData() async {
     setState(() {
       _priceFuture = _priceService.fetchDailyPrices(
@@ -89,13 +89,13 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
       ),
       body: Column(
         children: [
-          // 💡 Top Selector Bar
+          
           Container(
             color: const Color(0xFF00897B),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
-                // 📅 Date Box
+                
                 Expanded(
                   child: Container(
                     height: 40,
@@ -123,7 +123,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                 ),
                 const SizedBox(width: 10),
 
-                // 🏙️ City Dropdown Box
+                
                 Expanded(
                   child: Container(
                     height: 40,
@@ -168,7 +168,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
             ),
           ),
 
-          // Table Header Bar
+          
           Container(
             color: const Color(0xFF4CAF50),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -197,7 +197,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
             ),
           ),
 
-          // Price Data View with RefreshIndicator
+          
           Expanded(
             child: RefreshIndicator(
               color: const Color(0xFF00897B),
@@ -205,7 +205,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
               child: FutureBuilder<List<CropPriceModel>>(
                 future: _priceFuture,
                 builder: (context, snapshot) {
-                  // Loading State
+                  
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(
@@ -214,7 +214,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                     );
                   }
 
-                  // 🌐 Error State (အင်တာနက်မရှိ/လိုင်းကျသည့်အခါ ပြသမည့် UI)
+                  
                   if (snapshot.hasError) {
                     return ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -265,7 +265,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
 
                   final prices = snapshot.data ?? [];
 
-                  // Empty State (ဒေတာမရှိသည့်အခါ ပြသမည့် UI)
+                  
                   if (prices.isEmpty) {
                     return ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -292,7 +292,7 @@ class _DailyPriceScreenState extends State<DailyPriceScreen> {
                     );
                   }
 
-                  // Data Processing / Grouping
+                  
                   Map<String, List<CropPriceModel>> groupedPrices = {};
                   for (var price in prices) {
                     if (!groupedPrices.containsKey(price.category)) {

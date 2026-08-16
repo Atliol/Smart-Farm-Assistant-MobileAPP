@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SocialService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // 1. Follow / Unfollow စနစ် (အပြန်အလှန် Follow လုပ်ရင် Friend သဘောမျိုးဖြစ်သွားပါမယ်)
+  
   Future<void> toggleFollow(String currentUserId, String targetUserId, bool isFollowing) async {
     WriteBatch batch = _db.batch();
 
@@ -20,22 +20,22 @@ class SocialService {
     await batch.commit();
   }
 
-  // 2. ကိုယ်က သူ့ကို Follow လုပ်ထားသလား စစ်ဆေးရန်
+  
   Stream<bool> isFollowing(String currentUserId, String targetUserId) {
     return _db.collection('users').doc(currentUserId).collection('following').doc(targetUserId).snapshots().map((doc) => doc.exists);
   }
 
-  // 3. Followers / Following Count ရယူရန်
+  
   Stream<int> getCount(String userId, String type) {
     return _db.collection('users').doc(userId).collection(type).snapshots().map((snap) => snap.docs.length);
   }
 
-  // 4. Messenger စနစ်အတွက် Chat Room ID ထုတ်ပေးရန် (User ID ၂ ခုကို စီပေးခြင်း)
+  
   String getChatRoomId(String userA, String userB) {
     return userA.compareTo(userB) < 0 ? "${userA}_$userB" : "${userB}_$userA";
   }
 
-  // 5. Messenger မှာ စာပို့ရန်
+  
   Future<void> sendMessage(String senderId, String receiverId, String text) async {
     if (text.trim().isEmpty) return;
     String roomId = getChatRoomId(senderId, receiverId);

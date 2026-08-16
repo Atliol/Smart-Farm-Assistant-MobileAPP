@@ -83,12 +83,12 @@ class _ForecastScreenState extends State<ForecastScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Header (ရက်စွဲ၊ နေ့အမည် နှင့် အပူချိန်)
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // 💡 Wrapped in Expanded to prevent overflow when text is long
+                        
                         Expanded(
                           child: Row(
                             children: [
@@ -137,7 +137,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        // Temperature ( fixed size )
+                        
                         Text(
                           "${item.maxTemp}°C / ${item.minTemp}°C",
                           style: const TextStyle(
@@ -153,7 +153,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
                       child: Divider(height: 1),
                     ),
 
-                    // အသေးစိတ် မိုးလေဝသအချက်အလက် (မိုးရွာနိုင်ခြေ၊ စိုထိုင်းဆ၊ လေတိုက်နှုန်း)
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

@@ -27,13 +27,13 @@ class FungicideDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 💡 ပုံပြတ်မသွားဘဲ အထက်အောက် အပြည့်အဝ ပေါ်စေရန် ပြင်ဆင်ထားသော Image Container Section
+              
               Container(
                 width: double.infinity,
                 height: 250,
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                  color: Colors.grey.shade50, 
                   border: Border(
                     bottom: BorderSide(color: Colors.teal.shade100, width: 1),
                   ),
@@ -43,7 +43,7 @@ class FungicideDetailScreen extends StatelessWidget {
                     data.image,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အပြည့်ပေါ်စေရန်
+                    fit: BoxFit.contain, 
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: double.infinity,
                       height: 250,
@@ -58,13 +58,13 @@ class FungicideDetailScreen extends StatelessWidget {
                 ),
               ),
 
-              // အချက်အလက်များ ဖော်ပြသည့် အပိုင်း
+              
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ဆေးအမည် (Title)
+                    
                     Text(
                       data.title,
                       style: TextStyle(
@@ -75,7 +75,7 @@ class FungicideDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    // ဓာတုဗေဒအမည်
+                    
                     Text(
                       "ဓာတုဗေဒအမည်: ${data.chemicalName}",
                       style: TextStyle(
@@ -86,7 +86,7 @@ class FungicideDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
 
-                    // သက်ရောက်မှု / ကာကွယ်နိုင်သောရောဂါ
+                    
                     Text(
                       "သက်ရောက်မှု: ${data.targetDisease}",
                       style: TextStyle(
@@ -99,7 +99,7 @@ class FungicideDetailScreen extends StatelessWidget {
                     const Divider(),
                     const SizedBox(height: 12),
 
-                    // ရောဂါအကြောင်းနှင့် ဆေးဝါးအာနိသင်
+                    
                     const Text(
                       "ရောဂါအကြောင်းနှင့် ဆေးဝါးအာနိသင်",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
@@ -112,7 +112,7 @@ class FungicideDetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    // လိုက်နာဆောင်ရွက်ရမည့် နည်းလမ်းများ
+                    
                     if (data.subSteps.isNotEmpty) ...[
                       Row(
                         children: [

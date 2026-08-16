@@ -13,11 +13,9 @@ class CostChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // စုစုပေါင်း ရင်းနှီးစရိတ် ၀ ဖြစ်နေပါက Percentage Error မတက်စေရန်
     final double totalCost = result.totalInvestment;
     final bool hasData = totalCost > 0;
 
-    // ရာခိုင်နှုန်း တွက်ချက်ခြင်း
     final double fertPercentage = hasData
         ? (result.totalFertilizerCost / totalCost) * 100
         : 0;
@@ -52,7 +50,6 @@ class CostChartWidget extends StatelessWidget {
                         sectionsSpace: 3,
                         centerSpaceRadius: 35,
                         sections: [
-                          // ၁။ မြေဩဇာ စရိတ်
                           PieChartSectionData(
                             value: result.totalFertilizerCost,
                             title: fertPercentage > 0
@@ -66,7 +63,6 @@ class CostChartWidget extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          // ၂။ လုပ်သား စရိတ်
                           PieChartSectionData(
                             value: result.totalLaborCost,
                             title: laborPercentage > 0
@@ -91,8 +87,7 @@ class CostChartWidget extends StatelessWidget {
                     ),
             ),
             const SizedBox(height: 16),
-            
-            // Chart Legends (အရောင်အညွှန်းများ)
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -113,7 +108,6 @@ class CostChartWidget extends StatelessWidget {
     );
   }
 
-  // Legend Item Builder
   Widget _buildLegendItem({required Color color, required String label}) {
     return Row(
       children: [

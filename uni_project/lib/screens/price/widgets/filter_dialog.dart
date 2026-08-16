@@ -38,7 +38,7 @@ class _FilterDialogState extends State<FilterDialog> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Header Search Box (ပုံ ၂ စတိုင်)
+            
             Row(
               children: [
                 Expanded(
@@ -61,7 +61,7 @@ class _FilterDialogState extends State<FilterDialog> {
             ),
             const SizedBox(height: 12),
 
-            // Radio Options List
+            
             Expanded(
               child: ListView.builder(
                 itemCount: categories.length,

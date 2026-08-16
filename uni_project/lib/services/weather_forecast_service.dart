@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import '../models/weather_forecast_model.dart';
 
 class WeatherService {
-  // 💡 OpenWeatherMap API Key ကို ဒီမှာ ထည့်ပါ
   final String apiKey = "8fb8375cbf17fed6233ab87c6af52244";
 
   Future<Position> _getCurrentLocation() async {
@@ -32,7 +31,7 @@ class WeatherService {
 
   Future<List<WeatherForecastModel>> getFourDaysForecast() async {
     try {
-      double latitude = 20.8783; // Default: Meiktila
+      double latitude = 20.8783;
       double longitude = 95.8612;
 
       try {
@@ -43,7 +42,6 @@ class WeatherService {
         print("GPS ရယူ၍မရပါ: $e");
       }
 
-      // OpenWeatherMap 5-Day / 3-Hour Forecast Endpoint
       final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude'
         '&appid=$apiKey&units=metric&lang=my',
@@ -55,11 +53,10 @@ class WeatherService {
         final data = json.decode(response.body);
         final List list = data['list'];
 
-        // နေ့ရက်အလိုက် ဒေတာများကို Group ဖွဲ့ခြင်း
         Map<String, List<dynamic>> groupedByDay = {};
 
         for (var item in list) {
-          String dateStr = item['dt_txt'].split(' ')[0]; // YYYY-MM-DD
+          String dateStr = item['dt_txt'].split(' ')[0];
           if (!groupedByDay.containsKey(dateStr)) {
             groupedByDay[dateStr] = [];
           }
@@ -69,9 +66,8 @@ class WeatherService {
         List<WeatherForecastModel> forecastList = [];
         int count = 0;
 
-        // Group ဖွဲ့ထားသော ဒေတာများမှ တစ်ရက်စီအတွက် ခန့်မှန်းချက် ထုတ်ယူခြင်း
         for (var entry in groupedByDay.entries) {
-          if (count >= 4) break; // နောက် ၄ ရက်စာ (သို့မဟုတ် ၃ ရက်စာ)
+          if (count >= 4) break;
 
           final dayDataList = entry.value;
           final DateTime date = DateTime.parse(entry.key);
@@ -87,7 +83,7 @@ class WeatherService {
           for (var item in dayDataList) {
             double tempMax = (item['main']['temp_max'] as num).toDouble();
             double tempMin = (item['main']['temp_min'] as num).toDouble();
-            double pop = (item['pop'] as num).toDouble(); // Rain probability (0.0 to 1.0)
+            double pop = (item['pop'] as num).toDouble();
             int humidity = (item['main']['humidity'] as num).toInt();
             double wind = (item['wind']['speed'] as num).toDouble();
 
@@ -109,8 +105,8 @@ class WeatherService {
               'max_temp': maxTemp.round(),
               'min_temp': minTemp.round(),
               'humidity': avgHumidity,
-              'rain_chance': (maxPop * 100).roundToDouble(), // Percentage ပြောင်းခြင်း
-              'wind_speed': "${(maxWind * 3.6).round()} ကီလိုမီတာ/နာရီ", // m/s မှ km/h ပြောင်းခြင်း
+              'rain_chance': (maxPop * 100).roundToDouble(),
+              'wind_speed': "${(maxWind * 3.6).round()} ကီလိုမီတာ/နာရီ",
             }),
           );
 

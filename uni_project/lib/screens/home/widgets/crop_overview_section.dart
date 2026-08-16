@@ -26,7 +26,7 @@ class CropOverviewSection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // 💡 Guide Screen ထဲက Crop List Screen သို့ သွားရန်
+                
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -61,11 +61,11 @@ class CropOverviewSection extends StatelessWidget {
                 tip: 'ရေထိန်းပါ၊ ပေါင်းနှိမ်နင်းပါ။',
                 icon: '🌾',
                 onTap: () async {
-                  // 💡 Database / Service ထဲမှ စပါး (Rice) အတွက် CropModel ဒေတာ ရယူခြင်း
+                  
                   final dbService = DatabaseService();
-                  final cropList = await dbService.getCropsData(); // သင့် Project ထဲမှ function နာမည်
+                  final cropList = await dbService.getCropsData(); 
 
-                  // 'Rice' သို့မဟုတ် 'စပါး' နဲ့ ကိုက်ညီသော CropModel ကို ရှာဖွေခြင်း
+                  
                   final riceCrop = cropList.firstWhere(
                         (element) => element.id == 'crop_001',
                     orElse: () => CropModel(
@@ -81,7 +81,7 @@ class CropOverviewSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CropDetailScreen(crop: riceCrop), // 💡 CropModel Object ပို့ပေးခြင်း
+                        builder: (context) => CropDetailScreen(crop: riceCrop), 
                       ),
                     );
                   }
@@ -94,11 +94,11 @@ class CropOverviewSection extends StatelessWidget {
                 tip: 'ရေမဝပ်စေရ၊ နေရောင်ပြပါ။',
                 icon: '🌽',
                 onTap: () async {
-                  // 💡 1. Database/Service မှ Crop List ကို ရယူခြင်း
+                  
                   final dbService = DatabaseService();
                   final cropList = await dbService.getCropsData();
 
-                  // 💡 2. 'ပြောင်းဖူး' သို့မဟုတ် 'Corn' ဟု ပါဝင်သော CropModel ကို ရှာဖွေခြင်း
+                  
                   final cornCrop = cropList.firstWhere(
                         (element) => element.id == 'crop_005',
                     orElse: () => CropModel(
@@ -110,7 +110,7 @@ class CropOverviewSection extends StatelessWidget {
                     ),
                   );
 
-                  // 💡 3. CropDetailScreen သို့ CropModel ပို့ပေးပြီး Navigate လုပ်ခြင်း
+                  
                   if (context.mounted) {
                     Navigator.push(
                       context,

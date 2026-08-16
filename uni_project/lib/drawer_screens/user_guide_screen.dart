@@ -30,7 +30,6 @@ class UserGuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<GuideItem> guideList = [
-      // ၁။ Home Section
       GuideItem(
         title: 'ပင်မ (Online & Offline)',
         icon: Icons.home_rounded,
@@ -41,10 +40,10 @@ class UserGuideScreen extends StatelessWidget {
           ),
           GuideSubItem(
             subTitle: '• တောင်သူလက်စွဲများ(Online & Offline)',
-            subDescription: '# တိုင်းတာရန်(Online)\n---------------------------------\n GPS နည်းပညာကို အသုံးပြု၍ စိုက်ပျိုးမြေ ဧရိယာအကျယ်အဝန်းကို ကိုယ်တိုင် တိကျစွာ တိုင်းတာတွက်ချက်နိုင်ပါသည်။\n\n # သီးနှံစျေးနှုန်း(Online)\n------------------------------------\n ကုန်စည်ဒိုင်များ၏ စပါး၊ ပဲ၊ ပြောင်း၊ ဟင်းသီးဟင်းရွက် စသည့် သီးနှံအလိုက် နေ့စဉ် ပြင်ပစျေးကွက် ပေါက်စျေးများကို စစ်ဆေးကြည့်ရှုနိုင်ပါသည်။\n\n # မှတ်တမ်းစနစ်(Offline)\n-------------------------------------\n နေ့စဉ် စိုက်ပျိုးရေး ကုန်ကျစရိတ်နှင့် ဝင်ငွေများကို နေ့စဉ် မှတ်တမ်းတင်နိုင်ပြီး ရာသီကုန်ချိန်တွင် အရှုံး/အမြတ် တွက်ချက်ပေးမည် ဖြစ်ပါသည်။\n\n # တွက်ချက်ရန်(Offline)\n------------------------------------\n စပါး သို့မဟုတ် အခြားသီးနှံ တစ်ဧက စိုက်ပျိုးမည်ဆိုပါက ကုန်ကျမည့် စိုက်ပျိုးစရိတ်၊ လုပ်သားခ နှင့် ခန့်မှန်း သီးနှံပေါက်စျေးများကို ကြိုတင် တွက်ချက်ပေးပါသည်။',
+            subDescription: '# မှတ်တမ်းစနစ်(Offline)\n-------------------------------------\n နေ့စဉ် စိုက်ပျိုးရေး ကုန်ကျစရိတ်နှင့် ဝင်ငွေများကို နေ့စဉ် မှတ်တမ်းတင်နိုင်ပြီး ရာသီကုန်ချိန်တွင် အရှုံး/အမြတ် တွက်ချက်ပေးမည် ဖြစ်ပါသည်။\n\n # တွက်ချက်ရန်(Offline)\n------------------------------------\n စပါး သို့မဟုတ် အခြားသီးနှံ တစ်ဧက စိုက်ပျိုးမည်ဆိုပါက ကုန်ကျမည့် စိုက်ပျိုးစရိတ်၊ လုပ်သားခ နှင့် ခန့်မှန်း သီးနှံပေါက်စျေးများကို ကြိုတင် တွက်ချက်ပေးပါသည်။\n\n # တိုင်းတာရန်(Online)\n---------------------------------\n GPS နည်းပညာကို အသုံးပြု၍ စိုက်ပျိုးမြေ ဧရိယာအကျယ်အဝန်းကို ကိုယ်တိုင် တိကျစွာ တိုင်းတာတွက်ချက်နိုင်ပါသည်။\n\n # သီးနှံစျေးနှုန်း(Online)\n------------------------------------\n ကုန်စည်ဒိုင်များ၏ စပါး၊ ပဲ၊ ပြောင်း၊ ဟင်းသီးဟင်းရွက် စသည့် သီးနှံအလိုက် နေ့စဉ် ပြင်ပစျေးကွက် ပေါက်စျေးများကို စစ်ဆေးကြည့်ရှုနိုင်ပါသည်။',
           ),
           GuideSubItem(
-            subTitle: '• စိုက်ပျိုးနည်းပညာများ(Offline)',
+            subTitle: '• သီးနှံစိုက်ပျိုးနည်းများ(Offline)',
             subDescription: 'စပါး၊ ပြောင်း၊ ခရမ်းချဉ် စသည့် သီးနှံများ၏ စိုက်ပျိုးချိန်နှင့် ပြုစုနည်းများကိုကြည့်နိုင်ပြီး "အားလုံး" ကိုနှိပ်၍ စိုက်ပျိုးရေး လမ်းညွှန်များ ဖတ်နိုင်ပါသည်။',
           ),
           GuideSubItem(
@@ -59,7 +58,6 @@ class UserGuideScreen extends StatelessWidget {
         ],
       ),
 
-      // ၂။ Guide Section (စိုက်ပျိုးရေး နည်းပညာ & ဗဟုသုတ)
       GuideItem(
         title: 'လမ်းညွှန် (Offline)',
         icon: Icons.menu_book_rounded,
@@ -83,7 +81,6 @@ class UserGuideScreen extends StatelessWidget {
         ],
       ),
 
-      // ၃။ AI Assistant Section
       GuideItem(
         title: 'AI လက်စွဲ (Online)',
         icon: Icons.psychology_rounded,
@@ -91,7 +88,6 @@ class UserGuideScreen extends StatelessWidget {
         'စိုက်ပျိုးရေးနှင့် ပတ်သက်သော မေးခွန်းများ၊ သီးနှံရောဂါလက္ခဏာများ၊ ဆေးနှုန်းထားများနှင့် စိုက်ပျိုးနည်းစနစ်များကို AI အကူအညီဖြင့် မြန်မာဘာသာဖြင့် တိုက်ရိုက် မေးမြန်းစုံစမ်းနိုင်သော စမတ်ကျသည့် စနစ်ဖြစ်ပါသည်။ (အင်တာနက် လိုအပ်ပါသည်။)',
       ),
 
-      // ၄။ Pesticides (ပိုးသတ်ဆေး၊ မှိုသတ်ဆေး၊ ပေါင်းသတ်ဆေးနှင့် မြေဩဇာများ)
       GuideItem(
         title: 'ဆေးဝါး (Offline)',
         icon: Icons.sanitizer_rounded,
@@ -104,12 +100,10 @@ class UserGuideScreen extends StatelessWidget {
             subTitle: '• မှိုသတ်ဆေး/ကာကွယ်ဆေး(Offline)',
             subDescription: 'မှိုသတ်ဆေးနှင့် ကာကွယ်ဆေးများကို Offline ဖတ်ရှုနိုင်ပါသည်။',
           ),
-          // 💡 ပေါင်းသတ်ဆေး Category အတွက် ဖြည့်စွက်ချက်
           GuideSubItem(
             subTitle: '• ပေါင်းသတ်ဆေး(Offline)',
             subDescription: 'သီးနှံအမျိုးအစားနှင့် ပေါင်းပင်အမျိုးအစား (ရိုးပြတ်/ရွက်ကျယ်/မြက်ပေါင်း) အလိုက် အသုံးပြုရမည့် ပေါင်းသတ်ဆေးများ၊ ဆေးနှုန်းထားနှင့် အသုံးပြုရမည့် အချိန်ကို လေ့လာနိုင်ပါသည်။',
           ),
-          // 💡 ဓာတ်မြေဩဇာ Category အတွက် ဖြည့်စွက်ချက်
           GuideSubItem(
             subTitle: '• ဓာတ်မြေဩဇာ(Offline)',
             subDescription: 'သီးနှံအလိုက် လိုအပ်သော NPK (နိုက်ထရိုဂျင်၊ ဖော့စဖရပ်၊ ပိုတက်ဆီယမ်) ဓာတ်မြေဩဇာ အမျိုးအစားများ၊ အချိုးအစားနှင့် အပင်သက်တမ်းအလိုက် ကျွေးရမည့် နည်းလမ်းများကို ကြည့်ရှုနိုင်ပါသည်။',
@@ -117,7 +111,6 @@ class UserGuideScreen extends StatelessWidget {
         ],
       ),
 
-      // ၅။ News (Community Newsfeed - တောင်သူချင်း ဆွေးနွေးမေးမြန်းရာ)
       GuideItem(
         title: 'သတင်းများ (Online)',
         icon: Icons.newspaper_rounded,
@@ -133,6 +126,10 @@ class UserGuideScreen extends StatelessWidget {
           GuideSubItem(
             subTitle: '• Post များကို Like, Share ပြုလုပ်ခြင်း',
             subDescription: 'မိမိ ကြိုက်နှစ်သက်သော သတင်းနှင့် နည်းပညာ ပို့စ်များကို Like ပေးခြင်း၊ အခြားတောင်သူများ သိရှိစေရန် Share ပြုလုပ်ခြင်းများပြုလုပ်နိုင်ပါသည်။',
+          ),
+          GuideSubItem(
+            subTitle: '• Chatbox မှတစ်ဆင့် တိုက်ရိုက် စကားပြောဆက်သွယ်ခြင်း',
+            subDescription: 'အခြားတောင်သူများနှင့် စိုက်ပျိုးရေး ပညာရှင်များထံသို့ စာတိုများ၊ ဓာတ်ပုံများပေးပို့၍ တိုက်ရိုက်မေးမြန်း ဆွေးနွေးနိုင်ပါသည်။',
           ),
         ],
       ),
@@ -155,7 +152,6 @@ class UserGuideScreen extends StatelessWidget {
           itemCount: guideList.length,
           itemBuilder: (context, index) {
             final item = guideList[index];
-
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
@@ -194,14 +190,12 @@ class UserGuideScreen extends StatelessWidget {
                     const Divider(color: Colors.black12, height: 1),
                     const SizedBox(height: 12),
 
-                    // Condition 1: Sub UI မရှိလျှင် Description တစ်ခုတည်း ပြမည်
                     if (item.mainDescription != null)
                       Text(
                         item.mainDescription!,
                         style: const TextStyle(fontSize: 13, height: 1.6, color: Colors.black87),
                       ),
 
-                    // Condition 2: Sub UI ရှိပါက Sub Title & Description အစုံလိုက် ပြမည်
                     if (item.subItems != null)
                       ...item.subItems!.map((sub) => Padding(
                         padding: const EdgeInsets.only(bottom: 10),

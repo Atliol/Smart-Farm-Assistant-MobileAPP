@@ -31,7 +31,7 @@ class _MainWrapperState extends State<MainWrapper> {
     _currentIndex = widget.initialIndex;
   }
 
-  // Bottom Navigation Screen Lists
+  
   Widget _getScreen(int index) {
     switch (index) {
       case 0:
@@ -61,11 +61,11 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // 💡 ၁။ စာရိုက်ရန် ကီးဘုတ် ပွင့်နေသလားဆိုတာကို လှမ်းစစ်ဆေးခြင်း
+    
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      // AppBar
+      
       appBar: AppBar(
         title: const Text(
           AppStrings.appName,
@@ -75,14 +75,14 @@ class _MainWrapperState extends State<MainWrapper> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      // SideBar / Drawer
+      
       drawer: const CustomDrawer(),
 
-      // Screen Changes according to index
+      
       body: _getScreen(_currentIndex),
 
-      // (AI) => FloatingActionButton
-      // 💡 ၂။ ကီးဘုတ် ပွင့်နေချိန် သို့မဟုတ် AI Screen (index 2) သို့ ရောက်ရှိနေချိန်တွင် AI Button ကြီးကို လုံးဝ ဖျောက်ထားပါမည်
+      
+      
       floatingActionButton: isKeyboardOpen || _currentIndex == 2
           ? null
           : AnimatedContainer(
@@ -110,7 +110,7 @@ class _MainWrapperState extends State<MainWrapper> {
               child: IconButton(
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 2; // AI Screen
+                    _currentIndex = 2; 
                   });
                 },
                 icon: const Icon(
@@ -123,8 +123,8 @@ class _MainWrapperState extends State<MainWrapper> {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // BottomNavigation Bar
-      // 💡 ၃။ ကီးဘုတ် ပွင့်နေပါက အောက်ခြေ Navigation Bar တစ်ခုလုံးကိုပါ ယာယီ ဖျောက်ထားလိုက်ပါသည်
+      
+      
       bottomNavigationBar: isKeyboardOpen
           ? null
           : BottomAppBar(
@@ -135,19 +135,19 @@ class _MainWrapperState extends State<MainWrapper> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    // Home
+                    
                     _buildNavItem(Icons.home, 'ပင်မ', 0),
 
-                    // Guide
+                    
                     _buildNavItem(Icons.menu_book, 'လမ်းညွှန်', 1),
 
-                    // AI Button Space
+                    
                     const SizedBox(width: 40),
 
-                    // Pesticides
+                    
                     _buildNavItem(Icons.sanitizer_rounded, 'ဆေးဝါး', 3),
 
-                    // News
+                    
                     _buildNavItem(Icons.newspaper, 'သတင်းများ', 4),
                   ],
                 ),

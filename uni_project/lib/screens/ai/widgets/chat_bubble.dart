@@ -36,7 +36,6 @@ class ChatBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 💡 ဓာတ်ပုံပါလာပါက Chat Bubble ထဲတွင် အရင်ပြသမည်
             if (imageBytes != null) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),

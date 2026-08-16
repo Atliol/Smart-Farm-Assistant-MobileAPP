@@ -56,7 +56,7 @@ class FertilizerListScreen extends StatelessWidget {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 16),
-                    clipBehavior: Clip.antiAlias, // Background နဲ့ Border Radius ပေါင်းစပ်မှု ချောမွေ့စေရန်
+                    clipBehavior: Clip.antiAlias, 
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -71,13 +71,13 @@ class FertilizerListScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 💡 FertilizerDetailScreen ရဲ့ Image Container UI ပုံစံအတိုင်း ပြင်ဆင်ထားသော အပိုင်း
+                        
                         Container(
                           width: double.infinity,
                           height: 180,
                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                            color: Colors.grey.shade50, 
                             border: Border(
                               bottom: BorderSide(color: Colors.green.shade100, width: 1),
                             ),
@@ -87,7 +87,7 @@ class FertilizerListScreen extends StatelessWidget {
                               item.image,
                               width: double.infinity,
                               height: double.infinity,
-                              fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အထက်အောက်/ဘေး အပြည့်ပေါ်စေရန်
+                              fit: BoxFit.contain, 
                               errorBuilder: (context, error, stackTrace) => Container(
                                 width: double.infinity,
                                 height: 180,
@@ -102,7 +102,7 @@ class FertilizerListScreen extends StatelessWidget {
                           ),
                         ),
 
-                        // အချက်အလက်များ ဖော်ပြသည့် အပိုင်း
+                        
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(

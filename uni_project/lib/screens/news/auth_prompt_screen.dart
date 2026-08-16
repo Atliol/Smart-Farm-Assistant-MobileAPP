@@ -10,20 +10,20 @@ class AuthPromptScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Background Image with Dark Overlay
+          
           Positioned.fill(
             child: Image.asset(
-              'assets/images/watermelon_1.png', // မိမိ project ထဲမှ ပုံလမ်းကြောင်း ပြောင်းပေးပါ
+              'assets/images/watermelon_1.png', 
               fit: BoxFit.cover,
             ),
           ),
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.45), // စာသားများ ပေါ်လွင်စေရန် အမဲရောင် အုပ်ပေးခြင်း
+              color: Colors.black.withOpacity(0.45), 
             ),
           ),
 
-          // 2. Main Content Layout
+          
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
@@ -31,7 +31,7 @@ class AuthPromptScreen extends StatelessWidget {
                 children: [
                   const Spacer(),
 
-                  // Title: Newsfeed
+                  
                   const Text(
                     "Newsfeed",
                     style: TextStyle(
@@ -43,7 +43,7 @@ class AuthPromptScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Subtitle Description
+                  
                   const Text(
                     "စိုက်ပျိုးရေးနှင့်မွေးမြုုရေးဆိုင်ရာအကြောင်းအရာများကိုဆွေးနွေးနိင်ရန်အတွက်အင်တာနက်ဖွင့်ပြီး Login ဝင်ရန်လိုအပ်ပါသည်",
                     textAlign: TextAlign.center,
@@ -56,7 +56,7 @@ class AuthPromptScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
 
-                  // Login Button (White Rounded Button)
+                  
                   SizedBox(
                     width: double.infinity,
                     height: 54,

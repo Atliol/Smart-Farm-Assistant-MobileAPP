@@ -11,17 +11,6 @@ class AIService {
   static const String _baseUrl =
       'http://10.0.2.2:3000';
 
-  // Android Emulator အတွက်
-  //
-  // Android Emulator မှာ localhost ဆိုတာ
-  // Computer ကို မဆိုလိုပါဘူး။
-  //
-  // 10.0.2.2 = Computer localhost
-  //
-  // Physical Phone သုံးရင် computer ရဲ့ local IP
-  // ဥပမာ 192.168.1.100:3000
-  // သုံးရပါမယ်.
-
   // ============================================================
   // Send Message
   // ============================================================

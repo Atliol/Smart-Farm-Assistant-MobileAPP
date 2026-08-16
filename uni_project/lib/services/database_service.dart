@@ -33,7 +33,7 @@ class DatabaseService {
     await Hive.initFlutter();
   }
 
-  // Helper function to safely cast Hive map to Map<String, dynamic>
+  
   Map<String, dynamic> _safeCast(dynamic item) {
     if (item is Map) {
       return item.map((key, value) => MapEntry(key.toString(), value));
@@ -41,7 +41,7 @@ class DatabaseService {
     return <String, dynamic>{};
   }
 
-  // ==================== ၁။ သီးနှံစိုက်ပျိုးရေးအပိုင်း ====================
+  
   Future<List<CropModel>> getCropsData() {
     _cropsFuture ??= _fetchAndLoadCrops();
     return _cropsFuture!;
@@ -63,7 +63,7 @@ class DatabaseService {
       } catch (e) {
         print("====== HIVE JSON ERROR ====== $e");
       }
-      await box.flush(); // 💡 Safe flush
+      await box.flush(); 
     }
 
     return box.values.map((item) {
@@ -71,7 +71,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၂။ မွေးမြူရေးနည်းပညာအပိုင်း ====================
+  
   Future<List<LivestockModel>> getLivestockData() {
     _livestockFuture ??= _fetchAndLoadLivestock();
     return _livestockFuture!;
@@ -101,7 +101,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၃။ အထွေထွေဗဟုသုတအပိုင်း ====================
+  
   Future<List<KnowledgeModel>> getKnowledgeData() {
     _knowledgeFuture ??= _fetchAndLoadKnowledge();
     return _knowledgeFuture!;
@@ -129,7 +129,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၄။ ရေလုပ်ငန်းနည်းပညာအပိုင်း ====================
+  
   Future<List<AquacultureModel>> getAquacultureData() {
     _aquacultureFuture ??= _fetchAndLoadAquaculture();
     return _aquacultureFuture!;
@@ -159,7 +159,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၅။ ပိုးသတ်ဆေးအပိုင်း (ပြင်ဆင်ပြီး) ====================
+  
   Future<List<InsecticideModel>> getInsecticideData() {
     _insecticideFuture ??= _fetchAndLoadInsecticides();
     return _insecticideFuture!;
@@ -168,7 +168,7 @@ class DatabaseService {
   Future<List<InsecticideModel>> _fetchAndLoadInsecticides() async {
     var box = await Hive.openBox(insBoxName);
 
-    // 💡 Performance ကောင်းမွန်စေရန် box ထဲမှာ ဘာမှမရှိမှသာ JSON ကို Read လုပ်ပြီး ထည့်ရန် ပြင်ဆင်လိုက်သည်
+    
     if (box.isEmpty) {
       try {
         final String response = await rootBundle.loadString('assets/data/insecticide_data.json');
@@ -190,7 +190,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၆။ ရောဂါကာကွယ်ကုသဆေးအပိုင်း ====================
+  
   Future<List<FungicideModel>> getFungicideData() {
     _fungicideFuture ??= _fetchAndLoadFungicides();
     return _fungicideFuture!;
@@ -220,7 +220,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၇။ ပေါင်းသတ်ဆေးအပိုင်း ====================
+  
   Future<List<HerbicideModel>> getHerbicideData() {
     _herbicideFuture ??= _fetchAndLoadHerbicides();
     return _herbicideFuture!;
@@ -250,7 +250,7 @@ class DatabaseService {
     }).toList();
   }
 
-  // ==================== ၈။ ဓာတ်မြေအောဇာအပိုင်း ====================
+  
   Future<List<FertilizerModel>> getFertilizerData() {
     _fertilizerFuture ??= _fetchAndLoadFertilizers();
     return _fertilizerFuture!;

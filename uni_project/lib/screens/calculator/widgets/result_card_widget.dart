@@ -11,13 +11,11 @@ class ResultCardWidget extends StatelessWidget {
     required this.result,
   });
 
-  // ဂဏန်းများကို ကော်မာ (Commas) ခြားပေးသည့် Helper
   String _formatCurrency(double amount) {
     final formatter = NumberFormat('#,##0', 'en_US');
     return formatter.format(amount);
   }
 
-  // ဒသမ ကိန်းဂဏန်းများ သပ်ရပ်အောင် ပြပေးသည့် Helper
   String _formatDecimal(double value) {
     return value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
   }
@@ -39,7 +37,6 @@ class ResultCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Title
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,7 +55,6 @@ class ResultCardWidget extends StatelessWidget {
             ),
             const Divider(height: 20),
 
-            // ၁။ မြေသြဇာ ပမာဏ အပိုင်း
             const Text(
               'လိုအပ်မည့် မြေဩဇာ ပမာဏ -',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
@@ -79,7 +75,6 @@ class ResultCardWidget extends StatelessWidget {
             const Divider(height: 1),
             const SizedBox(height: 12),
 
-            // ၂။ စရိတ် ခွဲဝေမှု အပိုင်း
             _buildCostRow('မြေဩဇာ ကုန်ကျစရိတ်:', '${_formatCurrency(result.totalFertilizerCost)} ကျပ်'),
             const SizedBox(height: 6),
             _buildCostRow('လုပ်သား/စက်ကိရိယာခ:', '${_formatCurrency(result.totalLaborCost)} ကျပ်'),
@@ -96,7 +91,6 @@ class ResultCardWidget extends StatelessWidget {
             const Divider(height: 1),
             const SizedBox(height: 12),
 
-            // ၃။ အထွက်နှုန်း နှင့် ဝင်ငွေ အပိုင်း
             _buildCostRow(
               ' ခန့်မှန်း အထွက်နှုန်း:',
               '${_formatDecimal(result.estimatedYieldMax)} $yieldUnit',
@@ -142,7 +136,6 @@ class ResultCardWidget extends StatelessWidget {
     );
   }
 
-  // Fertilizer Row Builder
   Widget _buildFertilizerRow(String label, double bags) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -163,7 +156,6 @@ class ResultCardWidget extends StatelessWidget {
     );
   }
 
-  // Cost Row Builder
   Widget _buildCostRow(String label, String value, {bool isBold = false, Color? valueColor}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

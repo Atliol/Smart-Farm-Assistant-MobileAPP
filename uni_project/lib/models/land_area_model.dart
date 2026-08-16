@@ -21,7 +21,6 @@ class LandAreaModel {
     required this.createdAt,
   });
 
-  // Backend သို့ ပို့ရန် သို့မဟုတ် Hive ထဲသိမ်းရန် Map အဖြစ်ပြောင်းလဲခြင်း
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -35,7 +34,6 @@ class LandAreaModel {
     };
   }
 
-  // Backend သို့မဟုတ် Local DB မှ ပြန်ဖတ်ယူခြင်း
   factory LandAreaModel.fromJson(Map<String, dynamic> json) {
     var pointsList = json['points'] as List;
     List<LatLng> parsedPoints = pointsList.map((p) {

@@ -33,7 +33,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Title
+            
             const Row(
               children: [
                 Icon(Icons.pie_chart_outline_rounded, color: AppColors.primaryColor, size: 20),
@@ -50,7 +50,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Chart Section
+            
             total == 0
                 ? const SizedBox(
                     height: 160,
@@ -74,7 +74,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
                                 PieChartSectionData(
                                   color: Colors.teal,
                                   value: medicineExpense,
-                                  title: '', // Text တွေ မထပ်အောင် ဒီမှာ ပိတ်ထားပါတယ်
+                                  title: '', 
                                   radius: 28,
                                 ),
                               if (laborExpense > 0)
@@ -101,7 +101,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // Chart အလယ်ခေါင်မှာ စုစုပေါင်းပြရန် Center Text
+                        
                         Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +129,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
             const Divider(height: 1),
             const SizedBox(height: 12),
 
-            // Category Legend (အညွှန်းများ)
+            
             Wrap(
               spacing: 16,
               runSpacing: 8,
@@ -147,7 +147,7 @@ class ChartAnalyticsWidget extends StatelessWidget {
     );
   }
 
-  // Legend Item UI
+  
   Widget _buildLegendItem(String title, Color color, double amount) {
     return Row(
       mainAxisSize: MainAxisSize.min,

@@ -36,12 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           setState(() => _isLoading = false);
 
-          // Login အောင်မြင်ကြောင်း Callback ကို ခေါ်ယူခြင်း
           try {
             widget.onLoginSuccess();
           } catch (_) {}
 
-          // MainWrapper ၏ News Screen (Index 4) သို့ ရောက်ရှိမည်
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (_) => const MainWrapper(initialIndex: 4),
@@ -53,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       setState(() => _isLoading = false);
-      String errorMessage = 'အမှားတစ်ခု ရှိနေပါသည်၊၊';
+      String errorMessage = 'အင်တာနက်မရှိပါ။';
 
       if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
         errorMessage = 'အီးမေးလ် သို့မဟုတ် လျှို့ဝှက်နံပါတ် မှားယွင်းနေပါသည်၊၊';

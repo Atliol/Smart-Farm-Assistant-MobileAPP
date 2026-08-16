@@ -15,7 +15,7 @@ class IncomeExpenseBarChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ၁။ ဇန်နဝါရီ မှ ဇွန် လအထိ (၁၂ လစာ) Income / Expense စုစုပေါင်း တွက်ချက်ခြင်း
+    
     List<double> monthlyIncomes = List.filled(12, 0.0);
     List<double> monthlyExpenses = List.filled(12, 0.0);
     
@@ -31,7 +31,7 @@ class IncomeExpenseBarChartWidget extends StatelessWidget {
       }
     }
 
-    // ၂။ Dynamic Max Y တွက်ချက်ခြင်း (Chart တိုင်အမြင့်ကို Auto ညှိပေးရန်)
+    
     double maxData = 0;
     for (int i = 0; i < 12; i++) {
       if (monthlyIncomes[i] > maxData) maxData = monthlyIncomes[i];
@@ -56,7 +56,7 @@ class IncomeExpenseBarChartWidget extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
             ),
             const SizedBox(height: 12),
-            // Legend Indicators
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

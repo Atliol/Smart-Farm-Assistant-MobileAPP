@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../../models/aquaculture_model.dart';
 import '../../widgets/app_background.dart';
 
@@ -15,7 +16,7 @@ class AquacultureDetailScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(item.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: Colors.teal.shade700,
+        backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -25,7 +26,7 @@ class AquacultureDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📷 Banner Image with Soft Corners
+              
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
@@ -41,7 +42,7 @@ class AquacultureDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 🌟 🌊 ရေလုပ်ငန်းဆိုင်ရာ သော့ချက်လိုအပ်ချက်များ (Param Grid)
+              
               Row(
                 children: [
                   _buildAquaMetricCard(
@@ -71,14 +72,14 @@ class AquacultureDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 📝 Main Title
+              
               Text(
                 item.title,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
               ),
               const SizedBox(height: 10),
 
-              // 📖 Description
+              
               Text(
                 item.description,
                 style: const TextStyle(fontSize: 15, height: 1.6, color: Colors.black87),
@@ -88,7 +89,7 @@ class AquacultureDetailScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 16),
 
-              // 💡 Sub steps မွေးမြူနည်းအဆင့်ဆင့်
+              
               if (item.subSteps.isNotEmpty) ...[
                 Text(
                   "စနစ်တကျ မွေးမြူနည်း အဆင့်ဆင့်",
@@ -132,7 +133,7 @@ class AquacultureDetailScreen extends StatelessWidget {
     );
   }
 
-  // 💡 ရေလုပ်ငန်း parameter ပြသမည့် ကတ်ပြား widget အလှ
+  
   Widget _buildAquaMetricCard(BuildContext context, {required String label, required String value, required IconData icon, required Color color}) {
     return Expanded(
       child: Container(

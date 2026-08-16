@@ -13,7 +13,7 @@ import 'livestock_list_screen.dart';
 class GuideScreen extends StatelessWidget {
   const GuideScreen({super.key});
 
-  // 💡 အင်္ဂလိပ် ဂဏန်းများကို မြန်မာဂဏန်းသို့ ပြောင်းပေးသော Helper Function
+  
   String _toMyanmarNumerals(int number) {
     const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const myanmar = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
@@ -55,7 +55,7 @@ class GuideScreen extends StatelessWidget {
               aquaCount = aqua.length;
             }
 
-            // 💡 _toMyanmarNumerals() ကို အသုံးပြု၍ မြန်မာဂဏန်း ပြောင်းထားပါသည်
+            
             final List<Map<String, dynamic>> categories = [
               {
                 'title': 'စိုက်ပျိုးနည်းပညာ',

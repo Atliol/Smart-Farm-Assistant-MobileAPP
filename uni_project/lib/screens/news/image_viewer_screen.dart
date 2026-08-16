@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ImageViewerScreen extends StatefulWidget {
-  final String postId; // 💡 ဘယ်ပို့စ်ကလဲဆိုတာ သိရန် Post ID လိုအပ်ပါသည်
+  final String postId; 
   final List<String> images;
   final int initialIndex;
 
@@ -43,7 +43,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     }
   }
 
-  // 💡 ပုံတစ်ပုံချင်းစီအတွက် သီးသန့် Like လုပ်မည့် ဖန်ရှင်
+  
   Future<void> _toggleImageLike(int imgIndex) async {
     if (_currentUser == null) return;
     String uid = _currentUser!.uid;
@@ -58,7 +58,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     try {
       DocumentSnapshot imgDoc = await imgRef.get();
       if (!imgDoc.exists) {
-        // Doc မရှိသေးပါက အသစ်ဆောက်ပြီး Like ထည့်မည်
+        
         await imgRef.set({
           'likedBy': [
             {'uid': uid, 'name': displayName}
@@ -87,7 +87,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     }
   }
 
-  // 💡 ပုံတစ်ပုံချင်းစီအတွက် သီးသန့် Comment Sheet ခေါ်မည့် ဖန်ရှင်
+  
   void _showImageCommentSheet(int imgIndex) {
     showModalBottomSheet(
       context: context,
@@ -170,7 +170,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         ),
       ),
 
-      // 💡 Facebook Style Image Action Bar (Like & Comment)
+      
       bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('posts')
@@ -206,7 +206,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // 👍 Like Button
+                      
                       TextButton.icon(
                         onPressed: () => _toggleImageLike(_currentIndex),
                         icon: Icon(
@@ -218,7 +218,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      // 💬 Comment Button
+                      
                       TextButton.icon(
                         onPressed: () => _showImageCommentSheet(_currentIndex),
                         icon: const Icon(Icons.chat_bubble_outline_rounded, color: Colors.white),
@@ -245,9 +245,9 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   }
 }
 
-// ==========================================
-// 💡 ပုံတစ်ပုံချင်းစီအတွက် သီးသန့်သုံးမည့် Comment Sheet Widget
-// ==========================================
+
+
+
 class ImageCommentSheet extends StatefulWidget {
   final String postId;
   final int imgIndex;

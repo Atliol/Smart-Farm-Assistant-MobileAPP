@@ -27,7 +27,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📷 Banner Image
+              
               Image.asset(
                 article.image,
                 width: double.infinity,
@@ -44,7 +44,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🏷 Tag & Meta Info
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -81,7 +81,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // 📝 Main Title
+                    
                     Text(
                       article.title,
                       style: const TextStyle(
@@ -95,7 +95,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                     const Divider(),
                     const SizedBox(height: 16),
 
-                    // 📖 Main Description
+                    
                     Text(
                       article.description,
                       style: const TextStyle(
@@ -107,7 +107,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // 💡 Sub steps များ ဆွဲထုတ်ပြခြင်း အပိုင်း
+                    
                     if (article.subSteps.isNotEmpty) ...[
                       Column(
                         children: article.subSteps.map((step) {
@@ -116,7 +116,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Sub Title
+                                
                                 Text(
                                   step.subTitle,
                                   style: const TextStyle(
@@ -127,7 +127,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 12),
 
-                                // 💡 ပြင်ဆင်ထားသော Sub Image Container (ပုံမပြတ်ဘဲ အပြည့်အဝ ပေါ်ရန်)
+                                
                                 if (step.subImage.isNotEmpty) ...[
                                   Container(
                                     width: double.infinity,
@@ -154,7 +154,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                                         step.subImage,
                                         width: double.infinity,
                                         height: double.infinity,
-                                        fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အပြည့်အဝ ပေါ်စေရန်
+                                        fit: BoxFit.contain, 
                                         errorBuilder: (context, error, stackTrace) => Container(
                                           color: Colors.grey.shade100,
                                           child: Icon(
@@ -169,7 +169,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
                                   const SizedBox(height: 12),
                                 ],
 
-                                // Sub Description
+                                
                                 Text(
                                   step.subDescription,
                                   style: TextStyle(

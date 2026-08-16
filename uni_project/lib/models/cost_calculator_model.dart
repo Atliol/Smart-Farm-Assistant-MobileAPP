@@ -10,7 +10,7 @@ class CalculationResult {
   final double estimatedYieldMax;
   final double estimatedRevenue;
   final double netProfit;
-  final double? breakEvenYieldBags; // ဖြည့်စွက်နိုင်ပါသည်
+  final double? breakEvenYieldBags;
 
   CalculationResult({
     required this.acres,

@@ -12,7 +12,7 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Offline Demo Data
+    
     final data = weatherData ??
         {
           "name": "အင်တာနက်မရှိပါ",
@@ -52,7 +52,7 @@ class WeatherCard extends StatelessWidget {
           ),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.35), // Button လင်းလင်းပေါ်စေရန် Opacity အနည်းငယ် တိုးထားပါသည်
+            Colors.black.withOpacity(0.35), 
             BlendMode.darken,
           ),
         ),
@@ -66,11 +66,11 @@ class WeatherCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // 💡 ၁။ မူရင်း Weather Info (Left & Right Side)
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /// LEFT SIDE
+              
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -111,7 +111,7 @@ class WeatherCard extends StatelessWidget {
                 ],
               ),
 
-              /// RIGHT SIDE
+              
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -149,7 +149,7 @@ class WeatherCard extends StatelessWidget {
           const Divider(color: Colors.white30, height: 1),
           const SizedBox(height: 12),
 
-          // 💡 ၂။ ထပ်ပေါင်းထည့်ထားသော "နောက် ၃ ရက်စာ မိုးလေဝသခန့်မှန်းချက်များ" Button
+          
           InkWell(
             onTap: () {
               Navigator.push(
@@ -163,7 +163,7 @@ class WeatherCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2), // မှန်ကြည်ဒီဇိုင်း (Glassmorphism Effect)
+                color: Colors.white.withOpacity(0.2), 
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white.withOpacity(0.3)),
               ),

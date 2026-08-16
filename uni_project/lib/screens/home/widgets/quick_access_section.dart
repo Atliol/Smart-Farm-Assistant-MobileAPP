@@ -32,7 +32,7 @@ class QuickAccessSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const TrackerScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
+                      builder: (context) => const TrackerScreen(), 
                     ),
                   );
                 },
@@ -83,7 +83,7 @@ class QuickAccessSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const DailyPriceScreen(), // 💡 DailyPriceScreen သို့ သွားမည်
+                      builder: (context) => const DailyPriceScreen(), 
                     ),
                   );
                 },
@@ -140,7 +140,7 @@ class QuickAccessCard extends StatelessWidget {
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis, // 💡 စာသားရှည်ပါက အစဉ်ပြေပြေ ပေါ်စေရန်
+              overflow: TextOverflow.ellipsis, 
             ),
           ],
         ),

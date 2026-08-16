@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'models/post_model.dart';
 import 'widgets/post_card.dart';
 import 'package:uni_project/screens/main_wrapper.dart';
-import 'services/social_service.dart'; // 🆕 ထည့်သွင်းရန်
-import 'chat_room_screen.dart'; // 🆕 အောက်တွင် ပြုလုပ်မည့် Messenger မျက်နှာပြင်
+import 'services/social_service.dart'; 
+import 'chat_room_screen.dart'; 
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
   final _bioController = TextEditingController();
   final _locationController = TextEditingController();
-  final SocialService _socialService = SocialService(); // 🆕 Service သတ်မှတ်ခြင်း
+  final SocialService _socialService = SocialService(); 
 
   bool _isLoading = true;
   bool _isSaving = false;
@@ -258,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   const SizedBox(height: 16),
                   
-                  // 🔥 Real-time Stats Area (Followers / Following ချိတ်ဆက်မှု)
+                  
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Row(
@@ -267,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(child: _buildStatItem("$_postCount", "Posts")),
                         Container(height: 30, width: 1, color: Colors.grey.shade300), 
                         
-                        // Friends (Followers) Count
+                        
                         Expanded(
                           child: StreamBuilder<int>(
                             stream: _socialService.getCount(widget.userId, 'followers'),
@@ -276,7 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Container(height: 30, width: 1, color: Colors.grey.shade300), 
                         
-                        // Following Count
+                        
                         Expanded(
                           child: StreamBuilder<int>(
                             stream: _socialService.getCount(widget.userId, 'following'),
@@ -287,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
 
-                  // 🆕 တခြားသူဖြစ်ခဲ့ရင် Follow နှင့် Message ပို့မယ့် ခလုတ်များ ထည့်သွင်းခြင်း
+                  
                   if (!isMyProfile && _currentUser != null) ...[
                     const SizedBox(height: 12),
                     Row(

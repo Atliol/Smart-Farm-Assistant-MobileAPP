@@ -54,7 +54,7 @@ class _ViewSavedMapScreenState extends State<ViewSavedMapScreen> {
                 userAgentPackageName: 'com.uni_project.app',
                 maxNativeZoom: 18,
               ),
-              // သိမ်းဆည်းထားသော အကွက်အား ပြန်လည်ဆွဲပြခြင်း
+
               PolygonLayer(
                 polygons: [
                   Polygon(
@@ -65,7 +65,7 @@ class _ViewSavedMapScreenState extends State<ViewSavedMapScreen> {
                   ),
                 ],
               ),
-              // အစက်ချထားသော ထောင့်စွန်း Marker များ ပြန်ပြခြင်း
+
               MarkerLayer(
                 markers: mapPoints.map((point) {
                   return Marker(
@@ -79,7 +79,6 @@ class _ViewSavedMapScreenState extends State<ViewSavedMapScreen> {
             ],
           ),
 
-          // 💡 Map Type Toggle ခလုတ်
           Positioned(
             top: 16,
             left: 16,
@@ -91,7 +90,6 @@ class _ViewSavedMapScreenState extends State<ViewSavedMapScreen> {
             ),
           ),
 
-          // 💡 Zoom ထိန်းချုပ်မည့် ခလုတ်များ
           Positioned(
             top: 16,
             right: 16,
@@ -114,7 +112,6 @@ class _ViewSavedMapScreenState extends State<ViewSavedMapScreen> {
             ),
           ),
 
-          // 💡 အောက်ခြေမှ အကျယ်အဝန်း အသေးစိတ်အချက်အလက်ပြ ကတ်ပြား (UI Card)
           Positioned(
             bottom: 16,
             left: 16,

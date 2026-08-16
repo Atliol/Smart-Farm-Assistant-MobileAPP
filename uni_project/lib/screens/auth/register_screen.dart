@@ -25,16 +25,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Firebase Auth ကို အသုံးပြုပြီး အကောင့်သစ်ဆောက်ခြင်း
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // User Display Name ထည့်ခြင်း
       await userCredential.user?.updateDisplayName(_nameController.text.trim());
 
-      // 2. Firestore ထဲတွင် ပရိုဖိုင်ဒေတာ သိမ်းခြင်း
       String uid = userCredential.user!.uid;
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'displayName': _nameController.text.trim(),
@@ -50,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
-      String errorMessage = "အကောင့်ဖွင့်၍မရပါ၊၊";
+      String errorMessage = "အင်တာနက်မရှိပါ။";
 
       if (e.code == 'email-already-in-use') {
         errorMessage = "ဤအီးမေးလ်ဖြင့် အကောင့်ဖွင့်ထားပြီးသား ဖြစ်နေပါသည်၊၊";
@@ -97,7 +94,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Curved Top Header Section
             Container(
               height: 230,
               width: double.infinity,
@@ -147,7 +143,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             const SizedBox(height: 24),
 
-            // 2. Input Form Fields Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Form(
@@ -155,7 +150,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name Field
                     const Text(
                       "အမည်",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
@@ -190,7 +184,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 18),
 
-                    // Email Field
                     const Text(
                       "အီးမေးလ်",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
@@ -229,7 +222,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 18),
 
-                    // Password Field
                     const Text(
                       "လျှို့ဝှက်နံပါတ်",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
@@ -273,7 +265,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 32),
 
-                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       height: 54,
@@ -301,7 +292,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 24),
 
-                    // Navigate back to Login
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

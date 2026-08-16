@@ -4,8 +4,8 @@ import '../../../models/knowledge_model.dart';
 import '../../../services/database_service.dart';
 import '../../guide/knowledge_detail_screen.dart';
 import '../../guide/knowledge_list_screen.dart';
-// 💡 သင့် General Knowledge List Screen ဖိုင်၏ လမ်းကြောင်းကို Import လုပ်ပေးပါ
-// import '../screens/guide/general_knowledge_list_screen.dart';
+
+
 
 class DiseaseAwarenessSection extends StatelessWidget {
   const DiseaseAwarenessSection({super.key});
@@ -15,7 +15,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title & View All
+        
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -67,7 +67,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
                   final dbService = DatabaseService();
                   final knowledgeList = await dbService.getKnowledgeData();
 
-                  // Database ထဲမှ 'Rice Blast' သို့မဟုတ် 'ဂုတ်ကျိုးရောဂါ' ဒေတာကို ရှာဖွေခြင်း
+                  
                   final diseaseItem = knowledgeList.firstWhere(
                         (element) => element.id == 'know_012',
                     orElse: () => KnowledgeModel(
@@ -202,7 +202,7 @@ class DiseaseAwarenessSection extends StatelessWidget {
   }
 }
 
-// To show each disease UI part
+
 class DiseaseRow extends StatelessWidget {
   final String title;
   final String description;

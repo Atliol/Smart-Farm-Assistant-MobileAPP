@@ -1,6 +1,6 @@
-import 'dart:convert'; // 💡 Base64 ပြောင်းရန်အတွက် အဓိက လိုအပ်ပါသည်
+import 'dart:convert'; 
 import 'dart:io';
-import 'package:flutter/foundation.dart'; // kIsWeb သုံးရန်
+import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,22 +19,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   bool _isPosting = false;
   User? get _currentUser => FirebaseAuth.instance.currentUser;
 
-  // 💡 ပုံအများကြီး သိမ်းဆည်းရန်အတွက် List ပုံစံအသုံးပြုခြင်း
+  
   List<XFile> _pickedImages = [];
   final ImagePicker _picker = ImagePicker();
 
-  // 📷 ဓာတ်ပုံအများကြီး တစ်ပြိုင်နက် ရွေးချယ်သည့် Function
+  
   Future<void> _pickImages() async {
     try {
       final List<XFile> images = await _picker.pickMultiImage(
-        imageQuality: 20, // 💡 Firestore 1MB ဒေတာ Limit မကျော်စေရန် Quality ကို လျှော့ချထားပါသည်
+        imageQuality: 20, 
         maxWidth: 400,
         maxHeight: 400,
       );
 
       if (images.isNotEmpty) {
         setState(() {
-          // ယခင်ရွေးထားသော ပုံများရှိပါက ၎င်းတို့နောက်သို့ ထပ်မံပေါင်းထည့်ခြင်း
+          
           _pickedImages.addAll(images);
         });
       }
@@ -59,30 +59,30 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     setState(() => _isPosting = true);
 
-    // 💡 ပုံအားလုံးရဲ့ Base64 String များကို သိမ်းဆည်းရန် Array ပုံစံ ပြောင်းလဲခြင်း
+    
     List<String> base64ImagesList = [];
 
     try {
-      // ရွေးချယ်ထားသော ပုံအားလုံးကို loop ပတ်ပြီး Base64 ပြောင်းလဲခြင်း
+      
       for (var pickedImg in _pickedImages) {
         List<int> imageBytes = await pickedImg.readAsBytes();
         String base64Str = 'data:image/jpeg;base64,${base64Encode(imageBytes)}';
         base64ImagesList.add(base64Str);
       }
 
-      // Firestore ၏ posts collection ထဲကို တိုက်ရိုက်သိမ်းဆည်းခြင်း
+      
       await FirebaseFirestore.instance.collection('posts').add({
         'userId': _currentUser!.uid,
         'userName': _currentUser!.displayName ?? "အသုံးပြုသူ",
         'authorName': _currentUser!.displayName ?? "အသုံးပြုသူname",
         'title': title,
         'content': content,
-        // နောက်ကြောင်းပြန် ဒေတာဟောင်းတွေနဲ့ အဆင်ပြေစေရန် ပထမဆုံးတစ်ပုံတည်းကိုလည်း String အဖြစ် ထည့်ပေးထားပါသည်
+        
         'imageUrl': base64ImagesList.isNotEmpty ? base64ImagesList.first : null,
-        'imageUrls': base64ImagesList, // 👈 ဤနေရာတွင် Base64 စာသား String Array အဖြစ် သိမ်းဆည်းလိုက်ပါပြီ
+        'imageUrls': base64ImagesList, 
         'commentsCount': 0,
         'likedBy': [],
-        // use local timestamp for immediate UI feedback and also request server timestamp
+        
         'createdAt': Timestamp.now(),
         'createdAtServer': FieldValue.serverTimestamp(),
       });
@@ -160,14 +160,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // 💡 ရွေးချယ်ထားသော ပုံအများကြီးကို Grid View ဖြင့် စနစ်တကျ ပြသပေးခြင်း
+                      
                       if (_pickedImages.isNotEmpty)
                         GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _pickedImages.length,
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3, // တစ်တန်းလျှင် ၃ ပုံစီ ပြသမည်
+                            crossAxisCount: 3, 
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8,
                           ),
@@ -196,12 +196,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _pickedImages.removeAt(index); // နှိပ်လိုက်သော ပုံအား List ထဲမှ ပြန်ဖျက်ခြင်း
+                                          _pickedImages.removeAt(index); 
                                         });
                                       },
                                       child: const CircleAvatar(
                                         radius: 10,
-                                        backgroundColor: Colors.black54, // 💡 Colors.black74 အမှားအား ဖယ်ရှားပြီး သုံးထားပါသည်
+                                        backgroundColor: Colors.black54, 
                                         child: Icon(Icons.close, size: 12, color: Colors.white),
                                       ),
                                     ),

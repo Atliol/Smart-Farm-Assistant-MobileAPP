@@ -1,11 +1,11 @@
 class CropPriceModel {
   final String id;
-  final String category;     // စပါးအမျိုးအစားများ၊ မတ်ပဲအမျိုးအစားများ...
-  final String cropName;     // ဆန်း(ဧည့်မထ ၂၅%)၊ မတ်ပဲ(အက်ဖ်အေ)...
-  final String unit;         // တစ်တင်းခွဲ၊ ၁ တန်၊ ၁ ပိဿာ...
-  final String price;        // စျေးနှုန်း (ဥပမာ - ၁၂၅,၀၀၀ ကျပ်)
-  final String city;         // ရန်ကုန်၊ မန္တလေး...
-  final String date;         // YYYY-MM-DD
+  final String category;
+  final String cropName;
+  final String unit;
+  final String price;
+  final String city;
+  final String date;
 
   CropPriceModel({
   required this.id,

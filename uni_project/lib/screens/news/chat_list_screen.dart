@@ -204,14 +204,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
                             return ListTile(
                               contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                              // 🛠️ ဒီနေရာမှာ ဒေါင်လိုက် List ရဲ့ leading ကို Stack နဲ့ ပြင်ဆင်ပြီး Ring လိုင်း ထည့်ပေးလိုက်ပါတယ်
+                              
                               leading: Stack(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(2.5), // Ring နဲ့ ပုံကြား အကွာအဝေး
+                                    padding: const EdgeInsets.all(2.5), 
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      // အွန်လိုင်းဖြစ်နေရင် အစိမ်းရောင် Ring ပတ်မယ်၊ မဖြစ်ရင် transparent ဖြစ်နေမယ်
+                                      
                                       border: Border.all(
                                         color: isOnline ? const Color(0xff4caf50) : Colors.transparent,
                                         width: 2,
@@ -322,7 +322,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 Widget _buildRealTimeActiveUsers() {
   return StreamBuilder<QuerySnapshot>(
-    // 1. users collection ထဲက user အားလုံးကို ယူမယ် (online ဖြစ်ဖြစ် offline ဖြစ်ဖြစ်)
+    
     stream: FirebaseFirestore.instance
         .collection('users')
         .snapshots(),
@@ -335,16 +335,16 @@ Widget _buildRealTimeActiveUsers() {
       }
 
       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-        return const SizedBox.shrink(); // User လုံးဝမရှိရင် ဘာမှမပြဘူး
+        return const SizedBox.shrink(); 
       }
 
-      // လက်ရှိ Login ဝင်ထားတဲ့ User ကို ဖယ်ထုတ်ပြီး ကျန်တဲ့သူတွေကို List လုပ်မယ်
+      
       List<QueryDocumentSnapshot> allUsers = snapshot.data!.docs
           .where((doc) => doc.id != _currentUserId)
           .toList();
 
       if (allUsers.isEmpty) {
-        return const SizedBox.shrink(); // ကိုယ်တစ်ယောက်ပဲရှိရင် ဘာမှမပြဘူး
+        return const SizedBox.shrink(); 
       }
 
       return SizedBox(
@@ -359,7 +359,7 @@ Widget _buildRealTimeActiveUsers() {
             String? photoUrl = userData['photoUrl'];
             String userId = allUsers[index].id;
             
-            // 2. User ရဲ့ Online Status ကို စစ်ဆေးမယ် (မပါရင် false လို့ ယူဆမယ်)
+            
             bool isUserOnline = userData['isOnline'] == true;
 
             return InkWell(
@@ -384,7 +384,7 @@ Widget _buildRealTimeActiveUsers() {
                           padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            // 3. Online ဖြစ်ရင် အစိမ်းရောင် Ring ပြပြီး၊ Offline ဖြစ်ရင် Ring ဖျောက်ထားမယ် (သို့မဟုတ် transparent ပေးမယ်)
+                            
                             border: Border.all(
                               color: isUserOnline ? const Color(0xff4caf50) : Colors.transparent,
                               width: 2,
@@ -406,7 +406,7 @@ Widget _buildRealTimeActiveUsers() {
                                 : null,
                           ),
                         ),
-                        // 4. အစိမ်းရောင် အစက်လေး (Dot) ကိုပါ Ring နဲ့အတူ တွဲပြီး ပေါ်/မပေါ် လုပ်ချင်ရင်-
+                        
                         if (isUserOnline)
                           Positioned(
                             right: 4,

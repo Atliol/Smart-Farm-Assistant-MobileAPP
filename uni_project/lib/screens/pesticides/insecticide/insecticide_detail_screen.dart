@@ -27,13 +27,13 @@ class InsecticideDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 💡 ပုံပြတ်မသွားဘဲ အထက်အောက် အပြည့်အဝ ပေါ်စေရန် ပြင်ဆင်ထားသော Image Container Section
+              
               Container(
                 width: double.infinity,
                 height: 250,
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                  color: Colors.grey.shade50, 
                   border: Border(
                     bottom: BorderSide(color: Colors.red.shade100, width: 1),
                   ),
@@ -43,7 +43,7 @@ class InsecticideDetailScreen extends StatelessWidget {
                     data.image,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.contain, // 💡 ပုံပြတ်မသွားဘဲ အပြည့်ပေါ်စေရန်
+                    fit: BoxFit.contain, 
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: double.infinity,
                       height: 250,
@@ -58,13 +58,13 @@ class InsecticideDetailScreen extends StatelessWidget {
                 ),
               ),
 
-              // အချက်အလက်များ ဖော်ပြသည့် အပိုင်း
+              
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ဆေးအမည် (Title)
+                    
                     Text(
                       data.title,
                       style: TextStyle(
@@ -75,7 +75,7 @@ class InsecticideDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
 
-                    // ဓာတုအမည်
+                    
                     Text(
                       "ဓာတုအမည် - ${data.chemicalName}",
                       style: TextStyle(
@@ -86,7 +86,7 @@ class InsecticideDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
 
-                    // နှိမ်နင်းနိုင်သောပိုးမွှား
+                    
                     Text(
                       "နှိမ်နင်းနိုင်သောပိုးမွှား - ${data.targetPest}",
                       style: TextStyle(
@@ -99,7 +99,7 @@ class InsecticideDetailScreen extends StatelessWidget {
                     const Divider(),
                     const SizedBox(height: 12),
 
-                    // ဆေးဝါးအကြောင်း ရှင်းလင်းချက်
+                    
                     const Text(
                       "ဆေးဝါးအကြောင်း ရှင်းလင်းချက်",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
@@ -112,7 +112,7 @@ class InsecticideDetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    // အသုံးပြုပုံနှင့် သတိပြုရန် အဆင့်ဆင့်
+                    
                     if (data.subSteps.isNotEmpty) ...[
                       Row(
                         children: [

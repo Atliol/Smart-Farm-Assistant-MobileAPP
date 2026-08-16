@@ -26,7 +26,6 @@ class CalculatorInputPage extends StatelessWidget {
     required this.onCalculate,
   });
 
-  // ရွေးချယ်နိုင်သော သီးနှံစာရင်းများ
   static const List<String> cropList = [
     'စပါး',
     'ပြောင်း',
@@ -39,7 +38,6 @@ class CalculatorInputPage extends StatelessWidget {
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF00796B);
 
-    // စပါးဆိုလျှင် တင်း ၊ အခြားသီးနှံဆိုလျှင် အိတ် ဖြင့် ပြရန်
     final String cropUnit = selectedCrop == 'စပါး' ? 'တင်း' : 'အိတ်';
 
     return SingleChildScrollView(
@@ -47,7 +45,6 @@ class CalculatorInputPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner Box
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -85,7 +82,6 @@ class CalculatorInputPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Main Form Card
           Card(
             elevation: 0,
             shape: RoundedRectangleBorder(

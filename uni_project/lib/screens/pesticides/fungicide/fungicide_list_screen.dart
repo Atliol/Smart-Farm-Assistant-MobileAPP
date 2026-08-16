@@ -71,13 +71,13 @@ class FungicideListScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 💡 ပုံရိပ်အထက်အောက် အပြည့်ပေါ်စေရန် ပြင်ဆင်ထားသော Image Container
+                        
                         Container(
                           width: double.infinity,
                           height: 180,
                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50, // ပုံနောက်ခံ ငြိမ်စေရန်
+                            color: Colors.grey.shade50, 
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                           ),
                           child: ClipRRect(
@@ -85,7 +85,7 @@ class FungicideListScreen extends StatelessWidget {
                               item.image,
                               width: double.infinity,
                               height: double.infinity,
-                              fit: BoxFit.contain, // 💡 ပုံမပြတ်ဘဲ အပြည့်အဝ ပေါ်စေရန်
+                              fit: BoxFit.contain, 
                               errorBuilder: (context, error, stackTrace) => Container(
                                 color: Colors.teal.shade50,
                                 child: Icon(
@@ -98,13 +98,13 @@ class FungicideListScreen extends StatelessWidget {
                           ),
                         ),
 
-                        // အချက်အလက်များ ပြသသည့် အပိုင်း
+                        
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Chemical Name Tag
+                              
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
@@ -122,7 +122,7 @@ class FungicideListScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
 
-                              // Title (ဆေးအမည်)
+                              
                               Text(
                                 item.title,
                                 style: const TextStyle(
@@ -133,7 +133,7 @@ class FungicideListScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 6),
 
-                              // Description
+                              
                               Text(
                                 item.description,
                                 style: TextStyle(
@@ -148,7 +148,7 @@ class FungicideListScreen extends StatelessWidget {
                               const Divider(height: 1),
                               const SizedBox(height: 10),
 
-                              // Target Disease Row
+                              
                               Row(
                                 children: [
                                   Icon(

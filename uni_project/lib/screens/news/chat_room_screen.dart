@@ -5,13 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:uni_project/screens/news/models/call_model.dart';
-import 'package:uni_project/screens/news/services/call_service.dart';
-import 'package:uni_project/screens/news/services/push_notification_service.dart';
 import 'dart:async';
 import 'services/social_service.dart';
 import 'models/chat_model.dart';
-import 'call_screen.dart';
 import 'profile_screen.dart';
 
 class ChatRoomScreen extends StatefulWidget {
@@ -31,78 +27,20 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final _messageController = TextEditingController();
   final SocialService _socialService = SocialService();
-  final CallService _callService = CallService();
   String get _currentUserId => FirebaseAuth.instance.currentUser?.uid ?? '';
   final ImagePicker _picker = ImagePicker();
 
-  ImageProvider? _getImageFromBase64(String? base64String) {    if (base64String != null && base64String.isNotEmpty) {
-    try {
-      if (!base64String.startsWith('blob:')) {
-        return MemoryImage(base64Decode(base64String));
+  ImageProvider? _getImageFromBase64(String? base64String) {
+    if (base64String != null && base64String.isNotEmpty) {
+      try {
+        if (!base64String.startsWith('blob:')) {
+          return MemoryImage(base64Decode(base64String));
+        }
+      } catch (e) {
+        debugPrint("Invalid base64 string: $e");
       }
-    } catch (e) {
-      debugPrint("Invalid base64 string: $e");
     }
-  }
-  return null;
-  }
-
-  Future<void> _startCall({required bool isVideo}) async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('သင် Login မထားပါ။ ဖုန်းခေါ်ဆိုမရပါ။')),
-        );
-      }
-      return;
-    }
-
-    final String roomId = _socialService.getChatRoomId(
-      _currentUserId,
-      widget.receiverId,
-    );
-    final String callId = DateTime.now().millisecondsSinceEpoch.toString();
-    final call = CallModel(
-      callId: callId,
-      callerId: currentUser.uid,
-      callerName: currentUser.displayName ?? 'Caller',
-      callerPic: currentUser.photoURL ?? '',
-      channelId: callId,
-      hasDialed: true,
-      isAccepted: false,
-      isVideoCall: isVideo,
-      receiverId: widget.receiverId,
-      status: 'dialing',
-      timestamp: Timestamp.now(),
-    );
-
-    final success = await _callService.makeCall(call: call);
-    if (!success) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ဖုန်းခေါ်ဆိုမှု ဖန်တီးခြင်း မအောင်မြင်ပါ။'),
-          ),
-        );
-      }
-      return;
-    }
-
-    if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallScreen(
-            callDocId: widget.receiverId,
-            channelId: callId,
-            receiverName: widget.receiverName,
-            receiverId: widget.receiverId,
-            isVideoCall: isVideo,
-          ),
-        ),
-      );
-    }
+    return null;
   }
 
   void _send() {
@@ -156,7 +94,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
   }
 
-  // 🛠️ စာသားပြင်ဆင်ရန်အတွက် Dialog Method
+  
   Future<void> _editMessage(
       String messageId,
       String oldMessage,
@@ -196,7 +134,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
-  // 🗑️ စာသားဖျက်ရန်အတွက် Dialog Method
+  
   Future<void> _deleteMessage(String messageId, String roomId) async {
     showDialog(
       context: context,
@@ -226,7 +164,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
-  // 📱 Long Press Options Dialog
+  
   void _showMessageOptions(
       String messageId,
       String currentMessage,
@@ -398,16 +336,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               color: Color(0xff1a237e),
                             ),
                           ),
-                          Text(
-                            isOnline ? "ယခု အသုံးပြုနေသည်" : "အော့ဖ်လိုင်း",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isOnline
-                                  ? const Color(0xff4caf50)
-                                  : Colors.grey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -415,21 +343,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.phone, color: Color(0xff1a237e)),
-                onPressed: () => _startCall(isVideo: false),
-              ),
-              IconButton(
-                icon: const Icon(Icons.videocam, color: Color(0xff1a237e)),
-                onPressed: () => _startCall(isVideo: true),
-              ),
-              IconButton(
-                icon: const Icon(Icons.info, color: Color(0xff1a237e)),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 4),
-            ],
           ),
           body: Column(
             children: [
@@ -485,7 +398,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
                         return GestureDetector(
                           onLongPress: () => _showMessageOptions(
-                            doc.id, // Firestore document ID ကို တိုက်ရိုက်ပေးပို့ပါတယ်
+                            doc.id,
                             msg.message,
                             messageType,
                             isMe,
@@ -582,8 +495,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                               isMe ? 4 : 16,
                                             ),
                                           ),
-                                          boxShadow: [
-                                            const BoxShadow(
+                                          boxShadow: const [
+                                            BoxShadow(
                                               color: Color.fromRGBO(0, 0, 0, 0.03),
                                               blurRadius: 4,
                                               offset: Offset(0, 2),
@@ -665,14 +578,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 color: const Color(0xfff7f8fa),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.add_circle,
-                        color: Color(0xff455a64),
-                        size: 28,
-                      ),
-                      onPressed: () {},
-                    ),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
