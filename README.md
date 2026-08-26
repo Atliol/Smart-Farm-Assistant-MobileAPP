@@ -26,24 +26,20 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 
 ---
 # 📸 Screenshots
-| Screenshot 1 | Screenshot 2 | Screenshot 2 |
+| Home page | Guide page | Price page |
 | :---: | :---: | :---: |
-| <img src="./screenshot/Shwelelyar-pjimage.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> |
+| <img src="./screenshot/Shwelelyar-pjimage.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-52-26-397_com.dev.kl.uni_project.jpg" width="300"> |
 
-## Home page
-<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
+| Map Measure page | AI page | Screenshot 2 |
+| :---: | :---: | :---: |
+| <img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> |
+
 
 ## Guide page
 <img src="./screenshot/Screenshot_2026-08-16-18-51-06-489_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
 
 ## Price page
 <img src="./screenshot/Screenshot_2026-08-16-18-52-26-397_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
-
-## Map Measure page
-<img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
-
-## AI page
-<img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
 
 
 
