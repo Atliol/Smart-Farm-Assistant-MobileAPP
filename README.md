@@ -35,14 +35,6 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 | <img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/newfeed.jpg" width="300"> |
 
 
-## Guide page
-<img src="./screenshot/Screenshot_2026-08-16-18-51-06-489_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
-
-## Price page
-<img src="./screenshot/Screenshot_2026-08-16-18-52-26-397_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
-
-
-
 ## ⚙️ စတင်အသုံးပြုရန် ပြင်ဆင်ခြင်း (Setup Instructions)
 
 ### ၁။ လိုအပ်ချက်များ (Prerequisites)
