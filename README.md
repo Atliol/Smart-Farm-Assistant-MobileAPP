@@ -30,9 +30,9 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 | :---: | :---: | :---: |
 | <img src="./screenshot/Shwelelyar-pjimage.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-52-26-397_com.dev.kl.uni_project.jpg" width="300"> |
 
-| Map Measure page | AI page | Screenshot 2 |
+| Map Measure page | AI page | newfeed Page |
 | :---: | :---: | :---: |
-| <img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="300"> |
+| <img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="300"> | <img src="./screenshot/newfeed.jpg" width="300"> |
 
 
 ## Guide page
