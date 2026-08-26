@@ -32,8 +32,8 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 ## login page
 <img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
-## Home page
-<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
+## Price page
+<img src="./screenshot/Screenshot_2026-08-16-18-52-26-397_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
 
 ## Room page
 <img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
