@@ -26,7 +26,7 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 
 ---
 # 📸 Screenshots
-## loading page
+## Home page
 <img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Guide page
@@ -39,7 +39,7 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 <img src="./screenshot/Screenshot_2026-08-16-18-53-21-503_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
 
 ## AI page
-<img src="./screenshot/shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
+<img src="./screenshot/Screenshot_2026-08-16-18-53-40-874_com.dev.kl.uni_project.jpg" width="400" alt="App Screenshot">
 
 
 
