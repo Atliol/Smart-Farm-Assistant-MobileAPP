@@ -27,26 +27,25 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 ---
 # 📸 Screenshots
 ## loading page
-<img width="988" height="574" alt="image" src="https://github.com/user-attachments/assets/a6871528-95a7-4be3-86f3-fad36e187fee" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## login page
-<img width="883" height="653" alt="image" src="https://github.com/user-attachments/assets/1e3e2772-4fdf-415b-9402-8ff03fb343b9" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Home page
-<img width="975" height="584" alt="image" src="https://github.com/user-attachments/assets/21e95d73-29b3-459b-a096-c700554850be" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Room page
-<img width="875" height="526" alt="image" src="https://github.com/user-attachments/assets/995db8d5-e8f6-4dcd-bddc-74f8cbc1543e" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Student page
-<img width="975" height="580" alt="image" src="https://github.com/user-attachments/assets/d186625a-b522-4fc2-8bc3-bcb6cbae06a4" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Visitor page
-<img width="975" height="585" alt="image" src="https://github.com/user-attachments/assets/2d953854-7907-4d63-a666-2846f0bbe674" />
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## Fee page
-<img width="862" height="515" alt="image" src="https://github.com/user-attachments/assets/ab10639f-1040-452e-a765-3028f847f442" />
-
+<img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
 ## ⚙️ စတင်အသုံးပြုရန် ပြင်ဆင်ခြင်း (Setup Instructions)
 
