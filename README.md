@@ -26,6 +26,10 @@ Flutter ဖြင့် တည်ဆောက်ထားပြီး တော�
 
 ---
 # 📸 Screenshots
+| Screenshot 1 | Screenshot 2 |
+| :---: | :---: |
+| <img src="./screenshot/Shwelelyar-pjimage.jpg" width="250"> | <img src="./screenshot/shwelelyar_pjimage.jpg" width="250"> |
+
 ## Home page
 <img src="./screenshot/Shwelelyar-pjimage.jpg" width="400" alt="App Screenshot">
 
